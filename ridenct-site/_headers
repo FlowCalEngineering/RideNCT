@@ -1,0 +1,19 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://jpawfdgfggtlqxpbrpnd.supabase.co https://tiles.openfreemap.org https://nominatim.openstreetmap.org https://photon.komoot.io https://api-adresse.data.gouv.fr https://router.project-osrm.org https://routing.openstreetmap.de https://brouter.de https://api.open-meteo.com https://overpass-api.de https://overpass.kumi.systems https://overpass.private.coffee; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+
+/assets/*
+  Cache-Control: public, max-age=86400
+
+/css/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/js/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/sw.js
+  Cache-Control: no-cache

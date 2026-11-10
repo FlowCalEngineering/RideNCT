@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://jpawfdgfggtlqxpbrpnd.supabase.co https://tiles.openfreemap.org https://nominatim.openstreetmap.org https://photon.komoot.io https://api-adresse.data.gouv.fr https://router.project-osrm.org https://routing.openstreetmap.de https://brouter.de https://api.open-meteo.com https://overpass-api.de https://overpass.kumi.systems https://overpass.private.coffee; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' mailto:">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Planificateur expert — RideNCT</title>
+<link rel="canonical" href="https://ridenct.fr/planificateur.html">
+<meta name="description" content="Planifie gratuitement un itinéraire moto sinueux : virages, épingles, altitude, météo par étape, import et export GPX.">
+<meta name="theme-color" content="#1f2226">
+<meta property="og:title" content="Planificateur expert — RideNCT">
+<meta property="og:description" content="Planifie gratuitement un itinéraire moto sinueux : virages, épingles, altitude, météo par étape, import et export GPX.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RideNCT">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:image" content="https://ridenct.fr/assets/img/og-image.jpg">
+<meta property="og:url" content="https://ridenct.fr/planificateur.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Planificateur expert — RideNCT">
+<meta name="twitter:description" content="Planifie gratuitement un itinéraire moto sinueux : virages, épingles, altitude, météo par étape, import et export GPX.">
+<meta name="twitter:image" content="https://ridenct.fr/assets/img/og-image.jpg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="assets/libs/maplibre-gl/maplibre-gl.css"><link rel="stylesheet" href="css/planner.css">
+
+</head>
+<body data-page="planner" class="planner-page">
+<a class="skip" href="#main">Aller au contenu</a>
+<div id="site-header"></div>
+<main id="main">
+<h1 class="sr-only">Planificateur d'itinéraire moto</h1>
+<div class="planner" id="planner">
+  <aside class="pl-panel" aria-label="Réglages de l'itinéraire">
+    <div class="pl-top">
+      <div class="pl-search">
+        <input id="pl-q" type="search" placeholder="Adresse, ville, col, lieu…" autocomplete="off" aria-label="Rechercher un lieu">
+        <button type="button" class="pl-ib" id="pl-me" aria-label="Ajouter ma position" title="Ma position"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg></button>
+        <div class="pl-sl" id="pl-sl" hidden></div>
+      </div>
+      <div class="pl-stats" id="pl-stats" aria-live="polite"></div>
+    </div>
+    <div class="pl-tabs" id="pl-tabs" role="tablist"></div>
+    <div class="pl-body" id="pl-body"></div>
+    <div class="pl-foot">
+      <div class="pl-status" id="pl-status" role="status" hidden></div>
+      <div class="pl-acts"><button type="button" class="btn btn-primary" id="pl-calc">Calculer</button></div>
+    </div>
+  </aside>
+  <div class="pl-map"><div id="map" role="application" aria-label="Carte de l'itinéraire"></div><div class="pl-hint" id="pl-hint">Clique sur la carte pour placer ton départ</div></div>
+</div>
+<p class="pl-note">Calcul réalisé dans ton navigateur à partir des données OpenStreetMap. Gratuit, sans compte. Le mode expert complet, avec calcul hors ligne et suivi GPS, est dans l'app. <a href="tarifs.html">Voir les tarifs</a></p>
+</main>
+<div id="site-footer"></div>
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+<script src="assets/libs/maplibre-gl/maplibre-gl.js"></script><script src="js/moteur.js"></script><script src="js/planner.js"></script>
+</body>
+</html>

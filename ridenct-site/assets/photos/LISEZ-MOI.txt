@@ -1,0 +1,8 @@
+Dépose tes photos ici (JPG, idéalement 1600 px de large, moins de 400 Ko chacune).
+Tant qu'un fichier est absent, le site affiche un dessin technique à la place.
+Noms attendus :
+  garage-nuit.jpg      photo large (16:7) : moto dans le garage, de nuit
+  pluie-guidon.jpg     guidon sous la pluie (4:3)
+  soudure-tig.jpg      étincelles de soudure TIG (4:3)
+  ligne-de-route.jpg   route ou carte (bandeau plein écran)
+Le site les passe automatiquement en noir et blanc contrasté avec une teinte turquoise.
