@@ -31,7 +31,7 @@
 
   var header =
     '<header class="site-header"><div class="wrap nav">' +
-    '<a class="brand" href="index.html"><img src="assets/img/icon-192.png" alt="" width="36" height="36">RideNCT</a>' +
+    '<a class="brand" href="./"><img src="assets/img/icon-192.png" alt="" width="36" height="36">RideNCT</a>' +
     '<ul class="nav-links" id="nav-links">' + nav + moreHtml +
     '<li><a class="nav-user" href="compte.html" aria-label="Mon compte"' + (page === "account" ? ' aria-current="page"' : "") + ">" + userIco + "<span>Mon compte</span></a></li>" +
     '<li><a class="btn btn-primary btn-small cta-pulse" href="contact.html" title="Android : bientôt"><span class="dot-live" aria-hidden="true"></span>Accès prioritaire <span class="arr" aria-hidden="true">→</span></a></li></ul>' +
@@ -43,7 +43,7 @@
   var footer =
     '<footer class="site-footer"><div class="wrap">' +
     '<div class="foot-cols">' +
-    '<div><a class="brand" href="index.html"><img src="assets/img/icon-192.png" alt="" width="36" height="36">RideNCT</a><p>L\'application des motards : navigation, intercom, communauté, sécurité et atelier.</p></div>' +
+    '<div><a class="brand" href="./"><img src="assets/img/icon-192.png" alt="" width="36" height="36">RideNCT</a><p>L\'application des motards : navigation, intercom, communauté, sécurité et atelier.</p></div>' +
     '<div><h4>Découvrir</h4><ul><li><a href="fonctionnalites.html">Fonctionnalités</a></li><li><a href="planificateur.html">Planificateur</a></li><li><a href="tarifs.html">Tarifs</a></li><li><a href="communaute.html">Communauté</a></li><li><a href="securite.html">Sécurité</a></li><li><a href="faq.html">FAQ</a></li></ul></div>' +
     '<div><h4>Informations</h4><ul><li><a href="compte.html">Mon compte</a></li><li><a href="contact.html">Contact</a></li><li><a href="cgu.html">Conditions d\'utilisation</a></li><li><a href="cgv.html">Conditions de vente</a></li><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="compte.html?resilier=1">Résilier votre contrat</a></li><li><a href="confidentialite.html">Confidentialité</a></li></ul></div>' +
     '</div><div class="foot-bottom">© ' + year + " " + owner + ". Tous droits réservés.<span class=\"foot-serial\">FC-RNCT · ATELIER · ÉDITION " + year + "</span></div></div></footer>";
@@ -449,3 +449,4 @@
     }, true);
   }
 })();
+;(function () { try { var p = location.pathname; if (/\/index\.html$/.test(p) && history.replaceState) history.replaceState(null, "", p.replace(/index\.html$/, "") + location.search + location.hash); } catch (e) { } })();

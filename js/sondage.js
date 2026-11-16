@@ -143,7 +143,7 @@
     c.appendChild(el("p", "", "Tes réponses nous aident à construire l'application que les motards attendent vraiment."));
     var r = el("div", "cta-row");
     var a = el("a", "btn btn-primary", "Essayer le planificateur"); a.href = "planificateur.html";
-    var b = el("a", "btn btn-ghost", "Retour à l'accueil"); b.href = "index.html";
+    var b = el("a", "btn btn-ghost", "Retour à l'accueil"); b.href = "./";
     r.appendChild(a); r.appendChild(b); c.appendChild(r); root.appendChild(c); top();
   }
   render();
