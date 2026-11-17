@@ -39,8 +39,8 @@
 
 <h2>En bref</h2>
 <ul class="legal-list">
-<li>Aucun cookie de suivi, aucune publicité, aucun outil de mesure d'audience.</li>
-<li>Un compte est nécessaire pour utiliser l'application ; il sert uniquement à savoir si ton abonnement est actif.</li>
+<li>Aucun cookie de suivi ni outil de mesure d'audience sur le site. La version gratuite de l'application affiche de la publicité (Google AdMob) ; les abonnés n'en voient pas.</li>
+<li>Un compte est nécessaire pour utiliser l'application ; il sert à gérer ton abonnement et tes fonctions communautaires (pseudo, amis, événements, signalements).</li>
 <li>Ton profil, tes trajets et ton carnet restent sur ton téléphone. Seuls les circuits que tu choisis de partager sont envoyés à nos serveurs, et conservés jusqu'à ce que tu les supprimes.</li>
 <li>Tu peux télécharger tes données et supprimer ton compte toi-même depuis la page Mon compte.</li>
 </ul>
@@ -64,7 +64,7 @@
 <b>Durée :</b> jusqu'à ce que tu supprimes le circuit depuis l'application, ou que tu supprimes ton compte. Un circuit peut aussi être retiré par la modération s'il enfreint les <a href="cgu.html">conditions d'utilisation</a> ou s'il reçoit trop de signalements. Un circuit téléchargé par un autre motard reste sur son téléphone.</p>
 <h3>Alertes de danger et événements</h3>
 <p><b>Données :</b> position et type de l'alerte ou de l'événement, avec un identifiant d'appareil aléatoire (sans lien avec ton identité).<br>
-<b>Durée :</b> suppression automatique à l'expiration : 30 minutes après le début d'un événement, 2 heures pour un accident ou un animal, 24 heures pour les autres dangers (jusqu'à 48 heures au plus si d'autres motards confirment l'alerte). Une trace anonymisée (type d'alerte, zone arrondie à une dizaine de kilomètres, nombre de confirmations) est gardée 400 jours au plus pour mesurer la qualité du service.</p>
+<b>Durée :</b> suppression automatique à l'expiration : 7 jours après le départ d'une balade (événement), 2 heures pour un accident ou un animal, 24 heures pour les autres dangers (jusqu'à 48 heures au plus si d'autres motards confirment l'alerte). Une trace anonymisée (type d'alerte, zone arrondie à une dizaine de kilomètres, nombre de confirmations) est gardée 400 jours au plus pour mesurer la qualité du service.</p>
 <h3>Liste d'attente</h3>
 <p><b>Données :</b> ton adresse e-mail.<br>
 <b>Pourquoi :</b> te prévenir de la sortie de l'application, rien d'autre. Base légale : ton consentement, donné en envoyant le formulaire.<br>
@@ -84,6 +84,7 @@
 <h3>Radar, entraide, alerte de chute et intercom (application)</h3>
 <p><b>Données :</b> ta position approximative (par zone géographique) et les éléments de profil que tu choisis de montrer, quand tu actives le radar, une demande d'aide ou l'alerte de chute ; la voix de l'intercom. Ces fonctions ne s'activent qu'avec ton autorisation de géolocalisation, et tu peux les désactiver à tout moment dans l'application.</p>
 <p><b>Comment :</b> pour que les motards proches se trouvent et se mettent en relation, l'application échange de courts messages (balises de zone, invitations, négociation de la liaison, chiffrés et signés pour la mise en relation) par un serveur de messagerie MQTT public, EMQX (broker.emqx.io). La voix de l'intercom et les données du radar passent ensuite directement de téléphone à téléphone (WebRTC). Si la liaison directe échoue, elles peuvent transiter par un serveur relais gratuit (Open Relay, Metered). Pour établir la liaison, l'application interroge des serveurs STUN de Google et de Cloudflare, qui reçoivent l'adresse IP de ton appareil, et vérifie la connexion réseau auprès de Google (gstatic.com) et de Cloudflare.</p>
+<p><b>Alerte de chute et appel à l'aide :</b> l'alerte envoyée aux motards situés à environ 1 km contient ta position précise (à quelques mètres près), ton nom d'utilisateur affiché et l'heure. Tes contacts d'urgence et, si tu les renseignes, tes informations médicales (groupe sanguin, allergies, traitements, pathologies) sont enregistrés uniquement sur ton téléphone : ils ne servent qu'à préparer les SMS à tes contacts, que ton téléphone envoie, et à l'affichage sur l'écran verrouillé si tu l'actives.</p>
 <p><b>Conservation :</b> ces échanges ne sont pas enregistrés dans notre base de données et la voix n'est pas conservée par l'éditeur. L'éditeur ne maîtrise pas les serveurs tiers cités ci-dessus.</p>
 <h3>Journal d'administration et sauvegardes</h3>
 <p><b>Données :</b> les actions d'administration (suspension, suppression, abonnement offert…) sont inscrites dans un journal réservé à l'équipe, avec l'adresse e-mail du compte concerné. Des sauvegardes de la base (comptes, abonnements, messages de contact, liste d'attente, signalements) permettent de restaurer le service.<br>
@@ -91,6 +92,10 @@
 <h3>Paiement</h3>
 <p>Les abonnements pris sur le site sont gérés par RevenueCat, Inc. (San Francisco, États-Unis) ; le paiement par carte est traité par Stripe Payments Europe, Ltd. (Irlande). <b>Données :</b> identifiant de ton compte RideNCT, adresse e-mail, produit souscrit, dates et statut de l'abonnement. Nous ne voyons ni ne conservons ton numéro de carte. <b>Base légale :</b> exécution du contrat. Les abonnements pris sur Google Play ou l'App Store sont traités par ces services. Des transferts hors Union européenne peuvent avoir lieu ; ils sont encadrés par les clauses contractuelles types ou le cadre de protection des données UE-États-Unis.</p>
 
+<h3>Publicité (version gratuite de l'application)</h3>
+<p><b>Données :</b> identifiant publicitaire de ton appareil, adresse IP et informations techniques, traités par Google AdMob (Google). Aucune donnée de ton compte RideNCT, ni ta position, ne leur est transmise par l'éditeur.</p>
+<p><b>Pourquoi :</b> afficher des publicités dans la version gratuite (bannières et plein écran, jamais en roulant ni pendant un intercom). <b>Base légale :</b> ton consentement, demandé au premier lancement par un formulaire de consentement (sur iOS, autorisation de suivi). Dans l'Espace économique européen, la publicité n'est affichée qu'avec ce consentement.</p>
+<p><b>Durée :</b> selon les règles de Google. Les abonnés ne voient aucune publicité.</p>
 <h2>Planificateur d'itinéraire</h2>
 <p>Le planificateur calcule ton trajet en interrogeant des services cartographiques tiers. Les points que tu places (coordonnées) ou les lieux que tu cherches leur sont envoyés : OpenFreeMap (fond de carte), OpenStreetMap / Nominatim, Photon, Adresse.data.gouv.fr (recherche de lieux), OSRM, routing.openstreetmap.de et BRouter (calcul d'itinéraire), Open-Meteo (météo et altitude) et Overpass (points d'intérêt). Dans l'application, les prix des carburants viennent de data.economie.gouv.fr. Ces services reçoivent l'adresse IP de ton appareil, comme tout site web. Aucun itinéraire n'est enregistré sur nos serveurs. Le planificateur s'utilise sans compte.</p>
 
@@ -102,6 +107,7 @@
 <li><b>Supabase</b> : base de données et connexion, hébergées dans l'Union européenne (Irlande).</li>
 <li><b>GitHub (GitHub Pages)</b> : hébergement du site. GitHub, société américaine, reçoit l'adresse IP des visiteurs.</li>
 <li><b>Services cartographiques</b> du planificateur, listés plus haut.</li>
+<li><b>Google (AdMob)</b> : publicité de la version gratuite de l'application, voir plus haut.</li>
 <li><b>EMQX</b> (serveur MQTT public), <b>Google</b> et <b>Cloudflare</b> (serveurs STUN), <b>Metered</b> (relais Open Relay) : fonctions de proximité de l'application, voir plus haut.</li>
 <li><b>Resend, Inc.</b> (États-Unis) : service d'envoi d'e-mails (confirmation de compte, mot de passe oublié). Il reçoit ton adresse e-mail pour t'envoyer ces messages.</li>
 </ul>
