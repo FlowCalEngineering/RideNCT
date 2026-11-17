@@ -72,15 +72,3 @@ body:not(.planner-page) .fx-js .fx-stage { top: 54px; height: calc(100svh - 54px
 }
 @media (max-width: 480px) { .fx-js .fx-slide { bottom: 84px; } .fx-js .fx-text .ticks li:nth-child(n+3) { display: none; } }
 @media (prefers-reduced-motion: reduce) { .fx-js .fx-text > *, .fx-js .fx-ph { transition: opacity .2s !important; transform: none !important; } .fx-ring { animation: none; } }
-
-/* Téléphone : apparition animée de chaque écran au défilement */
-.fx-m .fx { overflow-x: clip; }
-.fx-m .fx-text > * { opacity: 0; transform: translateX(-46px); transition: opacity .5s ease, transform .7s cubic-bezier(.2,.85,.2,1); }
-.fx-m .fx-ph { opacity: 0; transform: translateX(110px) rotate(8deg) scale(.92); transition: opacity .6s ease, transform .85s cubic-bezier(.2,.85,.2,1); }
-.fx-m .fx-slide.in .fx-text > *, .fx-m .fx-slide.in .fx-ph { opacity: 1; transform: none; }
-.fx-m .fx-slide.in .fx-text > :nth-child(2) { transition-delay: .06s; }
-.fx-m .fx-slide.in .fx-text > :nth-child(3) { transition-delay: .12s; }
-.fx-m .fx-slide.in .fx-text > :nth-child(4) { transition-delay: .18s; }
-.fx-m .fx-slide.in .fx-text > :nth-child(5) { transition-delay: .24s; }
-.fx-m .fx-slide.in .fx-ph { transition-delay: .3s; }
-@media (prefers-reduced-motion: reduce) { .fx-m .fx-text > *, .fx-m .fx-ph { opacity: 1; transform: none; transition: none; } }

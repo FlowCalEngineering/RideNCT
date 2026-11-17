@@ -14,15 +14,6 @@
   var mq = window.matchMedia ? window.matchMedia("(max-width: 900px)") : null;
   if (mq && mq.matches) {
     if (mq.addEventListener) mq.addEventListener("change", function () { location.reload(); });
-    // Animations d'apparition au défilement (chaque écran s'ouvre quand il arrive à l'écran)
-    var list = [].slice.call(fx.querySelectorAll(".fx-slide"));
-    if ("IntersectionObserver" in window) {
-      document.documentElement.classList.add("fx-m");
-      var io = new IntersectionObserver(function (es) {
-        es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
-      }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
-      list.forEach(function (sl) { io.observe(sl); });
-    }
     return;
   }
   if (mq && mq.addEventListener) mq.addEventListener("change", function () { location.reload(); });
