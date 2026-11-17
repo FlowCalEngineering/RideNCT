@@ -10,6 +10,14 @@
   var N = slides.length, cur = -1, STEP = 0.8;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Téléphone / tablette : simple liste d'écrans, sans défilement animé (plus lisible, plus fiable sur mobile)
+  var mq = window.matchMedia ? window.matchMedia("(max-width: 900px)") : null;
+  if (mq && mq.matches) {
+    if (mq.addEventListener) mq.addEventListener("change", function () { location.reload(); });
+    return;
+  }
+  if (mq && mq.addEventListener) mq.addEventListener("change", function () { location.reload(); });
+
   document.documentElement.classList.add("fx-js");
 
   function sizes() {
