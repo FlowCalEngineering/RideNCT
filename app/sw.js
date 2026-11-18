@@ -1,6 +1,6 @@
 // Service worker RideNCT : l'appli web s'ouvre sans réseau. Réseau d'abord (toujours à jour), cache en secours.
 // À chaque mise en ligne d'une nouvelle version de l'appli : changer VERSION (les anciens fichiers en cache sont supprimés).
-const VERSION = 'ridenct-2026-11-18.9';
+const VERSION = 'ridenct-2026-11-18.10';
 self.addEventListener('install', (e) => { self.skipWaiting(); });
 self.addEventListener('activate', (e) => {
     e.waitUntil((async () => {
@@ -14,7 +14,7 @@ self.addEventListener('fetch', (e) => {
     e.respondWith((async () => {
         const c = await caches.open(VERSION);
         try {
-            const net = await Promise.race([fetch(r), new Promise((_, rej) => setTimeout(() => rej(new Error('lent')), 6000))]);
+            const net = await Promise.race([fetch(r.mode === 'navigate' ? r.url : r, { cache: 'no-cache' }), new Promise((_, rej) => setTimeout(() => rej(new Error('lent')), 6000))]);
             if (net && net.ok) c.put(r, net.clone());
             return net;
         } catch (err) {
