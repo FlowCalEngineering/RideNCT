@@ -1,190 +1,15 @@
-// Roadbook : trajets enregistrés (Mon roadbook)
-// Étend ModuleGPS (défini dans carte/carte.js) : ce fichier doit être chargé APRÈS lui.
-Object.assign(ModuleGPS, {
-                // ===== Statistiques du trajet (calculées pendant la trace, affichées à l'arrêt) =====
-                rideStatsReset() { this.state.rs = { move: 0, stop: 0, max: 0, up: 0, down: 0, altLast: null, altMax: null, hasAlt: false, lastTs: null }; },
-                rideStatsTick(pos) {
-                    const rs = this.state.rs; if (!rs || !pos || !pos.coords) return;
-                    const ts = pos.timestamp || Date.now(), v = this.state.gpsSpeedKmh || 0;
-                    if (rs.lastTs !== null) { const dt = Math.min(10, (ts - rs.lastTs) / 1000); if (dt > 0) { if (v >= 3) rs.move += dt; else rs.stop += dt; } }
-                    rs.lastTs = ts; try { ModuleSensors.gps(pos); } catch (e) {}
-                    if (v > rs.max && !(pos.coords.accuracy > 40)) rs.max = v;
-                    const a = pos.coords.altitude, aa = pos.coords.altitudeAccuracy;
-                    if (a !== null && a !== undefined && isFinite(a) && (aa === null || aa === undefined || aa <= 15)) {
-                        rs.hasAlt = true; rs.altMax = rs.altMax === null ? a : Math.max(rs.altMax, a);
-                        if (rs.altLast === null) rs.altLast = a;
-                        else { const d = a - rs.altLast; if (Math.abs(d) >= 4) { if (d > 0) rs.up += d; else rs.down -= d; rs.altLast = a; } }   // seuil 4 m : le bruit GPS ne gonfle pas le dénivelé
-                    }
-                },
-                fmtDur(sec) { sec = Math.max(0, Math.round(sec)); const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60); return h > 0 ? `${h} h ${String(m).padStart(2, '0')}` : `${m} min`; },
-                rideStatsFinal(distMeters, durationSec) {
-                    const rs = this.state.rs || { move: 0, stop: 0, max: 0, up: 0, down: 0, hasAlt: false, altMax: null };
-                    const moveSec = rs.move > 0 ? rs.move : durationSec;
-                    return { dur: Math.round(durationSec), move: Math.round(rs.move), stop: Math.round(rs.stop), avg: moveSec > 0 ? Math.round((distMeters / 1000) / (moveSec / 3600)) : 0,
-                             max: Math.round(rs.max), up: Math.round(rs.up), down: Math.round(rs.down), altMax: rs.altMax === null ? null : Math.round(rs.altMax), hasAlt: !!rs.hasAlt };
-                },
-                // Fenêtre « Trajet terminé » (HUD dans l'app)
-                showRideSummary(rec) {
-                    const st = rec.stats || {}, old = document.getElementById('ride-summary'); if (old) old.remove();
-                    const ic = (d) => `<svg viewBox="0 0 24 24">${d}</svg>`;
-                    const tiles = [
-                        [ic('<circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>'), AppUnits.km(parseFloat(rec.dist)).toFixed(1), AppUnits.distLabel(), 'Distance', '#0a84ff'],
-                        [ic('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>'), this.fmtDur(st.dur || 0), '', 'Durée', '#ff9f0a'],
-                        [ic('<path d="M13 4a1.5 1.5 0 1 0 0 .01M6 21l3-6 3 2 2-5 3 3 2-2M9 15l-1-5 4-2 3 3"/>'), this.fmtDur(st.move || 0), '', 'En mouvement', '#30d158'],
-                        [ic('<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>'), this.fmtDur(st.stop || 0), '', 'Arrêts', '#ff453a'],
-                        [ic('<path d="M12 14l4-4"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/>'), AppUnits.spd(st.avg || 0), AppUnits.speedLabel(), 'Vitesse moy.', '#bf5af2'],
-                        [ic('<path d="M12 14l4-8"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/><circle cx="12" cy="14" r="1.2"/>'), AppUnits.spd(st.max || 0), AppUnits.speedLabel(), 'Vitesse max', '#ff375f']
-                    ];
-                    if (st.hasAlt) { tiles.push([ic('<path d="M3 20l6-11 4 7 3-5 5 9z"/>'), '+' + (st.up || 0), 'm', 'Dénivelé +', '#64d2ff'], [ic('<path d="M3 4l6 11 4-7 3 5 5-9z"/>'), (st.down ? '−' : '') + (st.down || 0), 'm', 'Dénivelé −', '#ffd60a']); }
-                    const sn = st.sens || {}, lean = sn.lean && sn.lean.n ? sn.lean : null, ch = sn.chrono && sn.chrono.laps && sn.chrono.laps.length ? sn.chrono : null, f2 = (x) => String(Number(x).toFixed(2)).replace('.', ',');
-                    // tuiles clés en tête : freinage max et meilleur tour juste après la vitesse max
-                    const extra = [];
-                    if (sn.brake && (sn.brake.nb || sn.brake.na)) extra.push([ic('<path d="M12 5v10M7 11l5 5 5-5M5 20h14"/>'), f2(sn.brake.bmax), 'g', 'Freinage max', '#30d158']);
-                    if (ch) extra.push([ic('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'), ModuleChrono.fmt(ch.laps[ch.best].s), '', 'Meilleur tour', '#bf5af2']);
-                    tiles.splice(4, 0, ...extra);
-                    const hero = lean ? `<div class="rs-hero"><b>${lean.max}<small>°</small></b><div><span>Inclinaison max · ${lean.side === 'd' ? 'droite' : 'gauche'}</span><em>${lean.n} virage${lean.n > 1 ? 's' : ''} · pic moyen ${lean.avg}°${lean.top && lean.top[0] ? ' · ' + lean.top[0].v + ' km/h' : ''}${lean.src === 'gps' ? ' · estimée par le GPS' : ''}</em></div></div>` : '';
-                    const co = rec.geojson && rec.geojson.coordinates, prev = (typeof ModuleRecap !== 'undefined' && co ? ModuleRecap.routeSvg(co, 340, 178) : '') || rec.preview || '';
-                    const el = document.createElement('div'); el.id = 'ride-summary'; el.className = 'rs-overlay';
-                    el.innerHTML = `<div class="rs-card">
-                        <div class="rs-head"><div class="rs-flag">${ic('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>')}</div><div style="flex:1;min-width:0"><div class="rs-title">Trajet terminé</div><div class="rs-sub"></div></div><button type="button" class="rs-x rs-close" aria-label="Fermer">✕</button></div>
+Object.assign(ModuleGPS,{rideStatsReset(){this.state.rs={move:0,stop:0,max:0,up:0,down:0,altLast:null,altMax:null,hasAlt:!1,lastTs:null}},rideStatsTick(t){const e=this.state.rs;if(!e||!t||!t.coords)return;const s=t.timestamp||Date.now(),o=this.state.gpsSpeedKmh||0;if(e.lastTs!==null){const n=Math.min(10,(s-e.lastTs)/1e3);n>0&&(o>=3?e.move+=n:e.stop+=n)}e.lastTs=s;try{ModuleSensors.gps(t)}catch{}o>e.max&&!(t.coords.accuracy>40)&&(e.max=o);const i=t.coords.altitude,a=t.coords.altitudeAccuracy;if(i!=null&&isFinite(i)&&(a==null||a<=15))if(e.hasAlt=!0,e.altMax=e.altMax===null?i:Math.max(e.altMax,i),e.altLast===null)e.altLast=i;else{const n=i-e.altLast;Math.abs(n)>=4&&(n>0?e.up+=n:e.down-=n,e.altLast=i)}},fmtDur(t){t=Math.max(0,Math.round(t));const e=Math.floor(t/3600),s=Math.floor(t%3600/60);return e>0?`${e} h ${String(s).padStart(2,"0")}`:`${s} min`},rideStatsFinal(t,e){const s=this.state.rs||{move:0,stop:0,max:0,up:0,down:0,hasAlt:!1,altMax:null},o=s.move>0?s.move:e;return{dur:Math.round(e),move:Math.round(s.move),stop:Math.round(s.stop),avg:o>0?Math.round(t/1e3/(o/3600)):0,max:Math.round(s.max),up:Math.round(s.up),down:Math.round(s.down),altMax:s.altMax===null?null:Math.round(s.altMax),hasAlt:!!s.hasAlt}},showRideSummary(t){const e=t.stats||{},s=document.getElementById("ride-summary");s&&s.remove();const o=d=>`<svg viewBox="0 0 24 24">${d}</svg>`,i=[[o('<circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h6a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h6"/>'),AppUnits.km(parseFloat(t.dist)).toFixed(1),AppUnits.distLabel(),"Distance","#0a84ff"],[o('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>'),this.fmtDur(e.dur||0),"","Dur\xE9e","#ff9f0a"],[o('<path d="M13 4a1.5 1.5 0 1 0 0 .01M6 21l3-6 3 2 2-5 3 3 2-2M9 15l-1-5 4-2 3 3"/>'),this.fmtDur(e.move||0),"","En mouvement","#30d158"],[o('<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>'),this.fmtDur(e.stop||0),"","Arr\xEAts","#ff453a"],[o('<path d="M12 14l4-4"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/>'),AppUnits.spd(e.avg||0),AppUnits.speedLabel(),"Vitesse moy.","#bf5af2"],[o('<path d="M12 14l4-8"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/><circle cx="12" cy="14" r="1.2"/>'),AppUnits.spd(e.max||0),AppUnits.speedLabel(),"Vitesse max","#ff375f"]];e.hasAlt&&i.push([o('<path d="M3 20l6-11 4 7 3-5 5 9z"/>'),"+"+(e.up||0),"m","D\xE9nivel\xE9 +","#64d2ff"],[o('<path d="M3 4l6 11 4-7 3 5 5-9z"/>'),(e.down?"\u2212":"")+(e.down||0),"m","D\xE9nivel\xE9 \u2212","#ffd60a"]);const a=e.sens||{},n=a.lean&&a.lean.n?a.lean:null,l=a.chrono&&a.chrono.laps&&a.chrono.laps.length?a.chrono:null,p=d=>String(Number(d).toFixed(2)).replace(".",","),u=[];a.brake&&(a.brake.nb||a.brake.na)&&u.push([o('<path d="M12 5v10M7 11l5 5 5-5M5 20h14"/>'),p(a.brake.bmax),"g","Freinage max","#30d158"]),l&&u.push([o('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'),ModuleChrono.fmt(l.laps[l.best].s),"","Meilleur tour","#bf5af2"]),i.splice(4,0,...u);const m=n?`<div class="rs-hero"><b>${n.max}<small>\xB0</small></b><div><span>Inclinaison max \xB7 ${n.side==="d"?"droite":"gauche"}</span><em>${n.n} virage${n.n>1?"s":""} \xB7 pic moyen ${n.avg}\xB0${n.top&&n.top[0]?" \xB7 "+n.top[0].v+" km/h":""}${n.src==="gps"?" \xB7 estim\xE9e par le GPS":""}</em></div></div>`:"",v=t.geojson&&t.geojson.coordinates,c=(typeof ModuleRecap!="undefined"&&v?ModuleRecap.routeSvg(v,340,178):"")||t.preview||"",r=document.createElement("div");r.id="ride-summary",r.className="rs-overlay",r.innerHTML=`<div class="rs-card">
+                        <div class="rs-head"><div class="rs-flag">${o('<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>')}</div><div style="flex:1;min-width:0"><div class="rs-title">Trajet termin\xE9</div><div class="rs-sub"></div></div><button type="button" class="rs-x rs-close" aria-label="Fermer">\u2715</button></div>
                         <div class="rs-body">
-                        ${prev ? `<div class="rs-prev">${prev}</div>` : ''}
-                        ${hero}
-                        <div class="rs-grid rs-g3">${tiles.map(x => `<div class="rs-tile"${x[4] ? ` style="--ic:${x[4]}"` : ''}>${x[0]}<b>${x[1]}${x[2] ? `<small>${x[2]}</small>` : ''}</b><span>${x[3]}</span></div>`).join('')}</div>
-                        ${ch && typeof ModuleChrono !== 'undefined' ? ModuleChrono.html(sn, ic) : ''}
-                        ${typeof ModuleSensors !== 'undefined' ? ModuleSensors.summaryHtml(st.sens, ic, { skipChrono: true, skipMax: true }) : ''}
+                        ${c?`<div class="rs-prev">${c}</div>`:""}
+                        ${m}
+                        <div class="rs-grid rs-g3">${i.map(d=>`<div class="rs-tile"${d[4]?` style="--ic:${d[4]}"`:""}>${d[0]}<b>${d[1]}${d[2]?`<small>${d[2]}</small>`:""}</b><span>${d[3]}</span></div>`).join("")}</div>
+                        ${l&&typeof ModuleChrono!="undefined"?ModuleChrono.html(a,o):""}
+                        ${typeof ModuleSensors!="undefined"?ModuleSensors.summaryHtml(e.sens,o,{skipChrono:!0,skipMax:!0}):""}
                         </div>
-                        <div class="rs-bar"><button type="button" class="rs-btn rs-share"><svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>Partager</button><button type="button" class="rs-btn rs-main">Voir dans le Roadbook</button></div></div>`;
-                    el.querySelector('.rs-sub').textContent = rec.title;
-                    document.body.appendChild(el);
-                    // vraie carte sous le tracé dès qu'elle est prête (repli : le tracé dessiné ci-dessus)
-                    try { const pv = el.querySelector('.rs-prev'); if (pv && typeof ModuleGPS.mapThumb === 'function') ModuleGPS.mapThumb(rec).then(u => { if (u && pv.isConnected) pv.innerHTML = `<img alt="" src="${u}">`; }); } catch (e) {}
-                    el.querySelector('.rs-close').addEventListener('click', () => el.remove());
-                    el.querySelector('.rs-share').addEventListener('click', () => { try { ModuleRecap.open(rec); } catch (e) {} });
-                    el.querySelectorAll('.rs-lap').forEach(b => b.addEventListener('click', () => { try { ModuleChrono.lapDetail(rec, +b.dataset.i); } catch (e) {} }));
-                    const zb = el.querySelector('.rs-zones'); if (zb) zb.addEventListener('click', () => { try { ModuleSensors.openMap(rec); } catch (e) {} });
-                    el.querySelector('.rs-main').addEventListener('click', () => { el.remove(); const tab = document.querySelector('.gps-tab-btn[data-sub="sub-gps-myroadbook"]'); if (tab) tab.click(); });
-                },
-                // 🟢 NOUVELLE FONCTION : Enregistrement de la trace libre
-                // 🟢 1. Enregistre la trace dans la mémoire "Historique"
-                saveRecordedRide() {
-                    const coords = this.state.recordedPath;
-                    if (!coords || coords.length < 2) return;
-
-                    let distMeters = 0;
-                    for (let i = 1; i < coords.length; i++) {
-                        distMeters += this.calculateDistance(coords[i-1], coords[i]);
-                    }
-                    if (distMeters < 100) return; 
-
-                    const geojson = { type: 'LineString', coordinates: coords };
-                    const distKm = (distMeters / 1000).toFixed(1);
-                    
-                    const durationSec = (Date.now() - (this.state.rideStartTime || Date.now())) / 1000;
-                    const hours = Math.floor(durationSec / 3600);
-                    const minutes = Math.floor((durationSec % 3600) / 60);
-                    const timeStr = hours > 0 ? `${hours}h ${minutes.toString().padStart(2, '0')}m` : `${minutes} min`;
-
-                    const date = new Date();
-                    const title = `Balade du ${date.toLocaleDateString('fr-FR')} à ${date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}`;
-
-                    const recordedRides = AppStore.get('moto_recorded_rides', []);
-                    const previewSVG = this.generateRoutePreviewSVG(geojson);
-                    
-                    const rec = { 
-                        id: Date.now(), 
-                        title: title, 
-                        mode: 'Trace Libre', 
-                        dist: distKm,       
-                        time: timeStr,      
-                        preview: previewSVG,                          
-                        geojson: geojson,
-                        stats: this.rideStatsFinal(distMeters, durationSec)
-                    };
-                    try { const sn = ModuleSensors.finish(); if (sn) { rec.stats.sens = Object.assign({ t0: sn.data.t0 }, sn.stats); ModuleSensors.store(rec.id, sn.data); } else { const w = ModuleSensors.whyNone(); if (w) rec.stats.sens = { n: 0, why: w }; } } catch (e) {}
-                    recordedRides.unshift(rec);
-                    
-                    // Stockage presque plein : on réessaie avec un tracé allégé et sans miniature pour ne jamais perdre le trajet qui vient d'être roulé
-                    if (!AppStore.set('moto_recorded_rides', recordedRides, true)) {
-                        try { const c = rec.geojson && rec.geojson.coordinates; if (c && c.length > 400) rec.geojson = Object.assign({}, rec.geojson, { coordinates: c.filter((_, i) => i % 2 === 0 || i === c.length - 1) }); } catch (e) {}
-                        rec.preview = '';
-                        if (!AppStore.set('moto_recorded_rides', recordedRides)) { this.showRideSummary(rec); return; }
-                    }
-                    this.loadRecordedRides(); 
-                    // Récapitulatif du trajet (le bouton mène ensuite au Roadbook)
-                    this.showRideSummary(rec);
-                },
-                // 🟢 2. Charge les cartes d'historique dans l'onglet Roadbook
-                loadRecordedRides() {
-                    const container = document.getElementById('recorded-rides-container'); 
-                    const recordedRides = AppStore.get('moto_recorded_rides', []); 
-                    if (!container) return; 
-                    container.innerHTML = '';
-                    
-                    if (recordedRides.length === 0) { 
-                        container.innerHTML = '<div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 20px; text-align: center;">Aucune balade enregistrée.</div>'; 
-                        return; 
-                    }
-                    
-                    recordedRides.forEach(route => {
-                        const item = document.createElement('div');
-                        ModuleRoutes.card(item, route, { src: 'r', primary: route.stats ? { label: 'Bilan', cls: 'rb-bilan', icon: '<path d="M4 20V10M10 20V4M16 20v-8M22 20V8"/>', fn: () => this.showRideSummary(route) } : null });
-                                                container.appendChild(item);
-
-                        let pressTimer;
-                        let isLongPress = false;
-
-                        const startPress = (e) => {
-                            if (e.type === 'touchstart' && e.touches.length > 1) return;
-                            isLongPress = false;
-                            item.style.transform = "scale(0.98)"; 
-                            item.style.transition = "transform 0.2s";
-                            
-                            pressTimer = setTimeout(() => {
-                                isLongPress = true;
-                                item.style.transform = "scale(1)";
-                                this.showRecordedRouteOptions(route); 
-                            }, 500); 
-                        };
-
-                        const cancelPress = () => { clearTimeout(pressTimer); item.style.transform = "scale(1)"; };
-                        const handleAction = (e) => {
-                            cancelPress();
-                            if (isLongPress) { e.preventDefault(); return; }
-                            this.openSavedRoute(route); 
-                        };
-
-                        item.addEventListener('mousedown', startPress);
-                        item.addEventListener('touchstart', startPress, {passive: true});
-                        item.addEventListener('mouseup', cancelPress);
-                        item.addEventListener('mouseleave', cancelPress);
-                        item.addEventListener('touchmove', cancelPress, {passive: true});
-                        item.addEventListener('touchend', cancelPress);
-                        item.addEventListener('click', handleAction);
-                    });
-                },
-                // Pastilles de mesures + bouton « Voir le bilan » sur la carte d'un trajet du Roadbook
-                rideChips(route) {
-                    const sn = route.stats && route.stats.sens, ch = [];
-                    if (sn && sn.lean && sn.lean.n) ch.push(['#ff453a', sn.lean.max + '° max']);
-                    if (sn && sn.brake && sn.brake.nb) ch.push(['#30d158', String(sn.brake.bmax).replace('.', ',') + ' g frein']);
-                    if (sn && sn.zones && sn.zones.length) ch.push(['#0a84ff', sn.zones.length + ' secteurs']);
-                    return ch;
-                },
-                // 🟢 3. Le menu d'appui long dédié à l'historique
-                // 🟢 MENU ROADBOOK/HISTORIQUE : Ajout du bouton Partager
-                // 🟢 MENU ROADBOOK/HISTORIQUE : Ajout du bouton Sauvegarder
-                showRecordedRouteOptions(route) {
-                    const existing = document.getElementById('route-hud-overlay');
-                    if (existing) existing.remove();
-
-                    const overlay = document.createElement('div');
-                    overlay.id = 'route-hud-overlay';
-                    overlay.style.cssText = "position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 20px;";
-                    
-                    overlay.innerHTML = `
+                        <div class="rs-bar"><button type="button" class="rs-btn rs-share"><svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>Partager</button><button type="button" class="rs-btn rs-main">Voir dans le Roadbook</button></div></div>`,r.querySelector(".rs-sub").textContent=t.title,document.body.appendChild(r);try{const d=r.querySelector(".rs-prev");d&&typeof ModuleGPS.mapThumb=="function"&&ModuleGPS.mapThumb(t).then(b=>{b&&d.isConnected&&(d.innerHTML=`<img alt="" src="${b}">`)})}catch{}r.querySelector(".rs-close").addEventListener("click",()=>r.remove()),r.querySelector(".rs-share").addEventListener("click",()=>{try{ModuleRecap.open(t)}catch{}}),r.querySelectorAll(".rs-lap").forEach(d=>d.addEventListener("click",()=>{try{ModuleChrono.lapDetail(t,+d.dataset.i)}catch{}}));const h=r.querySelector(".rs-zones");h&&h.addEventListener("click",()=>{try{ModuleSensors.openMap(t)}catch{}}),r.querySelector(".rs-main").addEventListener("click",()=>{r.remove();const d=document.querySelector('.gps-tab-btn[data-sub="sub-gps-myroadbook"]');d&&d.click()})},saveRecordedRide(){const t=this.state.recordedPath;if(!t||t.length<2)return;let e=0;for(let r=1;r<t.length;r++)e+=this.calculateDistance(t[r-1],t[r]);if(e<100)return;const s={type:"LineString",coordinates:t},o=(e/1e3).toFixed(1),i=(Date.now()-(this.state.rideStartTime||Date.now()))/1e3,a=Math.floor(i/3600),n=Math.floor(i%3600/60),l=a>0?`${a}h ${n.toString().padStart(2,"0")}m`:`${n} min`,p=new Date,u=`Balade du ${p.toLocaleDateString("fr-FR")} \xE0 ${p.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}`,m=AppStore.get("moto_recorded_rides",[]),v=this.generateRoutePreviewSVG(s),c={id:Date.now(),title:u,mode:"Trace Libre",dist:o,time:l,preview:v,geojson:s,stats:this.rideStatsFinal(e,i)};try{const r=ModuleSensors.finish();if(r)c.stats.sens=Object.assign({t0:r.data.t0},r.stats),ModuleSensors.store(c.id,r.data);else{const h=ModuleSensors.whyNone();h&&(c.stats.sens={n:0,why:h})}}catch{}if(m.unshift(c),!AppStore.set("moto_recorded_rides",m,!0)){try{const r=c.geojson&&c.geojson.coordinates;r&&r.length>400&&(c.geojson=Object.assign({},c.geojson,{coordinates:r.filter((h,d)=>d%2===0||d===r.length-1)}))}catch{}if(c.preview="",!AppStore.set("moto_recorded_rides",m)){this.showRideSummary(c);return}}this.loadRecordedRides(),this.showRideSummary(c)},loadRecordedRides(){const t=document.getElementById("recorded-rides-container"),e=AppStore.get("moto_recorded_rides",[]);if(t){if(t.innerHTML="",e.length===0){t.innerHTML='<div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 20px; text-align: center;">Aucune balade enregistr\xE9e.</div>';return}e.forEach(s=>{const o=document.createElement("div");ModuleRoutes.card(o,s,{src:"r",primary:s.stats?{label:"Bilan",cls:"rb-bilan",icon:'<path d="M4 20V10M10 20V4M16 20v-8M22 20V8"/>',fn:()=>this.showRideSummary(s)}:null}),t.appendChild(o);let i,a=!1;const n=u=>{u.type==="touchstart"&&u.touches.length>1||(a=!1,o.style.transform="scale(0.98)",o.style.transition="transform 0.2s",i=setTimeout(()=>{a=!0,o.style.transform="scale(1)",this.showRecordedRouteOptions(s)},500))},l=()=>{clearTimeout(i),o.style.transform="scale(1)"},p=u=>{if(l(),a){u.preventDefault();return}this.openSavedRoute(s)};o.addEventListener("mousedown",n),o.addEventListener("touchstart",n,{passive:!0}),o.addEventListener("mouseup",l),o.addEventListener("mouseleave",l),o.addEventListener("touchmove",l,{passive:!0}),o.addEventListener("touchend",l),o.addEventListener("click",p)})}},rideChips(t){const e=t.stats&&t.stats.sens,s=[];return e&&e.lean&&e.lean.n&&s.push(["#ff453a",e.lean.max+"\xB0 max"]),e&&e.brake&&e.brake.nb&&s.push(["#30d158",String(e.brake.bmax).replace(".",",")+" g frein"]),e&&e.zones&&e.zones.length&&s.push(["#0a84ff",e.zones.length+" secteurs"]),s},showRecordedRouteOptions(t){const e=document.getElementById("route-hud-overlay");e&&e.remove();const s=document.createElement("div");s.id="route-hud-overlay",s.style.cssText="position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 20px;",s.innerHTML=`
                         <div style="background: var(--surface-color); border-radius: 24px; width: 100%; max-width: 320px; padding: 25px; text-align: center; transform: scale(0.9); transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-                            <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 5px;">${escHtml(route.title)}</h3>
+                            <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 5px;">${escHtml(t.title)}</h3>
                             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 25px;">Que souhaitez-vous faire ?</p>
                             
                             <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -192,69 +17,11 @@ Object.assign(ModuleGPS, {
                                 
                                 <!-- NOUVEAU BOUTON : Sauvegarder -->
                                 <button id="hud-btn-rename" class="btn" style="background: rgba(255,255,255,0.1); color: var(--text-main); padding: 18px; border-radius: 16px; font-weight: 800;">Renommer</button>
-                                <button id="hud-btn-save" class="btn" style="background: rgba(48,209,88,0.1); color: #30d158; padding: 18px; border-radius: 16px; font-weight: 800;">Sauvegarder (Bibliothèque)</button>
+                                <button id="hud-btn-save" class="btn" style="background: rgba(48,209,88,0.1); color: #30d158; padding: 18px; border-radius: 16px; font-weight: 800;">Sauvegarder (Biblioth\xE8que)</button>
                                 
-                                <button id="hud-btn-share" class="btn" style="background: rgba(255,255,255,0.1); color: var(--text-main); padding: 18px; border-radius: 16px; font-weight: 800;">Partager…</button>
+                                <button id="hud-btn-share" class="btn" style="background: rgba(255,255,255,0.1); color: var(--text-main); padding: 18px; border-radius: 16px; font-weight: 800;">Partager\u2026</button>
                                 <button id="hud-btn-delete" class="btn" style="background: rgba(255,69,58,0.1); color: var(--danger-color); padding: 18px; border-radius: 16px; font-weight: 800;">Supprimer l'historique</button>
                                 <button id="hud-btn-cancel" class="btn" style="background: transparent; color: var(--text-muted); padding: 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); font-weight: 800;">Annuler</button>
                             </div>
                         </div>
-                    `;
-
-                    document.body.appendChild(overlay);
-
-                    setTimeout(() => {
-                        overlay.style.opacity = '1';
-                        overlay.querySelector('div').style.transform = 'scale(1)';
-                    }, 10);
-
-                    const closeHud = () => {
-                        overlay.style.opacity = '0';
-                        overlay.querySelector('div').style.transform = 'scale(0.9)';
-                        setTimeout(() => overlay.remove(), 200);
-                    };
-
-                    document.getElementById('hud-btn-open').addEventListener('click', () => { closeHud(); this.openSavedRoute(route); });
-                    document.getElementById('hud-btn-share').addEventListener('click', () => { closeHud(); this.exportToGPX(route); });
-                    
-                    // 🟢 NOUVELLE ACTION : Sauvegarder dans la Bibliothèque
-                    document.getElementById('hud-btn-save').addEventListener('click', () => {
-                        closeHud();
-                        const savedRoutes = AppStore.get('moto_saved_routes', []);
-                        
-                        // Ajoute une copie exacte du trajet en haut de la bibliothèque
-                        savedRoutes.unshift({
-                            id: Date.now(), // On génère un nouvel ID unique
-                            title: route.title,
-                            mode: route.mode,
-                            dist: route.dist,
-                            time: route.time,
-                            preview: route.preview,
-                            geojson: route.geojson
-                        });
-                        
-                        AppStore.set('moto_saved_routes', savedRoutes);
-                        this.loadLibrary(); // Met à jour le contenu de l'onglet bibliothèque
-                        AppDialog.toast(`« ${route.title} » ajouté à la Bibliothèque ✓`);
-                    });
-
-                    document.getElementById('hud-btn-cancel').addEventListener('click', closeHud);
-                    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeHud(); });
-
-                    document.getElementById('hud-btn-rename').addEventListener('click', () => {
-                        this.hudRename(overlay, closeHud, route.title, 'Renommer la balade', (newTitle) => {
-                            const rides = AppStore.get('moto_recorded_rides', []);
-                            const k = rides.findIndex(r => r.id === route.id);
-                            if (k !== -1) { rides[k].title = newTitle; AppStore.set('moto_recorded_rides', rides); this.loadRecordedRides(); }
-                        });
-                    });
-
-                    document.getElementById('hud-btn-delete').addEventListener('click', () => {
-                        this.hudConfirmDelete(overlay, closeHud, route.title, 'Supprimer la balade ?', () => {
-                            const recordedRides = AppStore.get('moto_recorded_rides', []);
-                            AppStore.set('moto_recorded_rides', recordedRides.filter(r => r.id !== route.id)); try { ModuleSensors.drop(route.id); } catch (e) {}
-                            this.loadRecordedRides();
-                        });
-                    });
-                },
-});
+                    `,document.body.appendChild(s),setTimeout(()=>{s.style.opacity="1",s.querySelector("div").style.transform="scale(1)"},10);const o=()=>{s.style.opacity="0",s.querySelector("div").style.transform="scale(0.9)",setTimeout(()=>s.remove(),200)};document.getElementById("hud-btn-open").addEventListener("click",()=>{o(),this.openSavedRoute(t)}),document.getElementById("hud-btn-share").addEventListener("click",()=>{o(),this.exportToGPX(t)}),document.getElementById("hud-btn-save").addEventListener("click",()=>{o();const i=AppStore.get("moto_saved_routes",[]);i.unshift({id:Date.now(),title:t.title,mode:t.mode,dist:t.dist,time:t.time,preview:t.preview,geojson:t.geojson}),AppStore.set("moto_saved_routes",i),this.loadLibrary(),AppDialog.toast(`\xAB ${t.title} \xBB ajout\xE9 \xE0 la Biblioth\xE8que \u2713`)}),document.getElementById("hud-btn-cancel").addEventListener("click",o),s.addEventListener("click",i=>{i.target===s&&o()}),document.getElementById("hud-btn-rename").addEventListener("click",()=>{this.hudRename(s,o,t.title,"Renommer la balade",i=>{const a=AppStore.get("moto_recorded_rides",[]),n=a.findIndex(l=>l.id===t.id);n!==-1&&(a[n].title=i,AppStore.set("moto_recorded_rides",a),this.loadRecordedRides())})}),document.getElementById("hud-btn-delete").addEventListener("click",()=>{this.hudConfirmDelete(s,o,t.title,"Supprimer la balade ?",()=>{const i=AppStore.get("moto_recorded_rides",[]);AppStore.set("moto_recorded_rides",i.filter(a=>a.id!==t.id));try{ModuleSensors.drop(t.id)}catch{}this.loadRecordedRides()})})}});

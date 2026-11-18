@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#1c1c1e">
-    <!-- PWA : installation sur l'écran d'accueil (iPhone : Partager > Sur l'écran d'accueil) -->
+    
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="core/pwa/icon-180.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,11 +13,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>RideNCT</title>
 
-    <!-- Moteur de carte vectorielle MapLibre 3.3.0 (copie locale : l'appli démarre sans réseau) -->
+    
     <link href="libs/maplibre-gl/maplibre-gl.css" rel="stylesheet" />
     <script src="libs/maplibre-gl/maplibre-gl.js"></script>
 
-    <!-- ===== CSS (l'ordre compte : la cascade est identique à l'original) ===== -->
+    
     <link rel="stylesheet" href="reglage/theme/variables.css">
     <link rel="stylesheet" href="reglage/theme/styles.css">
     <link rel="stylesheet" href="compteur/compteur.css">
@@ -43,7 +43,7 @@
     <link rel="stylesheet" href="core/mosaic.css">
     <link rel="stylesheet" href="core/overlays.css">
 
-    <!-- ===== JS chargé tôt (langue, thème, écran allumé) ===== -->
+    
     <script src="core/donnees-compte.js"></script>
     <script src="reglage/langue/langue.js"></script>
     <script src="reglage/theme/styles.js"></script>
@@ -210,7 +210,7 @@
                     <div id="main-map-badge" class="map-status-badge">Prêt 🛰️</div>
 
                     <div class="nav-top">
-                    <!-- ☁️ Widget météo (actuelle + prévision +1h) -->
+                    
                     <div id="map-weather" class="map-weather mw-loading" role="button" aria-label="Météo — ouvrir l'onglet Météo">
                         <div class="mw-row"><span class="mw-ic" id="mw-ic"></span><span class="mw-temp" id="mw-temp">--°</span></div>
                         <div class="mw-wind"><svg viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg><span id="mw-wind">--</span></div>
@@ -221,8 +221,8 @@
                     </div>
 
                     
-                    <!-- 🟢 HUD TURN-BY-TURN : Format compact (Max 5-10% de l'écran) -->
-                    <!-- 🟢 BANDEAU DE GUIDAGE : virage à venir (icône, distance, manœuvre, rue) + aperçu du suivant -->
+                    
+                    
                     <div id="nav-instruction-hud" class="nav-hud" style="display: none;">
                         <div class="nav-hud-main">
                             <div class="nav-hud-ico">
@@ -241,7 +241,7 @@
                     </div>
                     </div>
 
-                    <!-- 📊 BARRE DE TRAJET (visible pendant le suivi) -->
+                    
                     <div id="nav-trip-bar" class="nav-trip">
                 <div class="nt-cell nt-route" title="Arrivée"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><b id="nt-eta">--:--</b></div>
                 <div class="nt-cell nt-route" title="Temps restant"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><b id="nt-time">--</b></div>
@@ -282,7 +282,7 @@
                         <span>Démarrer</span>
                     </button>
 
-                    <!-- 🧭 Création d'itinéraire : tiroir intégré à la carte (ex-onglet « Créer ») -->
+                    
                 <div id="route-bottom-sheet" class="bottom-sheet">
                     <button id="btn-toggle-sheet" class="sheet-toggle-btn">
                         <svg class="sheet-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
@@ -332,9 +332,9 @@
                 </div>
 
 
-                <!-- ========================================== -->
-                <!-- ONGLET 2 : ROADBOOK (Actif + Historique)   -->
-                <!-- ========================================== -->
+                
+                
+                
                 <div id="sub-gps-myroadbook" class="gps-sub-view view-solid" style="justify-content: flex-start; align-items: flex-start; padding-top: 25px;">
                     
                     <h2 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 10px; width: 100%; text-transform: uppercase; letter-spacing: 1px;">Itinéraire Actif</h2>
@@ -352,18 +352,18 @@
                     <div id="rides-space" style="width: 100%; color: var(--text-muted); font-size: 0.72rem; text-align: center; margin-top: 8px;"></div>
                 </div>
 
-                <!-- ========================================== -->
-                <!-- ONGLET 3 : BIBLIOTHÈQUE (Sauvegardes)      -->
-                <!-- ========================================== -->
+                
+                
+                
                 <div id="sub-gps-roadbooks" class="gps-sub-view view-solid" style="justify-content: flex-start; align-items: flex-start;">
                     
                     <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h2 style="font-size: 1rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; margin: 0;">Bibliothèque</h2>
                         
-                        <!-- Input invisible pour charger le fichier -->
+                        
                         <input type="file" id="input-import-gpx" accept=".gpx" style="display: none;">
                         
-                        <!-- Bouton stylisé pour déclencher l'input -->
+                        
                         <button type="button" class="btn" data-offline-open title="Cartes hors ligne" aria-label="Cartes hors ligne" style="background: rgba(var(--tint),0.1); color: var(--text-main); width: auto; padding: 10px 12px; margin-left: auto; margin-right: 8px; border-radius: 12px; display: flex; align-items: center;"><svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 3v12"></path><polyline points="7 11 12 16 17 11"></polyline><path d="M5 20h14"></path></svg></button>
                         <button id="btn-import-gpx" class="btn" style="background: rgba(var(--tint),0.1); color: var(--text-main); width: auto; padding: 10px 15px; font-size: 0.75rem; border-radius: 12px; display: flex; align-items: center; gap: 6px;">
                             <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
@@ -377,7 +377,7 @@
                 </div>
             </div>
 
-            <!-- Sous-menus Carte / Roadbook / Bibliothèque : en bas, loin de la caméra frontale -->
+            
             <div class="gps-top-nav" id="gps-nav-bar">
                 <button class="gps-tab-btn active" data-sub="sub-gps-carte" title="Carte" aria-label="Carte"><svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></button>
                 <button class="gps-tab-btn" data-sub="sub-gps-myroadbook" title="Roadbook" aria-label="Roadbook"><svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg></button>
@@ -388,10 +388,10 @@
             <h1 class="module-header">Intercom</h1>
             
 
-            <!-- ONGLET 1 : RADAR (Création, Rencontre & Canaux proches) -->
+            
             <div id="sub-intercom-radar" class="intercom-sub-view active">
                 
-                <!-- Mosaïque Intercom -->
+                
                 <button id="btn-show-create-hud" class="mz-ban" style="margin-bottom: 9px;">
                     <span class="mz-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span>
                     <span><b>Créer un canal</b><small>Parler en roulant</small></span>
@@ -420,7 +420,7 @@
                     <svg class="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
                 </button>
 
-                <!-- Liste des Canaux à proximité -->
+                
                 <div class="card" style="flex: none;">
                     <h2 style="font-size: 1rem; font-style: italic; margin-bottom: 10px;">Canaux à proximité</h2>
                     <div id="intercom-active-rooms-list" style="display: flex; flex-direction: column;">
@@ -429,7 +429,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET 2 : INVITATIONS REÇUES -->
+            
             <div id="sub-intercom-invites" class="intercom-sub-view">
                 <button id="btn-ic-back" class="mz-row" style="margin-bottom: 9px;"><span class="mz-ic"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg></span><div><b>Retour</b></div></button>
                 <div class="card">
@@ -440,11 +440,11 @@
                 </div>
             </div>
 
-            <!-- INTERFACE D'APPEL ACTIF -->
-            <!-- INTERFACE D'APPEL ACTIF (Design Modernisé) -->
+            
+            
             <div id="intercom-active-call" style="display: none; flex-direction: column; flex: 1; animation: fadeIn 0.3s ease-out;">
                 
-                <!-- En-tête Call -->
+                
                 <div class="ic-hd">
                     <div class="ic-hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01"></path><path d="M7 20v-4"></path><path d="M12 20v-8"></path><path d="M17 20V8"></path><path d="M22 4v16"></path></svg></div>
                     <div class="ic-hd-txt">
@@ -458,7 +458,7 @@
 
                 <div class="ic-parts" data-no-swipe><div id="active-call-participants"></div></div>
 
-                <!-- 🔊 Volumes de l'appel : voix des motards + musique partagée -->
+                
                 <div id="ic-volumes" data-no-swipe style="flex-shrink: 0; background: rgba(var(--tint),0.04); border: 1px solid rgba(var(--tint),0.06); border-radius: 16px; padding: 12px 14px; margin-top: 8px; margin-bottom: 10px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="width: 26px; display: flex; justify-content: center; color: var(--text-muted); flex-shrink: 0;"><svg class="vi" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
@@ -478,7 +478,7 @@
                     </div>
                 </div>
 
-                <!-- 🎵 Partage de musique dans le canal -->
+                
                 <div id="ic-music-card" style="flex-shrink: 0; margin-top: 8px;">
                     <div id="ic-music-now" style="display: none; background: rgba(10,132,255,0.12); border: 1px solid rgba(10,132,255,0.3); border-radius: 16px; padding: 12px 14px; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -536,7 +536,7 @@
             <div class="at-label" style="margin-top: 5px;">Moto sélectionnée</div>
             <div id="atelier-moto-carousel" class="moto-carousel"></div>
 
-            <!-- Compteurs -->
+            
             <div class="at-meters">
                 <div class="card at-meter">
                     <div id="atelier-km-total" class="at-meter-val">0</div>
@@ -551,11 +551,11 @@
                 </button>
             </div>
 
-            <!-- Alertes -->
+            
             <div id="atelier-alerts" class="at-alerts"></div>
             </div>
 
-            <!-- ACCUEIL -->
+            
             <div id="sub-atelier-home" class="atelier-sub-view active">
                 <div class="at-home-grid">
                     <button class="at-home-tile primary" data-go="sub-atelier-nouveau"><span class="ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span><span class="t">Nouvelle intervention</span><span class="s">Noter une vidange, une réparation…</span></button>
@@ -566,7 +566,7 @@
             </div>
 
 
-            <!-- HISTORIQUE -->
+            
             <div id="sub-atelier-historique" class="atelier-sub-view">
                 <div id="atelier-log-stats" class="at-tiles"></div>
                 <input type="search" id="atelier-search" class="atelier-input at-search" placeholder="Rechercher (vidange, piston, notes...)">
@@ -574,7 +574,7 @@
                 <div id="atelier-logs-list" style="display: flex; flex-direction: column;"></div>
             </div>
 
-            <!-- PRÉVISIONS -->
+            
             <div id="sub-atelier-tableau" class="atelier-sub-view">
                 <div class="at-label">Entretiens à prévoir</div>
                 <div id="atelier-pace" style="font-size:0.78rem; color: var(--text-muted); font-weight:700; margin: -4px 0 12px;"></div>
@@ -584,7 +584,7 @@
                 <button id="btn-add-task" class="at-add-task" style="margin-top: 12px;">+ Ajouter un entretien récurrent</button>
             </div>
 
-            <!-- CARNET -->
+            
             <div id="sub-atelier-carnet" class="atelier-sub-view">
                 <div class="at-seg" id="carnet-seg">
                     <button data-pane="fiche" class="active">Fiche</button>
@@ -596,7 +596,7 @@
                 <div id="carnet-data" class="at-pane"></div>
             </div>
 
-            <!-- NOUVELLE ENTRÉE -->
+            
             <div id="sub-atelier-nouveau" class="atelier-sub-view">
                 <div class="card">
                     <div id="log-form-title" class="at-label" style="display:none; color: var(--at-warn);">Modification d'une intervention</div>
@@ -678,7 +678,7 @@
                 <div class="at-pagetitle"><div id="set-pagetitle-t">Réglages</div></div>
             </div>
 
-            <!-- ACCUEIL -->
+            
             <div id="set-sub-home" class="set-sub-view active">
                 <div class="at-home-grid">
                     <button type="button" class="at-home-tile" data-sgo="set-sub-appearance"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2c0-.6-.2-1-.5-1.4a2 2 0 0 1 1.5-3.3H17a5 5 0 0 0 5-5C22 6 17.5 2 12 2z"/></svg></span><span class="t">Apparence</span><span class="s" id="set-s-appearance"></span></button>
@@ -692,7 +692,7 @@
                 </div>
             </div>
 
-            <!-- APPARENCE -->
+            
             <div id="set-sub-appearance" class="set-sub-view" data-title="Apparence">
                 <div class="card">
                     <div class="setting-title">Style de l'application</div>
@@ -738,7 +738,7 @@
                 </div>
             </div>
 
-            <!-- COMPTEUR ET ÉCRAN -->
+            
             <div id="set-sub-display" class="set-sub-view" data-title="Compteur et écran">
                 <div class="card">
                     <div class="setting-title">Unité de vitesse</div>
@@ -770,10 +770,10 @@
                 </div>
             </div>
 
-            <!-- COMPTE -->
+            
             <div id="set-sub-account" class="set-sub-view" data-title="Compte"><div id="set-account-host"></div><div id="set-blocked-host"></div></div>
 
-            <!-- MODE ROUTE -->
+            
             <div id="set-sub-route" class="set-sub-view" data-title="Mode route">
                 <div class="card">
                     <div class="setting-title">Activation</div>
@@ -794,10 +794,10 @@
                 </div>
                 </div>
 
-            <!-- CARTES HORS LIGNE -->
+            
             <div id="set-sub-offline" class="set-sub-view" data-title="Cartes hors ligne"><div id="set-offline-host"></div></div>
 
-            <!-- MICRO INTERCOM -->
+            
             <div id="set-sub-mic" class="set-sub-view" data-title="Micro intercom"><div id="set-mic-host"></div></div>
         </section>
                 <section id="view-security" class="module-view sec-home">
@@ -808,7 +808,7 @@
                 <div class="at-pagetitle"><div id="sec-pagetitle-t">Sécurité</div></div>
             </div>
 
-            <!-- ACCUEIL -->
+            
             <div id="sec-sub-home" class="sec-sub-view active">
                 <div class="card security-card" id="security-status-card">
                     <div class="sensor-title">Détection de chute</div>
@@ -914,10 +914,10 @@
         </section>
                 <section id="view-music" class="module-view">
 
-            <!-- Balise Audio invisible globale -->
+            
             <audio id="vroom-audio-player" preload="metadata" playsinline style="display: none;"></audio>
 
-            <!-- ONGLET 1 : Fichiers Locaux -->
+            
             <div id="sub-music-local" class="music-sub-view active">
                 <div class="card" style="padding: 25px 15px; flex-shrink: 0;">
                     <div class="player-artwork" id="local-artwork"><svg class="vi" viewBox="0 0 24 24" style="width:60px;height:60px;stroke-width:1.5;opacity:.45"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
@@ -964,7 +964,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET 2 : Sources (dossier de l'appareil + Google Drive) -->
+            
             <div id="sub-music-sources" class="music-sub-view">
                 <button type="button" class="mu-back" id="mu-back" aria-label="Retour au lecteur"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Lecteur</button>
 
@@ -1002,7 +1002,7 @@
                 <section id="view-weather" class="module-view" style="justify-content: flex-start; padding-bottom: 40px;">
             <h1 class="module-header">Météo</h1>
             
-            <!-- Mosaïque Météo -->
+            
             <div class="mz">
                 <div class="mz-t now r2">
                     <div class="l top">Maintenant</div>
@@ -1016,12 +1016,12 @@
 
             <div class="mz-lab" style="margin-top: 16px; margin-bottom: 8px;">Prochaines 24h</div>
 
-            <!-- Timeline horizontale -->
+            
             <div id="weather-hourly-container" style="display: flex; gap: 9px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; width: 100%; max-width: 100%; flex-shrink: 0;">
-                <!-- Les tuiles horaires seront injectées ici -->
+                
             </div>
 
-            <!-- Bouton Actualiser -->
+            
             <div style="margin-top: 20px; margin-bottom: 20px; text-align: center; flex-shrink: 0;">
                 <button id="btn-refresh-weather" class="btn" style="background: rgba(var(--tint),0.07); color: var(--text-muted); font-size: 0.8rem; padding: 15px; width: 100%;">Actualiser les données</button>
             </div>
@@ -1030,8 +1030,8 @@
                 <section id="view-community" class="module-view">
             <h1 class="module-header">Communauté</h1>
 
-            <!-- ONGLET 1 : RADAR & PROXIMITÉ -->
-            <!-- ONGLET 1 : RADAR & PROXIMITÉ -->
+            
+            
             <div id="sub-comm-radar" class="comm-sub-view active">
                 <div class="mz-t cm-radar" style="min-height: 190px; padding: 0; align-items: center; justify-content: center; margin-bottom: 9px; cursor: default; flex-shrink: 0;">
                     <svg viewBox="0 0 200 200" class="cm-radar-svg"><defs><linearGradient id="cmrg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff6a1a" stop-opacity="0"/><stop offset="1" stop-color="#ff6a1a" stop-opacity=".55"/></linearGradient></defs>
@@ -1058,7 +1058,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET ÉVÉNEMENTS : balades et rendez-vous de la communauté -->
+            
             <div id="sub-comm-events" class="comm-sub-view">
                 <button type="button" id="ev-create-btn" class="ev-create">
                     <i class="ev-plus"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></i>
@@ -1077,7 +1077,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET 2 : CROISÉS -->
+            
             <div id="sub-comm-croise" class="comm-sub-view">
                 <div class="card">
                     <div class="comm-label"><span>Motards croisés</span><span id="crossed-count">0</span></div>
@@ -1085,7 +1085,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET 3 : AMIS -->
+            
             <div id="sub-comm-amis" class="comm-sub-view">
                 <div class="card">
                     <div class="comm-label"><span>Mes Amis</span><span id="friends-count">0</span></div>
@@ -1095,7 +1095,7 @@
                 </div>
             </div>
 
-            <!-- ONGLET 4 : DEMANDES -->
+            
             <div id="sub-comm-demandes" class="comm-sub-view">
                 <div class="card">
                     <div class="comm-label"><span>Demandes d'amis</span><span id="requests-count">0</span></div>
@@ -1104,7 +1104,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Navigation des sous-onglets : pastille d'icônes en bas (sur le côté en paysage), comme la carte -->
+            
             <div class="comm-top-nav" id="comm-nav-bar">
                 <button class="comm-tab-btn active" data-sub="sub-comm-radar" title="Radar" aria-label="Radar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"></circle><path d="M16.2 7.8a6 6 0 0 1 0 8.4"></path><path d="M7.8 16.2a6 6 0 0 1 0-8.4"></path><path d="M19 5a10 10 0 0 1 0 14"></path><path d="M5 19A10 10 0 0 1 5 5"></path></svg></button>
                 <button class="comm-tab-btn" data-sub="sub-comm-events" title="Événements" aria-label="Événements"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button>
@@ -1184,7 +1184,7 @@
     </main>
     <div id="ad-slot" aria-hidden="true"></div>
 
-    <!-- MODE ROUTE : 2 espaces redimensionnables, chacun affiche un widget (glisser haut/bas pour en changer) -->
+    
 <div id="rm" class="rm" hidden>
     <div id="eco-tbt" aria-live="off"><svg id="eco-tbt-icon" viewBox="0 0 24 24"></svg><div class="eco-tbt-txt"><div id="eco-tbt-dist">--</div><div id="eco-tbt-street"></div></div><div class="eco-tbt-trip"><b id="eco-tbt-eta">--:--</b><span id="eco-tbt-km"></span></div></div>
     <div class="rm-pane" id="rm-a" data-i="0"><div class="rm-chip"></div><div class="rm-sw"><button type="button" class="rm-up" aria-label="Widget précédent"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="rm-dn" aria-label="Widget suivant"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="rm-edge"></div></div>
@@ -1198,7 +1198,7 @@
 </div>
         <div class="pill-nav-container">
         <div class="pill-nav-row">
-        <!-- Accueil : hors de la barre qui défile, toujours visible -->
+        
         <button class="nav-btn nav-home active" data-target="view-home" aria-label="Accueil">
             <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>
             <span>Accueil</span>
@@ -1225,7 +1225,7 @@
             </button>
         </nav>
         <div class="nav-legacy" id="nav-legacy" hidden>
-<!-- Compteur & Carte -->
+
             <button class="nav-btn" data-target="view-dashboard">
                 <svg viewBox="0 0 24 24"><path d="M3.4 17A10 10 0 1 1 20.6 17"></path><path d="M12 14l3-3"></path></svg>
                 <span>Route</span>
@@ -1235,7 +1235,7 @@
                 <span>Carte</span>
             </button>
             
-            <!-- Nouveaux : Musique & Météo -->
+            
             <button class="nav-btn" data-target="view-music">
                 <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
                 <span>Musique</span>
@@ -1245,13 +1245,13 @@
                 <span>Météo</span>
             </button>
             
-            <!-- Intercom -->
+            
             <button class="nav-btn" data-target="view-intercom">
                 <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3v4z"></path><path d="M3 19a2 2 0 0 0 2 2h1v-6H3v4z"></path></svg>
                 <span>Intercom</span>
             </button>
             
-            <!-- Nouveaux : Communauté & Profil -->
+            
             <button class="nav-btn" data-target="view-community">
                 <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 <span>Groupe</span>
@@ -1262,7 +1262,7 @@
                 <i class="nav-dot" id="nav-pf-new" hidden></i>
             </button>
             
-            <!-- Maintenance, Sécurité & Réglages -->
+            
             <button class="nav-btn" data-target="view-maintenance">
                 <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
                 <span>Atelier</span>
@@ -1285,7 +1285,7 @@
     <button class="nav-grip" id="nav-grip" aria-label="Ouvrir le menu"></button>
     <button class="nav-gear" id="nav-gear" aria-label="Réglages"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
 
-    <!-- ===== JS des modules (l'ordre compte) ===== -->
+    
     <script src="core/dialog.js"></script>
     <script src="core/annonces.js"></script>
     <script src="core/saisie.js"></script>

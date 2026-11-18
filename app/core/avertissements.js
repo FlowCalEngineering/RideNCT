@@ -1,42 +1,4 @@
-// Avertissements d'usage (pop-ups) : résumé des CGU + avertissement, avant les fonctions sensibles.
-//   AppWarn.done(clé)  -> true si l'utilisateur a déjà pris connaissance (compte + version des CGU)
-//   AppWarn.ask(clé)   -> Promise<boolean> : true = « J'ai compris » (mémorisé) ; false = « Annuler » (rien n'est mémorisé,
-//                         l'utilisateur est renvoyé à l'accueil : la pop-up réapparaîtra à son retour)
-//   AppWarn.launch()   -> information de lancement (détection de chute) : aucune action requise, affichée une fois par compte
-// Les accusés sont réinitialisés quand la version des CGU change.
-const AppWarn = (() => {
-    const KEY = 'moto_warn';
-    const DEFS = {
-        'radar-amis': { ic: '📡', t: 'Radar amis', s: 'Ta position est partagée en temps réel avec tes amis (portée 300 m) tant que le radar est actif. Tu peux le couper à tout moment.', w: 'Ne manipule pas l\'appli en roulant. Ne partage ta position qu\'avec des personnes de confiance.', n: 10, h: 'Géolocalisation, radar et profil' },
-        'radar': { ic: '📡', t: 'Radar et entraide', s: 'Ta position est visible des motards proches tant que le radar est actif. Les demandes d\'aide alertent les motards dans un rayon de 5 km.', w: 'Ne lance une demande d\'aide que pour un vrai besoin : les abus sont sanctionnés. Ne manipule pas l\'appli en roulant.', n: 10, h: 'Géolocalisation, radar et profil' },
-        'intercom': { ic: '🎧', t: 'Intercom', s: 'La voix est échangée en direct (de motard à motard, chiffrée) avec les membres du canal. Tu peux quitter le canal à tout moment.', w: 'Ne manipule pas l\'appli en roulant. Reste courtois : pas d\'enregistrement ni de diffusion sans l\'accord des personnes.', n: 8, h: 'Communication vocale' },
-        'rencontre': { ic: '🤝', t: 'Mode rencontre', s: 'Tu peux parler à des motards que tu ne connais pas, croisés sur la route. Ta voix et ton pseudo sont audibles de ceux qui sont à portée.', w: 'Ne donne aucune information personnelle (adresse, numéro…). Reste courtois et signale tout abus.', n: 8, h: 'Communication vocale' },
-        'danger': { ic: '⚠️', t: 'Signalement de danger', s: 'Les signalements sont faits par les motards eux-mêmes : ils sont communautaires, non garantis et peuvent être inexacts ou périmés.', w: 'Ne manipule pas l\'appli en roulant : arrête-toi pour signaler. Les faux signalements sont sanctionnés.', n: 7, h: 'Navigation et signalements communautaires' },
-        'guidage': { ic: '🧭', t: 'Navigation et guidage', s: 'Le guidage est une aide : l\'itinéraire peut être inexact, fermé ou dangereux. Le code de la route et ta vigilance priment toujours.', w: 'Ne regarde pas et ne touche pas ton téléphone en roulant. Respecte la signalisation, même si le guidage dit autre chose.', n: 6, h: 'Sécurité routière et responsabilité' },
-        'musique': { ic: '🎵', t: 'Partage de musique', s: 'Ta musique est envoyée en direct, chiffrée, aux seuls motards de ton canal. Chacun peut la couper ou régler son volume.', w: 'Ne partage que des titres que tu as le droit de diffuser (droits d\'auteur). Tu en es responsable.', n: 9, h: 'Partage de musique et droits d\'auteur' },
-        'partage-itineraire': { ic: '🗺️', t: 'Partage d\'itinéraire', s: 'Ton trajet est envoyé à la personne ou au canal que tu choisis, ou exporté en fichier GPX. Il peut révéler des lieux que tu fréquentes (domicile, travail…).', w: 'Vérifie qui reçoit ton trajet et retire les lieux privés (départ, arrivée). Un fichier GPX envoyé ne peut plus être repris.', n: 10, h: 'Géolocalisation, radar et profil' },
-        'roadbook-public': { ic: '📖', t: 'Publication au roadbook communautaire', s: 'Ton trajet, son titre et sa description seront visibles de tous les utilisateurs de RideNCT, sous ton pseudo.', w: 'Ne publie rien d\'illégal, d\'offensif ni d\'inexact, et évite de publier un trajet qui part de ton domicile. Les contenus abusifs sont retirés.', n: 14, h: 'Règles d\'usage, modération et suspension' },
-        'chute': { ic: '🚨', t: 'Détection de chute', s: 'RideNCT peut détecter une chute et prévenir tes contacts d\'urgence. En utilisant l\'appli, tu reconnais ces informations : aucune confirmation n\'est nécessaire pour que la détection fonctionne.', w: 'Ce n\'est pas un service d\'urgence. En cas d\'accident, appelle le 112. La détection peut échouer ou se déclencher à tort.', n: 11, h: 'Détection de chute et alertes', info: true }
-    };
-    const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const uid = () => { try { const u = AppAuth.user(); return u && u.id; } catch (e) { return null; } };
-    const ver = () => { try { return AppLegal.version(); } catch (e) { return ''; } };
-    const rd = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } };
-    function done(k) {
-        const o = rd(); if (!o || !o.k || !o.k[k]) return false;
-        const v = ver(), id = uid();
-        return (!v || o.v === v) && (!o.u || !id || o.u === id);
-    }
-    function mark(k) {
-        let o = rd(); const v = ver(), id = uid();
-        if (!o || o.v !== v || (o.u && id && o.u !== id)) o = { v, u: id || undefined, k: {} };
-        o.k[k] = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
-    }
-    function leave() { try { AppManager.switchView('view-home'); } catch (e) {} }
-
-    function css() {
-        if (document.getElementById('aw-style')) return;
-        const st = document.createElement('style'); st.id = 'aw-style'; st.textContent = `
+const AppWarn=(()=>{const c="moto_warn",u={"radar-amis":{ic:"\u{1F4E1}",t:"Radar amis",s:"Ta position est partag\xE9e en temps r\xE9el avec tes amis (port\xE9e 300 m) tant que le radar est actif. Tu peux le couper \xE0 tout moment.",w:"Ne manipule pas l'appli en roulant. Ne partage ta position qu'avec des personnes de confiance.",n:10,h:"G\xE9olocalisation, radar et profil"},radar:{ic:"\u{1F4E1}",t:"Radar et entraide",s:"Ta position est visible des motards proches tant que le radar est actif. Les demandes d'aide alertent les motards dans un rayon de 5 km.",w:"Ne lance une demande d'aide que pour un vrai besoin : les abus sont sanctionn\xE9s. Ne manipule pas l'appli en roulant.",n:10,h:"G\xE9olocalisation, radar et profil"},intercom:{ic:"\u{1F3A7}",t:"Intercom",s:"La voix est \xE9chang\xE9e en direct (de motard \xE0 motard, chiffr\xE9e) avec les membres du canal. Tu peux quitter le canal \xE0 tout moment.",w:"Ne manipule pas l'appli en roulant. Reste courtois : pas d'enregistrement ni de diffusion sans l'accord des personnes.",n:8,h:"Communication vocale"},rencontre:{ic:"\u{1F91D}",t:"Mode rencontre",s:"Tu peux parler \xE0 des motards que tu ne connais pas, crois\xE9s sur la route. Ta voix et ton pseudo sont audibles de ceux qui sont \xE0 port\xE9e.",w:"Ne donne aucune information personnelle (adresse, num\xE9ro\u2026). Reste courtois et signale tout abus.",n:8,h:"Communication vocale"},danger:{ic:"\u26A0\uFE0F",t:"Signalement de danger",s:"Les signalements sont faits par les motards eux-m\xEAmes : ils sont communautaires, non garantis et peuvent \xEAtre inexacts ou p\xE9rim\xE9s.",w:"Ne manipule pas l'appli en roulant : arr\xEAte-toi pour signaler. Les faux signalements sont sanctionn\xE9s.",n:7,h:"Navigation et signalements communautaires"},guidage:{ic:"\u{1F9ED}",t:"Navigation et guidage",s:"Le guidage est une aide : l'itin\xE9raire peut \xEAtre inexact, ferm\xE9 ou dangereux. Le code de la route et ta vigilance priment toujours.",w:"Ne regarde pas et ne touche pas ton t\xE9l\xE9phone en roulant. Respecte la signalisation, m\xEAme si le guidage dit autre chose.",n:6,h:"S\xE9curit\xE9 routi\xE8re et responsabilit\xE9"},musique:{ic:"\u{1F3B5}",t:"Partage de musique",s:"Ta musique est envoy\xE9e en direct, chiffr\xE9e, aux seuls motards de ton canal. Chacun peut la couper ou r\xE9gler son volume.",w:"Ne partage que des titres que tu as le droit de diffuser (droits d'auteur). Tu en es responsable.",n:9,h:"Partage de musique et droits d'auteur"},"partage-itineraire":{ic:"\u{1F5FA}\uFE0F",t:"Partage d'itin\xE9raire",s:"Ton trajet est envoy\xE9 \xE0 la personne ou au canal que tu choisis, ou export\xE9 en fichier GPX. Il peut r\xE9v\xE9ler des lieux que tu fr\xE9quentes (domicile, travail\u2026).",w:"V\xE9rifie qui re\xE7oit ton trajet et retire les lieux priv\xE9s (d\xE9part, arriv\xE9e). Un fichier GPX envoy\xE9 ne peut plus \xEAtre repris.",n:10,h:"G\xE9olocalisation, radar et profil"},"roadbook-public":{ic:"\u{1F4D6}",t:"Publication au roadbook communautaire",s:"Ton trajet, son titre et sa description seront visibles de tous les utilisateurs de RideNCT, sous ton pseudo.",w:"Ne publie rien d'ill\xE9gal, d'offensif ni d'inexact, et \xE9vite de publier un trajet qui part de ton domicile. Les contenus abusifs sont retir\xE9s.",n:14,h:"R\xE8gles d'usage, mod\xE9ration et suspension"},chute:{ic:"\u{1F6A8}",t:"D\xE9tection de chute",s:"RideNCT peut d\xE9tecter une chute et pr\xE9venir tes contacts d'urgence. En utilisant l'appli, tu reconnais ces informations : aucune confirmation n'est n\xE9cessaire pour que la d\xE9tection fonctionne.",w:"Ce n'est pas un service d'urgence. En cas d'accident, appelle le 112. La d\xE9tection peut \xE9chouer ou se d\xE9clencher \xE0 tort.",n:11,h:"D\xE9tection de chute et alertes",info:!0}},o=t=>String(t).replace(/[&<>"]/g,e=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[e]),l=()=>{try{const t=AppAuth.user();return t&&t.id}catch{return null}},d=()=>{try{return AppLegal.version()}catch{return""}},p=()=>{try{return JSON.parse(localStorage.getItem(c)||"null")}catch{return null}};function i(t){const e=p();if(!e||!e.k||!e.k[t])return!1;const a=d(),n=l();return(!a||e.v===a)&&(!e.u||!n||e.u===n)}function m(t){let e=p();const a=d(),n=l();(!e||e.v!==a||e.u&&n&&e.u!==n)&&(e={v:a,u:n||void 0,k:{}}),e.k[t]=Date.now();try{localStorage.setItem(c,JSON.stringify(e))}catch{}}function h(){try{AppManager.switchView("view-home")}catch{}}function v(){if(document.getElementById("aw-style"))return;const t=document.createElement("style");t.id="aw-style",t.textContent=`
 .aw-ov { position: fixed; inset: 0; z-index: 9993; background: rgba(0,0,0,.62); display: flex; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity .2s; }
 .aw-ov.show { opacity: 1; }
 .aw-sh { width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; box-sizing: border-box; background: var(--surface-color, #2c2c2e); color: var(--text-main); border-top: 3px solid var(--rc, var(--accent-color)); padding: 18px 18px calc(env(safe-area-inset-bottom, 0px) + 18px); clip-path: polygon(0 14px, 14px 0, 100% 0, 100% 100%, 0 100%); transform: translateY(30px); transition: transform .22s; }
@@ -51,41 +13,4 @@ const AppWarn = (() => {
 .aw-b button { flex: 1; padding: 13px 0; border: 0; font: inherit; font-weight: 800; font-size: .9rem; cursor: pointer; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px)); }
 .aw-ok { background: var(--rc, var(--accent-color)); color: var(--rc-on, #fff); }
 .aw-no { background: color-mix(in srgb, var(--text-main) 14%, transparent); color: var(--text-main); }
-@media (orientation: landscape) and (max-height: 520px) { .aw-sh { max-height: 98vh; padding-top: 12px; } .aw-ic { display: none; } .aw-h { margin-top: 0; } }`;
-        document.head.appendChild(st);
-    }
-
-    // Affiche la pop-up ; résout true (« J'ai compris ») ou false (« Annuler »)
-    function show(k) {
-        const d = DEFS[k]; if (!d) return Promise.resolve(true);
-        css();
-        return new Promise(res => {
-            document.querySelectorAll('.aw-ov').forEach(n => n.remove());
-            const ov = document.createElement('div'); ov.className = 'aw-ov'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true');
-            ov.innerHTML = '<div class="aw-sh"><div class="aw-ic">' + d.ic + '</div><h1 class="aw-h">' + esc(d.t) + '</h1><p class="aw-s">' + esc(d.s) + '</p>' +
-                '<div class="aw-w"><b>Avertissement :</b> ' + esc(d.w) + '</div>' +
-                '<button type="button" class="aw-l">Lire les CGU · § ' + d.n + ' ' + esc(d.h) + '</button>' +
-                '<div class="aw-b">' + (d.info ? '' : '<button type="button" class="aw-no">Annuler</button>') + '<button type="button" class="aw-ok">' + (d.info ? 'Compris' : 'J\'ai compris') + '</button></div></div>';
-            document.body.appendChild(ov); requestAnimationFrame(() => ov.classList.add('show'));
-            const end = (ok) => { ov.classList.remove('show'); setTimeout(() => ov.remove(), 220); res(ok); };
-            ov.querySelector('.aw-ok').addEventListener('click', () => { mark(k); end(true); });
-            const no = ov.querySelector('.aw-no'); if (no) no.addEventListener('click', () => { end(false); leave(); });
-            ov.querySelector('.aw-l').addEventListener('click', () => {
-                try { AppLegal.view('cgu'); setTimeout(() => { const s = document.querySelectorAll('#lg-vb .lg-s')[d.n - 1]; if (s) s.scrollIntoView(); }, 350); } catch (e) {}
-            });
-        });
-    }
-    async function ask(k) { if (done(k)) return true; return show(k); }
-
-    // Information de lancement (détection de chute) : sans action requise, juste après l'acceptation des CGU
-    function launch() {
-        if (done('chute')) return;
-        let n = 0; const t = setInterval(() => {
-            if (++n > 80) { clearInterval(t); return; }
-            if (document.getElementById('cgu-gate') || document.getElementById('auth-gate') && document.documentElement.classList.contains('auth-pending')) return;
-            try { if (!AppLegal.accepted()) return; } catch (e) {}
-            clearInterval(t); if (!done('chute')) show('chute');
-        }, 700);
-    }
-    return { done, ask, launch, mark, DEFS };
-})();
+@media (orientation: landscape) and (max-height: 520px) { .aw-sh { max-height: 98vh; padding-top: 12px; } .aw-ic { display: none; } .aw-h { margin-top: 0; } }`,document.head.appendChild(t)}function g(t){const e=u[t];return e?(v(),new Promise(a=>{document.querySelectorAll(".aw-ov").forEach(r=>r.remove());const n=document.createElement("div");n.className="aw-ov",n.setAttribute("role","dialog"),n.setAttribute("aria-modal","true"),n.innerHTML='<div class="aw-sh"><div class="aw-ic">'+e.ic+'</div><h1 class="aw-h">'+o(e.t)+'</h1><p class="aw-s">'+o(e.s)+'</p><div class="aw-w"><b>Avertissement :</b> '+o(e.w)+'</div><button type="button" class="aw-l">Lire les CGU \xB7 \xA7 '+e.n+" "+o(e.h)+'</button><div class="aw-b">'+(e.info?"":'<button type="button" class="aw-no">Annuler</button>')+'<button type="button" class="aw-ok">'+(e.info?"Compris":"J'ai compris")+"</button></div></div>",document.body.appendChild(n),requestAnimationFrame(()=>n.classList.add("show"));const s=r=>{n.classList.remove("show"),setTimeout(()=>n.remove(),220),a(r)};n.querySelector(".aw-ok").addEventListener("click",()=>{m(t),s(!0)});const f=n.querySelector(".aw-no");f&&f.addEventListener("click",()=>{s(!1),h()}),n.querySelector(".aw-l").addEventListener("click",()=>{try{AppLegal.view("cgu"),setTimeout(()=>{const r=document.querySelectorAll("#lg-vb .lg-s")[e.n-1];r&&r.scrollIntoView()},350)}catch{}})})):Promise.resolve(!0)}async function x(t){return i(t)?!0:g(t)}function w(){if(i("chute"))return;let t=0;const e=setInterval(()=>{if(++t>80){clearInterval(e);return}if(!(document.getElementById("cgu-gate")||document.getElementById("auth-gate")&&document.documentElement.classList.contains("auth-pending"))){try{if(!AppLegal.accepted())return}catch{}clearInterval(e),i("chute")||g("chute")}},700)}return{done:i,ask:x,launch:w,mark:m,DEFS:u}})();

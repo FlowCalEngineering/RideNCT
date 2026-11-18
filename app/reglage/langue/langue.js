@@ -1,16 +1,1 @@
-// Restauration de sauvegarde : si le navigateur a perdu des écritures récentes au rechargement, on les réapplique ici (copie gardée en session)
-// Migration : anciennes clés « vroom_* » (ancien nom de l'app) → « ridenct_* »
-(function () { try { for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && k.indexOf('vroom_') === 0) { const n = 'ridenct_' + k.slice(6); if (localStorage.getItem(n) === null) localStorage.setItem(n, localStorage.getItem(k)); localStorage.removeItem(k); } } } catch (e) {} })();
-(function () { try { const raw = sessionStorage.getItem('ridenct_restore'); if (!raw) return; sessionStorage.removeItem('ridenct_restore'); const o = JSON.parse(raw); Object.keys(o).forEach(k => { if (/^(moto|motoapp)/.test(k) && typeof o[k] === 'string' && localStorage.getItem(k) !== o[k]) localStorage.setItem(k, o[k]); }); } catch (e) {} })();
-        const AppLang = {
-            fr: {
-                start: "Démarrer",
-                speedUnit: "km/h",
-                distance: "Distance",
-                engine: "Moteur",
-                gpsWait: "Recherche GPS...",
-                sosActive: "ACTIF",
-                sosInactive: "INACTIF"
-            }
-        };
-        const currentLang = AppLang.fr;
+(function(){try{for(let o=localStorage.length-1;o>=0;o--){const e=localStorage.key(o);if(e&&e.indexOf("vroom_")===0){const t="ridenct_"+e.slice(6);localStorage.getItem(t)===null&&localStorage.setItem(t,localStorage.getItem(e)),localStorage.removeItem(e)}}}catch{}})(),(function(){try{const o=sessionStorage.getItem("ridenct_restore");if(!o)return;sessionStorage.removeItem("ridenct_restore");const e=JSON.parse(o);Object.keys(e).forEach(t=>{/^(moto|motoapp)/.test(t)&&typeof e[t]=="string"&&localStorage.getItem(t)!==e[t]&&localStorage.setItem(t,e[t])})}catch{}})();const AppLang={fr:{start:"D\xE9marrer",speedUnit:"km/h",distance:"Distance",engine:"Moteur",gpsWait:"Recherche GPS...",sosActive:"ACTIF",sosInactive:"INACTIF"}},currentLang=AppLang.fr;

@@ -1,90 +1,24 @@
-// Historique des interventions
-// Étend ModuleMaintenance (défini dans atelier/atelier.js) : ce fichier doit être chargé APRÈS lui.
-Object.assign(ModuleMaintenance, {
-                // =====================================================
-                // HISTORIQUE
-                // =====================================================
-                renderLogs() {
-                    const container = this.$('atelier-logs-list'), tiles = this.$('atelier-log-stats'), chips = this.$('atelier-log-filters');
-                    const moto = this.activeMoto();
-                    if (!moto) { container.innerHTML = `<div class="at-empty">Sélectionnez une moto.</div>`; tiles.innerHTML = ''; chips.innerHTML = ''; return; }
-
-                    const all = this.state.logs.filter(l => l.motoId === moto.id).sort((a, b) => b.date - a.date);
-                    const total = all.reduce((s, l) => s + this.num(l.cost), 0);
-                    tiles.innerHTML = all.length ? `
-                        <div class="at-tile"><b>${all.length}</b><span>Interventions</span></div>
-                        <div class="at-tile"><b>${total ? this.eur(total) : '--'}</b><span>Dépensé</span></div>
-                        <div class="at-tile"><b>${new Date(all[0].date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: '2-digit' })}</b><span>Dernière</span></div>` : '';
-
-                    // Filtres de catégories
-                    chips.innerHTML = '';
-                    if (all.length) {
-                        const counts = {}; all.forEach(l => counts[l.category || 'entretien'] = (counts[l.category || 'entretien'] || 0) + 1);
-                        const mk = (id, label, n, color) => {
-                            const b = document.createElement('button'); b.className = 'at-chip' + (this.state.catFilter === id ? ' active' : '');
-                            b.innerHTML = `${color ? `<span class="cdot" style="background:${color}"></span>` : ''}${label} · ${n}`;
-                            b.addEventListener('click', () => { this.state.catFilter = id; this.renderLogs(); });
-                            chips.appendChild(b);
-                        };
-                        if (Object.keys(counts).length > 1) { mk('all', 'Tout', all.length); this.CATS.forEach(c => { if (counts[c.id]) mk(c.id, c.label, counts[c.id], c.color); }); }
-                        else this.state.catFilter = 'all';
-                    }
-
-                    const q = this.state.search.trim().toLowerCase();
-                    const logs = all.filter(l => (this.state.catFilter === 'all' || (l.category || 'entretien') === this.state.catFilter) && (!q || (l.title + ' ' + (l.notes || '') + ' ' + (l.shop || '')).toLowerCase().includes(q)));
-
-                    if (!all.length) { container.innerHTML = `<div class="at-empty">Aucun entretien enregistré pour cette moto.<br>Utilise « + Ajouter » ou valide un entretien dans Prévisions.</div>`; return; }
-                    if (!logs.length) { container.innerHTML = `<div class="at-empty">Aucun résultat.</div>`; return; }
-
-                    container.innerHTML = '';
-                    logs.forEach(log => {
-                        const cat = this.catOf(log.category);
-                        const notes = log.notes ? (log.notes.length > 60 ? log.notes.slice(0, 60) + '…' : log.notes) : '';
-                        const card = document.createElement('div');
-                        card.className = 'log-card'; card.style.setProperty('--cat', cat.color);
-                        card.innerHTML = `
+Object.assign(ModuleMaintenance,{renderLogs(){const e=this.$("atelier-logs-list"),c=this.$("atelier-log-stats"),l=this.$("atelier-log-filters"),h=this.activeMoto();if(!h){e.innerHTML='<div class="at-empty">S\xE9lectionnez une moto.</div>',c.innerHTML="",l.innerHTML="";return}const n=this.state.logs.filter(t=>t.motoId===h.id).sort((t,o)=>o.date-t.date),r=n.reduce((t,o)=>t+this.num(o.cost),0);if(c.innerHTML=n.length?`
+                        <div class="at-tile"><b>${n.length}</b><span>Interventions</span></div>
+                        <div class="at-tile"><b>${r?this.eur(r):"--"}</b><span>D\xE9pens\xE9</span></div>
+                        <div class="at-tile"><b>${new Date(n[0].date).toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"2-digit"})}</b><span>Derni\xE8re</span></div>`:"",l.innerHTML="",n.length){const t={};n.forEach(a=>t[a.category||"entretien"]=(t[a.category||"entretien"]||0)+1);const o=(a,s,p,d)=>{const u=document.createElement("button");u.className="at-chip"+(this.state.catFilter===a?" active":""),u.innerHTML=`${d?`<span class="cdot" style="background:${d}"></span>`:""}${s} \xB7 ${p}`,u.addEventListener("click",()=>{this.state.catFilter=a,this.renderLogs()}),l.appendChild(u)};Object.keys(t).length>1?(o("all","Tout",n.length),this.CATS.forEach(a=>{t[a.id]&&o(a.id,a.label,t[a.id],a.color)})):this.state.catFilter="all"}const i=this.state.search.trim().toLowerCase(),v=n.filter(t=>(this.state.catFilter==="all"||(t.category||"entretien")===this.state.catFilter)&&(!i||(t.title+" "+(t.notes||"")+" "+(t.shop||"")).toLowerCase().includes(i)));if(!n.length){e.innerHTML='<div class="at-empty">Aucun entretien enregistr\xE9 pour cette moto.<br>Utilise \xAB + Ajouter \xBB ou valide un entretien dans Pr\xE9visions.</div>';return}if(!v.length){e.innerHTML='<div class="at-empty">Aucun r\xE9sultat.</div>';return}e.innerHTML="",v.forEach(t=>{const o=this.catOf(t.category),a=t.notes?t.notes.length>60?t.notes.slice(0,60)+"\u2026":t.notes:"",s=document.createElement("div");s.className="log-card",s.style.setProperty("--cat",o.color),s.innerHTML=`
                             <div class="log-header">
-                                <div class="log-title">${this.esc(log.title)}${(log.photos && log.photos.length) ? `<span class="at-badge">${VI.clip} ${log.photos.length}</span>` : ''}</div>
-                                <div class="log-date">${this.dayFmt(log.date)}</div>
+                                <div class="log-title">${this.esc(t.title)}${t.photos&&t.photos.length?`<span class="at-badge">${VI.clip} ${t.photos.length}</span>`:""}</div>
+                                <div class="log-date">${this.dayFmt(t.date)}</div>
                             </div>
                             <div class="log-metrics">
-                                <span>${VI.pin} ${log.km != null ? this.fmt(log.km) + ' km' : '--'}</span>
-                                <span>${VI.clock} ${log.hr != null ? this.fmt(log.hr, 1) + ' h' : '--'}</span>
-                                ${log.cost != null && log.cost !== '' ? `<span>${VI.euro} ${this.eur(log.cost)}</span>` : ''}
+                                <span>${VI.pin} ${t.km!=null?this.fmt(t.km)+" km":"--"}</span>
+                                <span>${VI.clock} ${t.hr!=null?this.fmt(t.hr,1)+" h":"--"}</span>
+                                ${t.cost!=null&&t.cost!==""?`<span>${VI.euro} ${this.eur(t.cost)}</span>`:""}
                             </div>
-                            ${log.shop ? `<div class="log-notes" style="font-style:normal;">${VI.user} ${this.esc(log.shop)}</div>` : ''}
-                            ${notes ? `<div class="log-notes">${this.esc(notes)}</div>` : ''}`;
-                        const down = () => card.style.transform = 'scale(0.97)', up = () => card.style.transform = 'scale(1)';
-                        card.addEventListener('touchstart', down, { passive: true }); card.addEventListener('touchend', up); card.addEventListener('touchcancel', up);
-                        card.addEventListener('mousedown', down); card.addEventListener('mouseup', up); card.addEventListener('mouseleave', up);
-                        card.addEventListener('click', () => this.showLogDetails(log));
-                        container.appendChild(card);
-                    });
-                },
-                showLogDetails(log) {
-                    const cat = this.catOf(log.category), hasCost = log.cost != null && log.cost !== '';
-                    const photos = log.photos || [];
-                    const tile = (v, l) => `<div style="background:var(--at-tint); padding:12px; border-radius:14px; flex:1; text-align:center; min-width:0;"><div style="font-size:1.05rem; font-weight:900; color:var(--text-main);">${v}</div><div style="font-size:0.66rem; color:var(--text-muted); text-transform:uppercase; font-weight:800;">${l}</div></div>`;
-                    const s = this.openSheet(`
-                        ${this.sheetHead(this.esc(log.title), `${cat.icon} ${cat.label} · ${this.dayFmt(log.date)}${log.shop ? ' · ' + this.esc(log.shop) : ''}`)}
+                            ${t.shop?`<div class="log-notes" style="font-style:normal;">${VI.user} ${this.esc(t.shop)}</div>`:""}
+                            ${a?`<div class="log-notes">${this.esc(a)}</div>`:""}`;const p=()=>s.style.transform="scale(0.97)",d=()=>s.style.transform="scale(1)";s.addEventListener("touchstart",p,{passive:!0}),s.addEventListener("touchend",d),s.addEventListener("touchcancel",d),s.addEventListener("mousedown",p),s.addEventListener("mouseup",d),s.addEventListener("mouseleave",d),s.addEventListener("click",()=>this.showLogDetails(t)),e.appendChild(s)})},showLogDetails(e){const c=this.catOf(e.category),l=e.cost!=null&&e.cost!=="",h=e.photos||[],n=(i,v)=>`<div style="background:var(--at-tint); padding:12px; border-radius:14px; flex:1; text-align:center; min-width:0;"><div style="font-size:1.05rem; font-weight:900; color:var(--text-main);">${i}</div><div style="font-size:0.66rem; color:var(--text-muted); text-transform:uppercase; font-weight:800;">${v}</div></div>`,r=this.openSheet(`
+                        ${this.sheetHead(this.esc(e.title),`${c.icon} ${c.label} \xB7 ${this.dayFmt(e.date)}${e.shop?" \xB7 "+this.esc(e.shop):""}`)}
                         <div class="at-sheet-body">
                             <div style="display:flex; gap:10px; margin-bottom:16px;">
-                                ${tile(log.km != null ? this.fmt(log.km) : '--', 'Km')}${tile(log.hr != null ? this.fmt(log.hr, 1) : '--', 'Heures')}${hasCost ? tile(this.eur(log.cost), 'Coût') : ''}
+                                ${n(e.km!=null?this.fmt(e.km):"--","Km")}${n(e.hr!=null?this.fmt(e.hr,1):"--","Heures")}${l?n(this.eur(e.cost),"Co\xFBt"):""}
                             </div>
-                            ${log.notes ? `<div class="at-label">Notes & Pièces</div><div style="background:var(--at-tint); padding:14px; border-radius:14px; font-size:0.9rem; line-height:1.5; color:var(--text-main); white-space:pre-wrap; margin-bottom:14px; user-select:text;">${this.esc(log.notes)}</div>` : ''}
-                            ${photos.length ? `<div class="at-label">Photos / Factures</div><div class="at-photos">${photos.map(id => `<div class="at-photo" data-pid="${this.esc(id)}" data-view="${this.esc(id)}"></div>`).join('')}</div>` : ''}
+                            ${e.notes?`<div class="at-label">Notes & Pi\xE8ces</div><div style="background:var(--at-tint); padding:14px; border-radius:14px; font-size:0.9rem; line-height:1.5; color:var(--text-main); white-space:pre-wrap; margin-bottom:14px; user-select:text;">${this.esc(e.notes)}</div>`:""}
+                            ${h.length?`<div class="at-label">Photos / Factures</div><div class="at-photos">${h.map(i=>`<div class="at-photo" data-pid="${this.esc(i)}" data-view="${this.esc(i)}"></div>`).join("")}</div>`:""}
                         </div>
-                        <div class="at-sheet-actions"><button class="btn at-del" id="d-del">Supprimer</button><button class="btn btn-primary" id="d-edit">Modifier</button></div>`);
-                    this.hydratePhotos(s.overlay);
-                    s.qa('[data-view]').forEach(el => el.addEventListener('click', () => this.viewPhoto(el.dataset.view)));
-                    s.q('#d-edit').addEventListener('click', () => { s.close(); this.startEdit(log); });
-                    s.q('#d-del').addEventListener('click', () => {
-                        s.close();
-                        this.confirmSheet('Supprimer cette intervention ?', 'Elle sera retirée de l\'historique (photos incluses).', 'Supprimer', () => {
-                            (log.photos || []).forEach(p => this.Photos.del(p));
-                            this.state.logs = this.state.logs.filter(l => l.id !== log.id);
-                            this.save('logs'); this.renderAll();
-                        }, true);
-                    });
-                },
-});
+                        <div class="at-sheet-actions"><button class="btn at-del" id="d-del">Supprimer</button><button class="btn btn-primary" id="d-edit">Modifier</button></div>`);this.hydratePhotos(r.overlay),r.qa("[data-view]").forEach(i=>i.addEventListener("click",()=>this.viewPhoto(i.dataset.view))),r.q("#d-edit").addEventListener("click",()=>{r.close(),this.startEdit(e)}),r.q("#d-del").addEventListener("click",()=>{r.close(),this.confirmSheet("Supprimer cette intervention ?","Elle sera retir\xE9e de l'historique (photos incluses).","Supprimer",()=>{(e.photos||[]).forEach(i=>this.Photos.del(i)),this.state.logs=this.state.logs.filter(i=>i.id!==e.id),this.save("logs"),this.renderAll()},!0)})}});
