@@ -53,6 +53,17 @@ const AppPlatform = (() => {
         el.querySelector('#pf-later').onclick = () => { save({ later: Date.now() }); close(el); };
         return true;
     }
+
+    // PWA iPhone : la fenêtre peut être plus courte que l'écran (bande vide en bas) → on impose la hauteur réelle de l'écran en portrait
+    if (P.pwa) {
+        const fit = () => {
+            const port = window.innerHeight >= window.innerWidth;
+            const sh = Math.max(screen.height || 0, screen.width || 0);
+            const h = port ? Math.max(window.innerHeight, sh) : window.innerHeight;
+            document.documentElement.style.setProperty('--pwa-h', h + 'px');
+        };
+        fit(); window.addEventListener('resize', fit); window.addEventListener('orientationchange', () => setTimeout(fit, 250));
+    }
     P.askInstall = askInstall;
     window.addEventListener('load', () => setTimeout(() => { try { askInstall(false); } catch (e) {} }, 4000));
     return P;
