@@ -844,3 +844,11 @@ main { counter-reset: sec; }
 .plan .price-alt{margin:0 0 8px;color:var(--muted)}
 .plan .price-alt b{color:var(--text)}
 .plan .price-alt small{font-weight:400;color:var(--muted)}
+
+.pwa-bar{display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--bg-2,#1b1d21);border-bottom:1px solid var(--line,#2a2d33)}
+.pwa-bar img{width:36px;height:36px;border-radius:9px;flex:none}
+.pwa-bar span{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.pwa-bar b{font-size:.92rem;color:var(--text)}
+.pwa-bar small{font-size:.78rem;color:var(--muted)}
+.pwa-bar .btn{flex:none;padding:7px 14px;font-size:.82rem}
+.pwa-bar button{flex:none;width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--muted);font-size:1.3rem;line-height:1;cursor:pointer}
