@@ -8,6 +8,7 @@ window.RIDENCT = {
   payTest: true,                         // true = paiement en mode test (aucun vrai débit). Mettre false avec le lien de production.
   payOpen: false,                        // false = abonnement masqué sur le site (avant la sortie). true = boutons « S'abonner » visibles.
   signupOpen: false,                      // false = création de compte fermée sur le site (phase sondage). true = ouverte.
+  pwaUrl: "app/",                        // adresse de l'app en version PWA (iPhone). Vide = bloc « Installer sur iPhone » masqué.
   sondageUrl: "sondage.html",
   supabaseUrl: "https://jpawfdgfggtlqxpbrpnd.supabase.co",
   supabaseKey: "sb_publishable_9glJJ7YBqhQUhT42hQynDg_H_Rng3ac",   // clé publique : sans danger côté site
