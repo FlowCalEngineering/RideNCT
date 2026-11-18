@@ -16,4 +16,4 @@
 /* PWA iPhone installée : occupe tout l'écran (sous la barre d'état et jusqu'en bas), sans bande vide */
 html[data-platform="pwa"], html[data-platform="pwa"] body { background-color: var(--bg-color, #1c1c1e); }
 html[data-platform="pwa"] body { position: fixed; top: 0; left: 0; right: 0; width: 100%; height: var(--pwa-h, 100%); min-height: 0; }
-html[data-platform="pwa"] { height: 100%; overflow: hidden; overscroll-behavior: none; }
+html[data-platform="pwa"] { height: var(--pwa-h, 100%); overflow: visible; overscroll-behavior: none; }
