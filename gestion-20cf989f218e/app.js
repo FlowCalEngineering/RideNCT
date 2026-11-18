@@ -281,6 +281,7 @@ $('logout').addEventListener('click', async () => { await sb.auth.signOut(); loc
 
 /* ---------- navigation ---------- */
 const PAGES = {
+  sec: { title: '', desc: '', tabs: [['users', ''], ['mod', ''], ['msg', ''], ['track', ''], ['sys', '']] },
   home: { title: 'Accueil', desc: 'Ce qui demande ton attention et l\'état général de RideNCT.', tabs: [['overview', 'Vue d\'ensemble'], ['stats', 'Statistiques'], ['health', 'Santé']] },
   reports: { title: 'Signalements', desc: 'Carte des repères, repères suspects et utilisateurs signalés par la communauté.', tabs: [['map', 'Carte'], ['review', 'À vérifier'], ['riders', 'Utilisateurs signalés'], ['routes', 'Circuits'], ['warnings', 'Avertissements']] },
   messages: { title: 'Messages', desc: 'Messages du formulaire de contact et inscrits sur la liste d\'attente.', tabs: [['contact', 'Messages'], ['mail', 'Boîte contact@'], ['waitlist', 'Liste d\'attente']] },
@@ -296,6 +297,7 @@ const PAGES = {
   settings: { title: 'Réglages', desc: 'Sécurité du compte, modération et administrateurs.', tabs: [['security', 'Sécurité'], ['moderation', 'Modération'], ['admins', 'Administrateurs']] }
 };
 const LOADERS = {
+  'sec/users': renderSecList, 'sec/mod': renderSecList, 'sec/msg': renderSecList, 'sec/track': renderSecList, 'sec/sys': renderSecList,
   'home/overview': loadDashboard, 'home/stats': loadStats, 'home/health': loadHealth,
   'reports/map': loadMap, 'reports/review': loadReview, 'reports/riders': loadRiders, 'reports/routes': loadRoutes, 'reports/warnings': loadWarnings,
   'messages/contact': loadMessages, 'messages/mail': loadMail, 'messages/waitlist': loadMessages,
@@ -361,6 +363,7 @@ function navigate(route) {
 window.addEventListener('hashchange', () => { if (!$('app').hidden) render(); });
 
 function renderTabs() {
+  if (state.route && state.route.page === 'sec') { $('tabs').hidden = true; return; }
   const sec = SECTIONS[sectionOf(routeKey())];
   const nav = $('tabs');
   if (sec.items.length < 2) { nav.hidden = true; nav.innerHTML = ''; return; }
@@ -371,6 +374,44 @@ function renderTabs() {
     return `<button type="button" class="tab${it[0] === cur ? ' active' : ''}" data-route="${it[0]}">${esc(it[1])}${n > 0 ? `<span class="count">${fmtInt(n)}</span>` : ''}</button>`;
   }).join('');
   nav.hidden = false;
+}
+
+
+/* ---------- mobile : accueil façon écran de téléphone, liste de section, barre du bas ---------- */
+const LAUNCH = [
+  ['users', 'Utilisateurs', 'ic-users', '#2bc4ae,#168a79'],
+  ['mod', 'Modération', 'ic-ban', '#f5a04a,#d4720f'],
+  ['msg', 'Messages', 'ic-mail', '#5b8def,#3a63c4'],
+  ['track', 'Suivi', 'ic-list', '#a07be8,#6c48b8'],
+  ['sys', 'Système', 'ic-sliders', '#8d949e,#5d646d'],
+  ['search', 'Rechercher', 'ic-search', '#3fb97a,#238753']
+];
+function secBadge(k) {
+  const s = state.stats || {};
+  if (k === 'mod') return Number(s.suspicious || 0) + Number(s.user_reports_open || 0) + Number(s.routes_reported || 0);
+  if (k === 'msg') return Number(s.messages_open || 0);
+  if (k === 'sys') { const limit = Number(s.db_limit_mb || 0) * 1048576; return limit && s.db_bytes / limit >= 0.8 ? '!' : 0; }
+  return 0;
+}
+function renderLauncher() {
+  const el = $('home-launcher');
+  if (el) {
+    el.innerHTML = LAUNCH.map(([k, label, ic, g]) => {
+      const n = secBadge(k);
+      return `<button type="button" class="lapp" data-launch="${k}"><span class="aico" style="background:linear-gradient(135deg,${g.split(',')[0]},${g.split(',')[1]})"><svg class="ic"><use href="#${ic}"/></svg>${n ? `<span class="abd${n === '!' ? ' warn' : ''}">${n}</span>` : ''}</span>${esc(label)}</button>`;
+    }).join('');
+  }
+  const mini = $('home-mini'), s = state.stats;
+  if (mini && s) mini.innerHTML = card('Abonnés actifs', fmtInt(s.subs_active), 'teal', 'users', 'subs') + card('Dangers actifs', fmtInt(s.dangers_active), 'orange', 'reports/map') + card('Utilisateurs', fmtInt(s.users), '', 'users');
+  [['bb-mod', secBadge('mod')], ['bb-msg', secBadge('msg')]].forEach(([id, n]) => { const b = $(id); if (b) { b.textContent = n; b.hidden = !n; } });
+}
+function renderSecList() {
+  const k = state.route.tab, S = SECTIONS[k], el = $('pane-sec'), st = state.stats || {};
+  if (!S) return;
+  el.innerHTML = '<div class="tiles">' + S.items.map((it) => {
+    const n = it[5] ? Number(st[it[5]] || 0) : 0;
+    return `<button type="button" class="tile ${it[4] || ''}" data-route="${it[0]}"><div class="ico">${it[2]}</div><div><b>${esc(it[1])}</b><small>${esc(it[3])}</small></div>${n > 0 ? `<div class="n">${fmtInt(n)}</div>` : ''}</button>`;
+  }).join('') + '</div>';
 }
 
 function renderHub() {
@@ -389,16 +430,18 @@ function render() {
   const key = routeKey();
   store.set('route', key);
   const P = PAGES[state.route.page];
-  const secKey = sectionOf(key);
-  $('page-title').textContent = secKey === 'home' ? P.title : SECTIONS[secKey].title;
+  const secKey = state.route.page === 'sec' ? state.route.tab : sectionOf(key);
+  $('page-title').textContent = state.route.page === 'sec' ? SECTIONS[secKey].title : secKey === 'home' ? P.title : SECTIONS[secKey].title;
   const it = SECTIONS[secKey].items.find((i) => i[0] === key);
-  $('page-desc').textContent = secKey === 'home' || !it ? P.desc : it[1] + ' — ' + it[3];
+  $('page-desc').textContent = state.route.page === 'sec' ? '' : secKey === 'home' || !it ? P.desc : it[1] + ' — ' + it[3];
   $('updated').textContent = '';
   updateTitle();
   document.querySelectorAll('#nav button').forEach((b) => b.classList.toggle('active', b.dataset.sec === secKey));
-  document.querySelectorAll('.pane').forEach((p) => { p.hidden = p.id !== 'pane-' + key.replace('/', '-'); });
+  document.querySelectorAll('.pane').forEach((p) => { p.hidden = p.id !== (state.route.page === 'sec' ? 'pane-sec' : 'pane-' + key.replace('/', '-')); });
+  document.querySelectorAll('#bottombar button[data-sec]').forEach((b) => b.classList.toggle('active', b.dataset.sec === secKey));
   renderTabs();
   renderHub();
+  renderLauncher();
   if (key !== 'reports/map') cancelZone();
   $('side').classList.remove('open');
   window.scrollTo(0, 0);
@@ -430,13 +473,28 @@ $('tabs').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-route]');
   if (b) navigate(b.dataset.route);
 });
+$('home-launcher').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-launch]');
+  if (!b) return;
+  if (b.dataset.launch === 'search') openPalette(); else navigate('sec/' + b.dataset.launch);
+});
+$('pane-sec').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-route]');
+  if (b) navigate(b.dataset.route);
+});
+$('bottombar').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.id === 'bb-more') { $('side').classList.toggle('open'); return; }
+  if (b.dataset.sec === 'home') navigate('home/overview'); else navigate('sec/' + b.dataset.sec);
+});
 $('home-hub').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-route]');
   if (b) navigate(b.dataset.route);
 });
 $('menu-toggle').addEventListener('click', () => $('side').classList.toggle('open'));
 document.addEventListener('click', (e) => {
-  if ($('side').classList.contains('open') && !e.target.closest('#side') && !e.target.closest('#menu-toggle')) $('side').classList.remove('open');
+  if ($('side').classList.contains('open') && !e.target.closest('#side') && !e.target.closest('#menu-toggle') && !e.target.closest('#bb-more')) $('side').classList.remove('open');
 });
 
 /* ---------- tri, sélection, actions groupées ---------- */
@@ -650,6 +708,7 @@ function applyStats(s) {
   renderTodo(s);
   renderTabs();
   renderHub();
+  renderLauncher();
 }
 async function quietStats() { try { applyStats(await rpc('admin_stats', null, true)); } catch (e) { /* silencieux */ } }
 
