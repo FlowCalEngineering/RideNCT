@@ -212,7 +212,7 @@
       + '<section class="cp-card"><h3>Mon abonnement</h3><div class="cp-sub-box ' + si.cls + '"><b>' + si.label + '</b><p>' + si.text + '</p></div>'
       + (act ? (sub.provider === 'manual' ? '' : (isWebSub() ? cancelBox() : manageBox())) : (sub && sub.status === 'past_due' ? manageBox() : payBox() + '<a class="cp-link" href="tarifs.html">Voir ce que débloque la version complète</a>')) + '</section>'
       + '<section class="cp-card"><h3>' + (act ? 'Ce que ton abonnement débloque' : 'Avec la version complète') + '</h3><ul class="cp-perks">' + perks + '</ul></section>'
-      + (adm ? '<section class="cp-card"><h3>Administration</h3><div class="cp-row"><div><b>Application de gestion RideNCT</b><small>Réservée aux administrateurs. Installable sur téléphone et ordinateur.</small></div><a class="btn btn-primary" href="admin/index.html#install">Télécharger l\'app admin</a></div></section>' : '')
+      + (adm ? '<section class="cp-card"><h3>Administration</h3><div class="cp-row"><div><b>Application de gestion RideNCT</b><small>Réservée aux administrateurs. Installable sur téléphone et ordinateur.</small></div><a class="btn btn-primary" href="gestion-20cf989f218e/index.html#install">Télécharger l\'app admin</a></div></section>' : '')
       + '<div class="cp-tiles">' + tiles + '</div>'
       + '<section class="cp-card"><h3>Paramètres</h3>'
       + '<div class="cp-row"><div><b>Nom d\'utilisateur</b><small>' + (uname ? '@' + esc(uname) : 'Pas encore choisi') + '</small></div><div id="cp-un"><button type="button" class="btn btn-ghost" data-act="editname">' + (uname ? 'Modifier' : 'Choisir') + '</button></div></div>'
