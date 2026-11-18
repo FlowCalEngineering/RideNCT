@@ -12,3 +12,8 @@
 .pf-go { display: block; width: calc(100% - 12px); margin: 14px 6px 0; border: 0; padding: 15px; background: var(--rc); color: #fff; font-weight: 900; font-style: italic; text-transform: uppercase; font-family: inherit; font-size: 1rem; transform: skewX(-12deg); cursor: pointer; }
 .pf-go > span { display: block; transform: skewX(12deg); }
 .pf-lk { display: block; margin: 8px auto 0; border: 0; background: transparent; color: #98989d; font-weight: 700; font-size: .85rem; font-family: inherit; padding: 6px 10px; cursor: pointer; }
+
+/* PWA iPhone installée : occupe tout l'écran (sous la barre d'état et jusqu'en bas), sans bande vide */
+html[data-platform="pwa"], html[data-platform="pwa"] body { background-color: var(--bg-color, #1c1c1e); }
+html[data-platform="pwa"] body { position: fixed; top: 0; left: 0; right: 0; width: 100%; height: var(--pwa-h, 100%); min-height: 0; }
+html[data-platform="pwa"] { height: 100%; overflow: hidden; overscroll-behavior: none; }
