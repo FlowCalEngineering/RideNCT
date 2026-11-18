@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>RideNCT admin</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
@@ -84,8 +84,11 @@
     <div id="banner" class="banner" hidden role="alert"><span id="banner-text"></span><button id="banner-close" type="button" aria-label="Fermer">×</button></div>
 
     <!-- ACCUEIL -->
+    <div class="pane" id="pane-sec" hidden></div>
     <div class="pane" id="pane-home-overview">
       <div id="home-todo" class="todo"></div>
+      <div id="home-launcher" class="launcher"></div>
+      <div id="home-mini" class="cards mini"></div>
       <div id="dash-cards" class="cards"></div>
       <div id="home-hub"></div>
       <div class="grid2">
@@ -482,6 +485,13 @@
   </div>
 </div>
 
+<nav id="bottombar" class="bottombar" aria-label="Navigation">
+  <button type="button" data-sec="home"><svg class="ic"><use href="#ic-home"/></svg>Accueil</button>
+  <button type="button" data-sec="users"><svg class="ic"><use href="#ic-users"/></svg>Utilisateurs</button>
+  <button type="button" data-sec="mod"><svg class="ic"><use href="#ic-ban"/></svg>Modération<span id="bb-mod" class="count" hidden></span></button>
+  <button type="button" data-sec="msg"><svg class="ic"><use href="#ic-mail"/></svg>Messages<span id="bb-msg" class="count" hidden></span></button>
+  <button type="button" id="bb-more"><svg class="ic"><use href="#ic-menu"/></svg>Plus</button>
+</nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="legal_seed.js"></script>
