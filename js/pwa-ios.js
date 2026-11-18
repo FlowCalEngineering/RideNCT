@@ -1,8 +1,9 @@
-// Bandeau « Installer RideNCT sur iPhone » en haut de chaque page : iPhone / iPad seulement, et pas dans l'appli installée.
+// Bandeau « Installer RideNCT sur iPhone » : page Tarifs uniquement, iPhone / iPad, utilisateur connecté, hors appli installée.
 (function () {
   var cfg = window.RIDENCT || {}, url = cfg.pwaUrl || 'app/';
   var ua = navigator.userAgent || '';
   var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  if (document.body.getAttribute('data-page') !== 'pricing') return;
   if (!ios || navigator.standalone === true || document.getElementById('pwa-bar')) return;
   // Uniquement pour un compte connecté (session créée par la page Mon compte).
   var logged = false;
