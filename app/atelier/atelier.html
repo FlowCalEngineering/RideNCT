@@ -1,0 +1,147 @@
+        <section id="view-maintenance" class="module-view">
+            <h1 class="module-header" id="at-h1">Atelier</h1>
+
+            <div id="at-pagebar" class="at-pagebar">
+                <button id="at-back" class="at-back" aria-label="Retour à l'Atelier"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <div class="at-pagetitle"><div id="at-pagetitle-t">Historique</div><div id="at-pagetitle-s"></div></div>
+                <button id="at-page-add" class="at-back at-page-add" aria-label="Ajouter une intervention"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+            </div>
+
+            <div id="at-head">
+            <div class="at-label" style="margin-top: 5px;">Moto sélectionnée</div>
+            <div id="atelier-moto-carousel" class="moto-carousel"></div>
+
+            <!-- Compteurs -->
+            <div class="at-meters">
+                <div class="card at-meter">
+                    <div id="atelier-km-total" class="at-meter-val">0</div>
+                    <div class="at-meter-lbl">Kilomètres</div>
+                </div>
+                <div class="card at-meter">
+                    <div id="atelier-hr-total" class="at-meter-val">0.0</div>
+                    <div class="at-meter-lbl">Heures</div>
+                </div>
+                <button id="btn-edit-meters" class="at-icon-btn" aria-label="Modifier les compteurs">
+                    <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                </button>
+            </div>
+
+            <!-- Alertes -->
+            <div id="atelier-alerts" class="at-alerts"></div>
+            </div>
+
+            <!-- ACCUEIL -->
+            <div id="sub-atelier-home" class="atelier-sub-view active">
+                <div class="at-home-grid">
+                    <button class="at-home-tile primary" data-go="sub-atelier-nouveau"><span class="ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span><span class="t">Nouvelle intervention</span><span class="s">Noter une vidange, une réparation…</span></button>
+                    <button class="at-home-tile" data-go="sub-atelier-tableau"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span><span class="t">À prévoir</span><span class="s" id="home-s-forecast"></span></button>
+                    <button class="at-home-tile" data-go="sub-atelier-historique"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><polyline points="3 3 3 8 8 8"></polyline><polyline points="12 7 12 12 15 14"></polyline></svg></span><span class="t">Historique</span><span class="s" id="home-s-history"></span></button>
+                    <button class="at-home-tile wide" data-go="sub-atelier-carnet"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span><span class="t">Carnet</span><span class="s" id="home-s-carnet"></span></button>
+                </div>
+            </div>
+
+
+            <!-- HISTORIQUE -->
+            <div id="sub-atelier-historique" class="atelier-sub-view">
+                <div id="atelier-log-stats" class="at-tiles"></div>
+                <input type="search" id="atelier-search" class="atelier-input at-search" placeholder="Rechercher (vidange, piston, notes...)">
+                <div id="atelier-log-filters" class="at-chips"></div>
+                <div id="atelier-logs-list" style="display: flex; flex-direction: column;"></div>
+            </div>
+
+            <!-- PRÉVISIONS -->
+            <div id="sub-atelier-tableau" class="atelier-sub-view">
+                <div class="at-label">Entretiens à prévoir</div>
+                <div id="atelier-pace" style="font-size:0.78rem; color: var(--text-muted); font-weight:700; margin: -4px 0 12px;"></div>
+                <div id="atelier-watch"></div>
+                <div id="atelier-riding"></div>
+                <div id="atelier-forecast-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                <button id="btn-add-task" class="at-add-task" style="margin-top: 12px;">+ Ajouter un entretien récurrent</button>
+            </div>
+
+            <!-- CARNET -->
+            <div id="sub-atelier-carnet" class="atelier-sub-view">
+                <div class="at-seg" id="carnet-seg">
+                    <button data-pane="fiche" class="active">Fiche</button>
+                    <button data-pane="docs">Documents</button>
+                    <button data-pane="data">Données</button>
+                </div>
+                <div id="carnet-fiche" class="at-pane active"></div>
+                <div id="carnet-docs" class="at-pane"></div>
+                <div id="carnet-data" class="at-pane"></div>
+            </div>
+
+            <!-- NOUVELLE ENTRÉE -->
+            <div id="sub-atelier-nouveau" class="atelier-sub-view">
+                <div class="card">
+                    <div id="log-form-title" class="at-label" style="display:none; color: var(--at-warn);">Modification d'une intervention</div>
+
+                    <div class="input-group">
+                        <label>Quelle intervention ?</label>
+                        <input type="text" id="log-title" class="atelier-input" list="atelier-title-suggestions" placeholder="Ex: Vidange, Piston, Gicleur..." autocomplete="off">
+                        <datalist id="atelier-title-suggestions"></datalist>
+                        <div id="log-quick" class="at-chips at-quick"></div>
+                    </div>
+
+                    <div id="log-task-check" class="at-check" style="display:none;">
+                        <input type="checkbox" id="log-task-reset" checked>
+                        <label for="log-task-reset" id="log-task-reset-label" style="margin:0; text-transform:none; letter-spacing:0; font-size:0.85rem; color: var(--text-main);"></label>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <div class="input-group" style="flex: 1.2; min-width: 0;">
+                            <label>Date</label>
+                            <input type="date" id="log-date" class="atelier-input" aria-label="Date de l'intervention">
+                        </div>
+                        <div class="input-group" style="flex: 1; min-width: 0;">
+                            <label>Km</label>
+                            <input type="number" inputmode="decimal" id="log-km" class="atelier-input" placeholder="Km">
+                        </div>
+                    </div>
+
+                    <button type="button" id="log-more-toggle" class="at-more-toggle"><span>Plus de détails</span><small>catégorie, heures, coût, notes, photos</small><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div id="log-more" class="at-more">
+                        <div class="input-group">
+                            <label>Catégorie</label>
+                            <div id="log-cats" class="at-chips" style="margin-bottom:0; flex-wrap: wrap;"></div>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <div class="input-group" style="flex: 1; min-width: 0;">
+                                <label>Heures</label>
+                                <input type="number" inputmode="decimal" id="log-hr" class="atelier-input" placeholder="Heures" step="0.1">
+                            </div>
+                            <div class="input-group" style="flex: 1; min-width: 0;">
+                                <label>Coût (€)</label>
+                                <input type="number" inputmode="decimal" id="log-cost" class="atelier-input" placeholder="0" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Fait par</label>
+                            <input type="text" id="log-shop" class="atelier-input" placeholder="Moi, garage…" maxlength="60">
+                        </div>
+                        <div class="input-group">
+                            <label>Notes & Pièces</label>
+                            <textarea id="log-notes" class="atelier-input" rows="3" placeholder="Huile 10W40, réglages carburateur..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label>Photos / Factures (4 max)</label>
+                            <input type="file" id="log-invoice" accept="image/*" multiple style="display: none;">
+                            <button id="btn-upload-invoice" class="btn at-ghost"><svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; display: inline-block; vertical-align: -4px; margin-right: 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Ajouter des images</button>
+                            <div id="log-photos" class="at-photos"></div>
+                        </div>
+                    </div>
+
+                    <button id="btn-save-log" class="btn btn-primary" style="margin-top: 6px;">Enregistrer l'intervention</button>
+                    <button id="btn-cancel-edit" class="btn at-ghost" style="margin-top: 10px; display: none;">Annuler la modification</button>
+                </div>
+            </div>
+            <div class="atelier-top-nav">
+                <button class="atelier-tab-btn active" data-sub="sub-atelier-home" id="atelier-tab-home" title="Accueil" aria-label="Accueil"></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-historique" title="Historique" aria-label="Historique"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><polyline points="3 3 3 8 8 8"></polyline><polyline points="12 7 12 12 15 14"></polyline></svg></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-tableau" id="atelier-tab-forecast" title="Prévisions" aria-label="Prévisions"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-carnet" id="atelier-tab-carnet" title="Carnet" aria-label="Carnet"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-nouveau" id="atelier-tab-new" title="Ajouter" aria-label="Ajouter"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></button>
+            </div>
+        </section>
+
+        <div id="at-toast"></div>

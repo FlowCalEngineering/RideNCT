@@ -175,6 +175,7 @@
     return '<div class="cp-pay' + (/[?&]abo=1/.test(location.search) ? ' hi' : '') + '" id="cp-paybox">'
       + '<label class="cp-chk"><input type="checkbox" id="cp-paychk"><span>J\'ai lu les <a href="cgv.html" target="_blank" rel="noopener">conditions de vente</a>. Je demande l\'accès immédiat au service et je sais que, si j\'exerce mon droit de rétractation sous 14 jours, je paierai la part du service déjà utilisée.</span></label>'
       + '<a class="btn btn-primary" id="cp-pay" href="' + esc(url) + '" aria-disabled="true">S\'abonner · 2,99 € / mois</a>'
+      + (CFG.payUrlYear ? '<a class="btn btn-ghost" id="cp-pay2" href="' + esc(CFG.payUrlYear.replace(/\/?$/, '/') + encodeURIComponent(u.id) + (u.email ? '?email=' + encodeURIComponent(u.email) : '')) + '" aria-disabled="true">S\'abonner · 24,99 € / an</a>' : '')
       + '<p class="form-msg" id="cp-pmsg" role="status"></p><p class="cp-paynote">Paiement sécurisé par carte, résiliable à tout moment. Nous ne voyons jamais ton numéro de carte.' + (CFG.payTest ? ' <b>Mode test : aucun vrai débit (carte 4242 4242 4242 4242, date et code au choix).</b>' : '') + '</p>'
       + (storeBtns(true) ? '<p class="cp-alt">Ou depuis le store :</p>' + storeBtns(true) : '') + '</div>';
   }
@@ -384,10 +385,10 @@
     }
     render();
     root.addEventListener('change', function (e) {
-      if (e.target && e.target.id === 'cp-paychk') { var pm = $('cp-pmsg'); if (pm) pm.textContent = ''; var b = $('cp-pay'); if (b) b.setAttribute('aria-disabled', e.target.checked ? 'false' : 'true'); }
+      if (e.target && e.target.id === 'cp-paychk') { var pm = $('cp-pmsg'); if (pm) pm.textContent = ''; ['cp-pay', 'cp-pay2'].forEach(function (id) { var b = $(id); if (b) b.setAttribute('aria-disabled', e.target.checked ? 'false' : 'true'); }); }
     });
     root.addEventListener('click', function (e) {
-      var b = e.target.closest && e.target.closest('#cp-pay');
+      var b = e.target.closest && e.target.closest('#cp-pay, #cp-pay2');
       if (b && b.getAttribute('aria-disabled') === 'true') { e.preventDefault(); var c = $('cp-paychk'); if (c) c.focus(); var pm = $('cp-pmsg'); if (pm) { pm.textContent = 'Coche la case ci-dessus pour continuer.'; pm.className = 'form-msg err'; } }
     });
     if (session && /[?&]paid=1/.test(location.search)) {

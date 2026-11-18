@@ -1277,57 +1277,76 @@ $('warn-unread-only').addEventListener('change', renderWarnings);
 
 /* ---------- textes légaux ---------- */
 const LEGAL_DOCS = [['cgu', 'CGU'], ['cgv', 'CGV'], ['mentions', 'Mentions légales'], ['confidentialite', 'Confidentialité']];
-const LEGAL_TYPES = { h2: 'Titre', h3: 'Sous-titre', p: 'Paragraphe', ul: 'Liste', det: 'Encadré repliable' };
+const LEGAL_TYPES = { h2: 'Titre', h3: 'Sous-titre', p: 'Paragraphe', ul: 'Liste' };
 const LS = { doc: 'cgu', list: [], drafts: {}, loaded: false };
 const todayISO = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 const todayFR = () => new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 function legalNextVersion(doc) {
-  const have = new Set(LS.list.filter((x) => x.doc === doc).map((x) => x.version));
+  /* doit être supérieure à toutes les versions connues, y compris celle embarquée dans l'app (sinon l'app l'ignore) */
+  const have = LS.list.filter((x) => x.doc === doc).map((x) => x.version);
+  const seed = window.LEGAL_SEED && window.LEGAL_SEED[doc]; if (seed && seed.version) have.push(seed.version);
   const base = todayISO();
-  if (!have.has(base)) return base;
-  let n = 2;
-  while (have.has(base + '.' + n)) n++;
-  return base + '.' + n;
+  let max = -1;
+  have.forEach((v) => { if (v === base) max = Math.max(max, 1); else if (v.startsWith(base + '.')) max = Math.max(max, Number(v.slice(base.length + 1)) || 0); });
+  return max < 0 ? base : base + '.' + (max + 1);
 }
-/* sections (format serveur) -> blocs à plat pour l'éditeur */
+/* sections (format de l'app : {n, t, sub?, p:[texte | {ul:[…]}]}) -> blocs à plat pour l'éditeur.
+   Les anciens formats {title, body, items} restent lisibles. */
 function legalToBlocks(secs) {
   const out = [];
   (Array.isArray(secs) ? secs : []).forEach((s) => {
-    if (typeof s === 'string') s = { body: s };
+    if (typeof s === 'string') s = { p: [s] };
     if (!s || typeof s !== 'object') return;
-    if (s.summary) { out.push({ t: 'det', x: [String(s.summary)].concat((Array.isArray(s.body) ? s.body : s.body ? String(s.body).split(/\n{2,}/) : []).map((x) => String(x).trim()).filter(Boolean)).join('\n\n') }); return; }
-    if (s.title) out.push({ t: Number(s.level) === 3 ? 'h3' : 'h2', x: String(s.title) });
-    const body = s.body == null ? [] : Array.isArray(s.body) ? s.body : String(s.body).split(/\n{2,}/);
-    body.map((x) => String(x).trim()).filter(Boolean).forEach((x) => out.push({ t: 'p', x }));
+    const t = s.t != null ? s.t : s.title;
+    const n = Number(s.n) > 0 ? s.n + '. ' : '';
+    if (t) out.push({ t: (s.sub || Number(s.level) === 3) ? 'h3' : 'h2', x: n + String(t) });
+    let p = s.p != null ? s.p : s.body;
+    p = p == null ? [] : Array.isArray(p) ? p : String(p).split(/\n{2,}/);
+    p.forEach((x) => {
+      if (x && typeof x === 'object' && Array.isArray(x.ul)) out.push({ t: 'ul', x: x.ul.map((i) => String(i)).join('\n') });
+      else if (String(x).trim()) out.push({ t: 'p', x: String(x).trim() });
+    });
     if (Array.isArray(s.items) && s.items.length) out.push({ t: 'ul', x: s.items.map((i) => String(i)).join('\n') });
   });
   return out;
 }
-/* blocs -> sections (titre, paragraphes, liste regroupés pour rester sous 80 sections) */
+/* blocs -> sections au format de l'app. Un titre ouvre une section ; « 10. Litiges » donne n = 10, t = « Litiges ». */
 function legalToSections(blocks) {
   const secs = [];
   let cur = null;
-  const fresh = () => { cur = {}; secs.push(cur); };
+  const fresh = () => { cur = { n: 0, t: '', p: [] }; secs.push(cur); };
   blocks.forEach((b) => {
     const x = String(b.x || '').replace(/\r/g, '').trim();
     if (!x) return;
     if (b.t === 'h2' || b.t === 'h3') {
-      fresh(); cur.title = x.replace(/\n+/g, ' ');
-      if (b.t === 'h3') cur.level = 3;
-    } else if (b.t === 'det') {
-      const parts = x.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
-      fresh(); cur.summary = parts[0].replace(/\n+/g, ' ');
-      if (parts.length > 1) cur.body = parts.slice(1);
-      cur = null;
+      fresh();
+      const title = x.replace(/\n+/g, ' '), m = /^(\d{1,3})\.\s+(.+)$/.exec(title);
+      if (m) { cur.n = Number(m[1]); cur.t = m[2]; } else cur.t = title;
+      if (b.t === 'h3') cur.sub = true;
     } else if (b.t === 'p') {
-      if (!cur || cur.items) fresh();
-      cur.body = (cur.body || []).concat(x.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean));
+      if (!cur) fresh();
+      x.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean).forEach((s) => cur.p.push(s));
     } else if (b.t === 'ul') {
-      if (!cur || cur.items) fresh();
-      cur.items = x.split('\n').map((s) => s.trim()).filter(Boolean);
+      if (!cur) fresh();
+      cur.p.push({ ul: x.split('\n').map((s) => s.trim()).filter(Boolean) });
     }
   });
   return secs;
+}
+/* mêmes limites que l'app (sinon elle ignorerait la version) : renvoie un message d'erreur ou '' */
+function legalCheck(d, secs) {
+  if (d.title.length > 120) return 'Titre trop long (120 caractères maximum).';
+  if (d.date.length > 60) return 'Date trop longue (60 caractères maximum).';
+  if (secs.length > 80) return 'Trop de sections (' + secs.length + ', maximum 80) : regroupe des paragraphes.';
+  for (const s of secs) {
+    if (s.t.length > 200) return 'Titre trop long : « ' + s.t.slice(0, 40) + '… » (200 caractères maximum).';
+    if (s.p.length > 60) return 'Section « ' + s.t.slice(0, 40) + ' » : trop de paragraphes (' + s.p.length + ', maximum 60).';
+    for (const x of s.p) {
+      if (typeof x === 'string' && x.length > 20000) return 'Paragraphe trop long dans « ' + s.t.slice(0, 40) + ' ».';
+      if (typeof x === 'object' && (x.ul.length > 60 || x.ul.some((i) => i.length > 5000))) return 'Liste trop longue dans « ' + s.t.slice(0, 40) + ' » (60 éléments de 5000 caractères maximum).';
+    }
+  }
+  return '';
 }
 function legalDraft() {
   if (!LS.drafts[LS.doc]) LS.drafts[LS.doc] = { title: '', date: '', version: '', blocks: [], reaccept: false, from: null };
@@ -1380,7 +1399,7 @@ function renderLegal() {
   $('legal-preview').hidden = true;
 }
 /* aperçu : même rendu que js/legal.js du site */
-function legalSafeHref(h) { return /^(https?:\/\/|mailto:|tel:|#)/i.test(h) || /^[\w\-.\/]+(\.html)?(#[\w\-]+)?$/.test(h); }
+function legalSafeHref(h) { return /^(https?:\/\/|mailto:|tel:|#|app:[a-z]+$)/i.test(h) || /^[\w\-.\/]+(\.html)?(#[\w\-]+)?$/.test(h); }
 function legalInline(parent, s) {
   s = String(s == null ? '' : s);
   const re = /\*\*([\s\S]+?)\*\*|\[([^\]\n]+)\]\(([^)\s]+)\)|\n|!\[([^\]\n]*)\]\(([^)\s]+)\)/;
@@ -1390,7 +1409,8 @@ function legalInline(parent, s) {
     if (m.index) parent.appendChild(document.createTextNode(s.slice(0, m.index)));
     if (m[0] === '\n') parent.appendChild(document.createElement('br'));
     else if (m[5] != null) {
-      if (/^https:\/\/[\w\-.\/%:@]+$/i.test(m[5])) { const im = document.createElement('img'); im.setAttribute('src', m[5]); im.setAttribute('alt', m[4]); im.style.maxWidth = '100%'; im.style.display = 'block'; im.style.margin = '12px auto'; parent.appendChild(im); }
+      if (/^img:[a-z0-9-]{1,40}$/.test(m[5])) { const sp = document.createElement('span'); sp.className = 'muted small'; sp.textContent = '[Image : ' + (m[4] || m[5].slice(4)) + ']'; parent.appendChild(sp); }
+      else if (/^https:\/\/[\w\-.\/%:@]+$/i.test(m[5])) { const im = document.createElement('img'); im.setAttribute('src', m[5]); im.setAttribute('alt', m[4]); im.style.maxWidth = '100%'; im.style.display = 'block'; im.style.margin = '12px auto'; parent.appendChild(im); }
       else { const sp = document.createElement('span'); sp.className = 'muted small'; sp.textContent = '[Image : ' + (m[4] || m[5]) + ']'; parent.appendChild(sp); }
     }
     else if (m[1] != null) { const b = document.createElement('b'); legalInline(b, m[1]); parent.appendChild(b); }
@@ -1405,10 +1425,11 @@ function legalPreview() {
   const h1 = document.createElement('h1'); h1.style.fontSize = '1.4rem'; h1.textContent = d.title || '(sans titre)'; box.appendChild(h1);
   if (d.date) { const p = document.createElement('p'); p.className = 'muted small'; p.textContent = /^\d/.test(d.date) ? 'Version du ' + d.date + '.' : 'Dernière mise à jour : ' + d.date + '.'; box.appendChild(p); }
   secs.forEach((s) => {
-    if (s.summary) { const dt = document.createElement('details'); const sm = document.createElement('summary'); legalInline(sm, s.summary); dt.appendChild(sm); (s.body || []).forEach((t) => { const p = document.createElement('p'); legalInline(p, t); dt.appendChild(p); }); dt.open = true; box.appendChild(dt); return; }
-    if (s.title) { const h = document.createElement(s.level === 3 ? 'h3' : 'h2'); legalInline(h, s.title); box.appendChild(h); }
-    (s.body || []).forEach((t) => { const p = document.createElement('p'); legalInline(p, t); box.appendChild(p); });
-    if (s.items) { const ul = document.createElement('ul'); s.items.forEach((t) => { const li = document.createElement('li'); legalInline(li, t); ul.appendChild(li); }); box.appendChild(ul); }
+    if (s.t) { const h = document.createElement(s.sub ? 'h3' : 'h2'); legalInline(h, (s.n > 0 ? s.n + '. ' : '') + s.t); box.appendChild(h); }
+    s.p.forEach((x) => {
+      if (typeof x === 'object') { const ul = document.createElement('ul'); x.ul.forEach((t) => { const li = document.createElement('li'); legalInline(li, t); ul.appendChild(li); }); box.appendChild(ul); }
+      else { const p = document.createElement('p'); legalInline(p, x); box.appendChild(p); }
+    });
   });
   box.hidden = false;
   box.scrollIntoView({ block: 'nearest' });
@@ -1420,7 +1441,7 @@ async function legalPublish() {
   if (d.title.length < 3) throw new Error('Le titre doit faire au moins 3 caractères.');
   if (!/^\d{4}-\d{2}-\d{2}(\.\d+)?$/.test(d.version)) throw new Error('Version invalide : format AAAA-MM-JJ ou AAAA-MM-JJ.2');
   if (!secs.length) throw new Error('Le texte est vide.');
-  if (secs.length > 80) throw new Error('Trop de sections (' + secs.length + ', maximum 80) : regroupe des paragraphes.');
+  const bad = legalCheck(d, secs); if (bad) throw new Error(bad);
   const re = LS.doc === 'cgu' && d.reaccept;
   const ok = await confirmDialog({ title: 'Publier ' + d.version + ' ?', text: 'Cette version sera visible tout de suite sur le site et dans l\'app, et ne pourra plus être modifiée.' + (re ? ' Les utilisateurs devront accepter à nouveau les CGU.' : ''), ok: 'Publier' });
   if (!ok) return;

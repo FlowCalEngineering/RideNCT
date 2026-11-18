@@ -1,0 +1,1 @@
+(function(){document.addEventListener("click",function(a){var t=a.target.closest&&a.target.closest("[data-pfgo], #pf-back");if(t){var c=t.id==="pf-back"?"pf-garage":t.getAttribute("data-pfgo"),e=document.querySelector('#pf-tabs button[data-pf="'+c+'"]');e&&e.click()}})})();

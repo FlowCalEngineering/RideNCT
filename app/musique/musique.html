@@ -1,0 +1,87 @@
+        <section id="view-music" class="module-view">
+
+            <!-- Balise Audio invisible globale -->
+            <audio id="vroom-audio-player" preload="metadata" playsinline style="display: none;"></audio>
+
+            <!-- ONGLET 1 : Fichiers Locaux -->
+            <div id="sub-music-local" class="music-sub-view active">
+                <div class="card" style="padding: 25px 15px; flex-shrink: 0;">
+                    <div class="player-artwork" id="local-artwork"><svg class="vi" viewBox="0 0 24 24" style="width:60px;height:60px;stroke-width:1.5;opacity:.45"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+                    <div class="player-track-title" id="local-title">Aucun titre chargé</div>
+                    <div class="player-track-artist" id="local-artist">RideNCT Player</div>
+
+                    <div class="player-progress-container" data-no-swipe>
+                        <div class="player-time" id="local-time-current">0:00</div>
+                        <div class="player-progress-bar" id="local-progress-bar">
+                            <div class="player-progress-fill" id="local-progress-fill"></div>
+                        </div>
+                        <div class="player-time" id="local-time-total">0:00</div>
+                    </div>
+
+                    <div class="player-controls">
+                        <button class="btn-ctrl tiny" id="btn-local-shuffle" aria-label="Lecture aléatoire"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg></button>
+                        <button class="btn-ctrl sec" id="btn-local-prev" aria-label="Précédent"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+                        <button class="btn-ctrl main" id="btn-local-play" aria-label="Lecture / Pause"><svg viewBox="0 0 24 24" id="icon-local-play"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><svg viewBox="0 0 24 24" id="icon-local-pause" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg></button>
+                        <button class="btn-ctrl sec" id="btn-local-next" aria-label="Suivant"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
+                        <button class="btn-ctrl tiny" id="btn-local-repeat" aria-label="Répéter"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><span class="rep1" id="rep1-badge" style="display:none;">1</span></button>
+                    </div>
+
+                    <div class="mu-volume" id="local-volume-row" data-no-swipe style="display:none;">
+                        <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>
+                        <input type="range" id="local-volume" min="0" max="100" step="1" value="100" aria-label="Volume">
+                        <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                </div>
+
+                <div class="mu-tiles" data-no-swipe>
+                    <button type="button" class="mu-tile" data-mt="sources"><span class="ic c1"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></span><b>Sources</b><small>Dossier · Drive</small></button>
+                    <button type="button" class="mu-tile" data-mt="shuffle"><span class="ic c3"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></span><b>Aléatoire</b><small id="mt-shuf">Désactivé</small></button>
+                </div>
+
+                <input type="file" id="local-file-input" accept="audio/*,.mp3,.m4a,.aac,.flac,.ogg,.opus,.wav" multiple style="display: none;">
+                <div class="mu-actions">
+                    <button class="btn" id="btn-load-local">+ Ajouter des musiques</button>
+                    <button class="btn" id="btn-clear-local" style="flex: 0 0 auto; width: auto; padding: 16px 20px; color: var(--danger-color);">Vider</button>
+                </div>
+
+                <div class="mu-count" id="local-count"></div>
+                <div class="local-playlist" id="local-playlist-container">
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 24px 10px;">Votre playlist locale est vide.</div>
+                </div>
+            </div>
+
+            <!-- ONGLET 2 : Sources (dossier de l'appareil + Google Drive) -->
+            <div id="sub-music-sources" class="music-sub-view">
+                <button type="button" class="mu-back" id="mu-back" aria-label="Retour au lecteur"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Lecteur</button>
+
+                <div class="card mu-card">
+                    <div class="mu-card-head">
+                        <div class="mu-logo system"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+                        <div style="min-width:0;"><div class="mu-card-title">Dossier de l'appareil</div><div class="mu-card-sub" id="dir-status">Aucun dossier choisi</div></div>
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);font-weight:600;line-height:1.5;margin-bottom:14px;">Choisis le dossier où se trouvent toutes tes musiques : RideNCT les ajoute (sous-dossiers compris) et les garde dans l'app, même hors ligne.</div>
+                    <button class="mu-primary" id="dir-pick">Choisir le dossier de musique</button>
+                    <button class="mu-secondary" id="dir-sync" style="display:none;">↻ Resynchroniser le dossier</button>
+                    <input type="file" id="dir-fallback" webkitdirectory directory multiple style="display:none;">
+                </div>
+
+                <div class="card mu-card">
+                    <div class="mu-card-head">
+                        <div class="mu-logo drive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+                        <div style="min-width:0;"><div class="mu-card-title">Google Drive</div><div class="mu-card-sub">Par lien de partage · sans connexion</div></div>
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);font-weight:600;line-height:1.5;margin-bottom:12px;">Colle les liens de tes fichiers Drive partagés en « Toute personne disposant du lien ». Aucune connexion Google nécessaire.</div>
+                    <textarea id="gl-link" class="mu-input" rows="3" placeholder="Colle un ou plusieurs liens (un par ligne).&#10;Option : Nom du titre | lien" autocomplete="off" autocapitalize="off" spellcheck="false" style="resize:none;"></textarea>
+                    <details id="gl-key-block" style="margin-bottom:12px;"><summary style="font-size:0.74rem;font-weight:800;color:var(--text-muted);cursor:pointer;padding:6px 0;">Avancé : dossiers entiers (clé API)</summary><input type="text" id="gl-key" class="mu-input" placeholder="Clé API Google (facultatif)" autocomplete="off" autocapitalize="off" spellcheck="false" style="margin-top:8px;"><div style="font-size:0.7rem;color:var(--text-muted);font-weight:600;line-height:1.5;margin:-4px 0 4px;">Sans clé, RideNCT ne peut pas lister un dossier : colle plutôt les liens des fichiers. La clé se règle une seule fois (par toi, dans le code).</div></details>
+                    <button class="mu-primary" id="gl-go">Ajouter ce lien</button>
+                    <div id="gl-list" style="margin-top:12px;"></div>
+                    <button class="mu-secondary" id="gl-sync" style="display:none;">↻ Resynchroniser les liens</button>
+                </div>
+            </div>
+            <div class="music-nav" id="music-nav-bar" data-no-swipe>
+                <button class="music-tab-btn active" data-sub="sub-music-local" title="Ma musique" aria-label="Ma musique"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></button>
+                <button class="music-tab-btn" data-sub="sub-music-sources" title="Sources" aria-label="Sources"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg></button>
+            </div>
+        </section>
+
+        <div id="mu-toast"></div>

@@ -1,0 +1,1 @@
+#ad-slot{display:none;flex:0 0 auto;height:50px;width:100%;pointer-events:none}body.has-ad #ad-slot{display:block}body.has-ad:not(.nav-bottom) #ad-slot{height:calc(50px + env(safe-area-inset-bottom,0px))}@media(orientation:landscape){#ad-slot{display:none!important}}

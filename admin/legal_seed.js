@@ -1,8 +1,9 @@
-/* Généré depuis les pages du site (cgu.html, cgv.html, mentions-legales.html, confidentialite.html). Sert à « Importer le texte actuel du site ». */
+/* Textes actuels de l'app (app/core/legal-textes.js), servent de point de départ à l'éditeur. Généré. */
 window.LEGAL_SEED = {
  "cgu": {
   "title": "Conditions d'utilisation",
-  "date": "17 novembre 2026",
+  "date": "18 novembre 2026",
+  "version": "2026-11-18.2",
   "blocks": [
    {
     "t": "h2",
@@ -10,7 +11,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Les présentes conditions générales d'utilisation (« CGU ») définissent les règles d'accès et d'usage de l'application mobile RideNCT (« l'Application ») et du site web RideNCT (« le Site »), édités par François PICHON, entrepreneur individuel exerçant sous le nom FlowCal Engineering (« l'Éditeur »). Ses coordonnées figurent dans les [mentions légales](mentions-legales.html). « L'Utilisateur » désigne toute personne qui utilise l'Application ou le Site."
+    "x": "Les présentes conditions générales d'utilisation (« CGU ») définissent les règles d'accès et d'usage de l'application mobile RideNCT (« l'Application ») et du site web RideNCT (« le Site »), édités par François PICHON, entrepreneur individuel exerçant sous le nom FlowCal Engineering (« l'Éditeur »). Ses coordonnées figurent dans les [mentions légales](app:mentions). « L'Utilisateur » désigne toute personne qui utilise l'Application ou le Site."
    },
    {
     "t": "h2",
@@ -30,7 +31,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "RideNCT est une application communautaire dédiée aux motards. Elle propose des fonctions de navigation et de cartographie, de communication vocale, de partage d'itinéraires et de musique, de gestion de véhicules (Atelier, garage) et de sécurité. Le Site présente l'Application, permet de gérer son compte et propose un planificateur d'itinéraire. L'Application est d'abord proposée sur Android, puis sur iOS."
+    "x": "RideNCT est une application communautaire dédiée aux motards. Elle propose des fonctions de navigation et de cartographie, de communication vocale, de partage d'itinéraires et de musique, de gestion de véhicules (Atelier, garage) et de sécurité. Le Site présente l'Application, permet de gérer son compte et propose un planificateur d'itinéraire. L'Application est proposée sur Android. Sur iPhone, elle est d'abord disponible sous forme d'application web installable (PWA), en attendant l'application iOS."
    },
    {
     "t": "h2",
@@ -42,7 +43,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "ul",
-    "x": "L'Utilisateur fournit une adresse e-mail valide et choisit un nom d'utilisateur qui respecte les règles de la section 14. Certains noms sont refusés automatiquement.\nLe compte est personnel. L'Utilisateur garde ses identifiants confidentiels et prévient l'Éditeur en cas d'usage frauduleux.\nL'Utilisateur peut supprimer son compte à tout moment depuis la page [Mon compte](compte.html)."
+    "x": "L'Utilisateur fournit une adresse e-mail valide et choisit un nom d'utilisateur qui respecte les règles de la section 14. Certains noms sont refusés automatiquement.\nLe compte est personnel. L'Utilisateur garde ses identifiants confidentiels et prévient l'Éditeur en cas d'usage frauduleux.\nL'Utilisateur peut supprimer son compte à tout moment depuis la page [Mon compte](https://ridenct.fr/compte.html)."
    },
    {
     "t": "h2",
@@ -50,11 +51,11 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Une partie des fonctions est gratuite ; la version gratuite de l'Application comprend de la publicité (voir la [politique de confidentialité](confidentialite.html)). La version complète est proposée par abonnement mensuel, au tarif indiqué sur la page [Tarifs](tarifs.html), et débloque notamment le radar amis, la carte en mode expert, l'intercom en groupe, le partage d'itinéraire et de musique, le mode rencontre, le garage à plusieurs motos, les cartes hors ligne et les thèmes visuels, et supprime la publicité. L'Éditeur peut faire évoluer le contenu de chaque offre, sans retirer à un abonné en cours de période une fonction pour laquelle il a payé."
+    "x": "Une partie des fonctions est gratuite ; la version gratuite de l'Application comprend de la publicité (voir la [politique de confidentialité](app:confidentialite)). La version complète est proposée par abonnement, mensuel ou annuel au choix, aux tarifs indiqués sur la page [Tarifs](https://ridenct.fr/tarifs.html) et dans l'Application. Dans l'Application, l'abonnement est souscrit et payé par l'intermédiaire de Google Play ou de l'App Store. Un essai gratuit peut être proposé ; il est alors indiqué avant la souscription. L'abonnement débloque notamment le radar amis, la carte en mode expert, l'intercom en groupe, le partage d'itinéraire et de musique, le mode rencontre, le garage à plusieurs motos, les cartes hors ligne et les thèmes visuels, et supprime la publicité. L'Éditeur peut faire évoluer le contenu de chaque offre, sans retirer à un abonné en cours de période une fonction pour laquelle il a payé."
    },
    {
     "t": "p",
-    "x": "Les conditions de vente de l'abonnement (prix, paiement, durée, renouvellement, résiliation, rétractation, médiateur) sont dans les [conditions générales de vente](cgv.html), à accepter avant tout paiement. L'Éditeur peut aussi offrir un accès complet pour une durée limitée."
+    "x": "Les conditions de vente de l'abonnement (prix, paiement, durée, renouvellement, résiliation, rétractation, médiateur) sont dans les [conditions générales de vente](app:cgv), à accepter avant tout paiement. L'Éditeur peut aussi offrir un accès complet pour une durée limitée."
    },
    {
     "t": "h2",
@@ -106,7 +107,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "La fonction de sécurité peut détecter une chute probable, alerter les motards utilisant l'Application dans un rayon d'environ 1 km, appeler en premier un contact d'urgence choisi par l'Utilisateur, et préparer l'envoi de messages (SMS) avec la position GPS à des proches choisis, accompagnés, si l'Utilisateur l'a activé, de ses informations médicales (groupe sanguin, allergies, traitements...) qu'il a saisies dans l'Application. L'alerte n'est envoyée qu'à l'issue d'un compte à rebours resté sans réponse."
+    "x": "La fonction de sécurité peut détecter une chute probable, alerter les motards utilisant l'Application dans un rayon d'environ 5 km, appeler en premier un contact d'urgence choisi par l'Utilisateur, et préparer l'envoi de messages (SMS) avec la position GPS à des proches choisis, accompagnés, si l'Utilisateur l'a activé, de ses informations médicales (groupe sanguin, allergies, traitements…) qu'il a saisies dans l'Application. L'alerte n'est envoyée qu'à l'issue d'un compte à rebours resté sans réponse."
    },
    {
     "t": "p",
@@ -126,7 +127,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Le planificateur calcule des itinéraires à partir de services tiers et des données OpenStreetMap (© contributeurs OpenStreetMap, licence ODbL). Les résultats (tracé, virages, altitude, météo) sont indicatifs et peuvent contenir des erreurs. L'Utilisateur vérifie l'itinéraire avant de rouler. Le fonctionnement du planificateur est décrit dans la [politique de confidentialité](confidentialite.html)."
+    "x": "Le planificateur calcule des itinéraires à partir de services tiers et des données OpenStreetMap (© contributeurs OpenStreetMap, licence ODbL). Les résultats (tracé, virages, altitude, météo) sont indicatifs et peuvent contenir des erreurs. L'Utilisateur vérifie l'itinéraire avant de rouler. Le fonctionnement du planificateur est décrit dans la [politique de confidentialité](app:confidentialite)."
    },
    {
     "t": "h2",
@@ -142,7 +143,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Un Utilisateur peut en signaler un autre depuis l'Application. En cas de manquement, l'Éditeur peut supprimer un contenu, suspendre un compte ou un appareil, ou supprimer le compte, avec ou sans abonnement en cours, sans préjudice d'autres recours. Quand c'est possible, le motif est communiqué et l'Utilisateur peut contester la décision via la page [Contact](contact.html). Pour signaler un contenu manifestement illicite, utiliser la même page en précisant le contenu concerné."
+    "x": "Un Utilisateur peut en signaler un autre depuis l'Application. En cas de manquement, l'Éditeur peut supprimer un contenu, suspendre un compte ou un appareil, ou supprimer le compte, avec ou sans abonnement en cours, sans préjudice d'autres recours. Quand c'est possible, le motif est communiqué et l'Utilisateur peut contester la décision via la page [Contact](https://ridenct.fr/contact.html). Pour signaler un contenu manifestement illicite, utiliser la même page en précisant le contenu concerné."
    },
    {
     "t": "h2",
@@ -150,7 +151,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "L'Éditeur s'efforce d'assurer un accès continu au service, mais ne garantit pas une disponibilité permanente. Des maintenances, des pannes de réseau ou des pannes des services tiers (cartographie, hébergement, serveurs de mise en relation des appareils) peuvent entraîner des interruptions. Les fonctions de pair à pair (radar, intercom) dépendent de la qualité du réseau des appareils et de services tiers (serveur de messagerie public EMQX, serveurs STUN de Google et Cloudflare, relais Metered), décrits dans la [politique de confidentialité](confidentialite.html). L'Éditeur peut faire évoluer, suspendre ou arrêter une fonction pour des raisons techniques, légales ou de sécurité."
+    "x": "L'Éditeur s'efforce d'assurer un accès continu au service, mais ne garantit pas une disponibilité permanente. Des maintenances, des pannes de réseau ou des pannes des services tiers (cartographie, hébergement, serveurs de mise en relation des appareils) peuvent entraîner des interruptions. Les fonctions de pair à pair (radar, intercom) dépendent de la qualité du réseau des appareils et de services tiers (serveur de messagerie public EMQX, serveurs STUN de Google et Cloudflare, relais Metered), décrits dans la [politique de confidentialité](app:confidentialite). L'Éditeur peut faire évoluer, suspendre ou arrêter une fonction pour des raisons techniques, légales ou de sécurité."
    },
    {
     "t": "h2",
@@ -174,7 +175,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Les données personnelles sont traitées conformément au RGPD, comme détaillé dans la [politique de confidentialité](confidentialite.html). L'Utilisateur peut exercer ses droits d'accès, de rectification, d'effacement, de portabilité et d'opposition depuis la page [Mon compte](compte.html) ou via la page [Contact](contact.html)."
+    "x": "Les données personnelles sont traitées conformément au RGPD, comme détaillé dans la [politique de confidentialité](app:confidentialite). L'Utilisateur peut exercer ses droits d'accès, de rectification, d'effacement, de portabilité et d'opposition depuis la page [Mon compte](https://ridenct.fr/compte.html) ou via la page [Contact](https://ridenct.fr/contact.html)."
    },
    {
     "t": "h2",
@@ -182,13 +183,18 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Les CGU sont soumises au droit français. En cas de litige, l'Utilisateur peut d'abord contacter l'Éditeur via la page [Contact](contact.html) pour rechercher une solution amiable. L'Utilisateur consommateur peut recourir gratuitement à un médiateur de la consommation, dont les coordonnées figurent dans les [conditions de vente](cgv.html). À défaut d'accord, les tribunaux français sont compétents, sans préjudice des règles de compétence protectrices du consommateur."
+    "x": "Les CGU sont soumises au droit français. En cas de litige, l'Utilisateur peut d'abord contacter l'Éditeur via la page [Contact](https://ridenct.fr/contact.html) pour rechercher une solution amiable. L'Utilisateur consommateur peut recourir gratuitement à un médiateur de la consommation, le **CM2C** (Centre de la médiation de la consommation de conciliateurs de justice), 49 rue de Ponthieu, 75008 Paris, [www.cm2c.net](https://www.cm2c.net), [contact@cm2c.net](mailto:contact@cm2c.net), 01 89 47 00 14. À défaut d'accord, les tribunaux français sont compétents, sans préjudice des règles de compétence protectrices du consommateur."
+   },
+   {
+    "t": "p",
+    "x": "![Médiateur de la consommation CM2C](img:mediateur-cm2c)"
    }
   ]
  },
  "cgv": {
   "title": "Conditions générales de vente",
-  "date": "17 novembre 2026",
+  "date": "18 novembre 2026",
+  "version": "2026-11-18.1",
   "blocks": [
    {
     "t": "h2",
@@ -196,7 +202,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "François PICHON, entrepreneur individuel exerçant sous le nom FlowCal Engineering (SIREN 107 094 708), La Furetais, 44130 Bouvron, France. Contact : page [Contact](contact.html). Voir aussi les [mentions légales](mentions-legales.html). Les présentes conditions s'appliquent aux abonnements pris sur le site ; l'utilisation de l'application reste soumise aux [conditions d'utilisation](cgu.html)."
+    "x": "François PICHON, entrepreneur individuel exerçant sous le nom FlowCal Engineering (SIREN 107 094 708), La Furetais, 44130 Bouvron, France. Contact : page [Contact](https://ridenct.fr/contact.html). Voir aussi les [mentions légales](app:mentions). Les présentes conditions s'appliquent aux abonnements pris sur le site ; l'utilisation de l'application reste soumise aux [conditions d'utilisation](app:cgu)."
    },
    {
     "t": "h2",
@@ -204,7 +210,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Un abonnement mensuel unique donne accès à toutes les fonctions de la version complète de RideNCT (radar amis, carte en mode expert, intercom en groupe, partage d'itinéraire et de musique, mode rencontre, garage à plusieurs motos, cartes hors ligne, thèmes visuels, sans publicité), tant qu'il est actif. Un compte RideNCT est nécessaire. La version gratuite reste disponible sans abonnement."
+    "x": "Un abonnement, mensuel ou annuel au choix, donne accès à toutes les fonctions de la version complète de RideNCT (radar amis, carte en mode expert, intercom en groupe, partage d'itinéraire et de musique, mode rencontre, garage à plusieurs motos, cartes hors ligne, thèmes visuels, sans publicité), tant qu'il est actif. Les deux formules donnent exactement les mêmes fonctions. Un compte RideNCT est nécessaire. La version gratuite reste disponible sans abonnement."
    },
    {
     "t": "h2",
@@ -212,7 +218,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "2,99 € par mois. TVA non applicable, article 293 B du Code général des impôts. Le prix affiché est le prix payé. Le prix peut évoluer ; tout changement est annoncé à l'avance et ne s'applique qu'au renouvellement suivant, avec la possibilité de résilier avant."
+    "x": "Formule mensuelle : 2,99 € par mois. Formule annuelle : 24,99 € par an. TVA non applicable, article 293 B du Code général des impôts. Le prix affiché est le prix payé. Le prix peut évoluer ; tout changement est annoncé à l'avance et ne s'applique qu'au renouvellement suivant, avec la possibilité de résilier avant."
    },
    {
     "t": "h2",
@@ -220,7 +226,11 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Paiement par carte bancaire, immédiat à la souscription puis chaque mois à la date anniversaire, par prélèvement automatique. Le paiement est traité par Stripe, via RevenueCat. Le vendeur ne conserve aucun numéro de carte."
+    "x": "Paiement immédiat à la souscription puis à chaque échéance (chaque mois ou chaque année selon la formule), par prélèvement automatique. Sur le site, le paiement par carte bancaire est traité par Stripe, via RevenueCat ; dans l'application, il est débité sur ton compte Google Play ou Apple par la boutique correspondante. Le vendeur ne conserve aucun numéro de carte."
+   },
+   {
+    "t": "p",
+    "x": "**Essai gratuit.** Lorsqu'un essai gratuit est proposé (par exemple 7 jours), il est indiqué avant la souscription. Aucun montant n'est débité pendant l'essai ; l'abonnement payant démarre ensuite automatiquement au prix de la formule choisie, sauf si tu résilies avant la fin de l'essai. Un seul essai gratuit par compte boutique."
    },
    {
     "t": "h2",
@@ -228,7 +238,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "L'abonnement est conclu pour un mois et se renouvelle tacitement chaque mois jusqu'à résiliation. Tu peux résilier à tout moment, sans frais ni préavis : directement depuis la page [Mon compte](compte.html) du site (bouton « Résilier votre contrat », lien également présent en bas de chaque page), ou en écrivant via la page [Contact](contact.html). La résiliation prend effet à la fin de la période déjà payée, pendant laquelle l'accès reste complet. Aucun remboursement au prorata n'est dû pour la période en cours, sauf rétractation (article 6)."
+    "x": "L'abonnement est conclu pour un mois ou pour un an selon la formule choisie, et se renouvelle tacitement à chaque échéance jusqu'à résiliation. Tu peux résilier à tout moment, sans frais ni préavis : directement depuis la page [Mon compte](https://ridenct.fr/compte.html) du site (bouton « Résilier votre contrat », lien également présent en bas de chaque page), ou en écrivant via la page [Contact](https://ridenct.fr/contact.html). La résiliation prend effet à la fin de la période déjà payée, pendant laquelle l'accès reste complet. Aucun remboursement au prorata n'est dû pour la période en cours, sauf rétractation (article 6). Pour un abonnement souscrit dans l'application, la résiliation et les remboursements se gèrent aussi depuis ton compte Google Play ou Apple."
    },
    {
     "t": "h2",
@@ -236,11 +246,35 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Tu disposes de 14 jours à compter de la souscription pour te rétracter, sans donner de motif, en l'indiquant clairement via la page [Contact](contact.html). Comme l'accès au service est immédiat à ta demande, expressément formulée en cochant la case prévue avant le paiement, tu paies, en cas de rétractation, un montant proportionnel à la part du service déjà fournie jusqu'à ta demande ; le reste est remboursé, sur le moyen de paiement utilisé, au plus tard 14 jours après ta demande."
+    "x": "Tu disposes de 14 jours à compter de la souscription pour te rétracter, sans donner de motif, en l'indiquant clairement via la page [Contact](https://ridenct.fr/contact.html). Comme l'accès au service est immédiat à ta demande, expressément formulée en cochant la case prévue avant le paiement, tu paies, en cas de rétractation, un montant proportionnel à la part du service déjà fournie jusqu'à ta demande ; le reste est remboursé, sur le moyen de paiement utilisé, au plus tard 14 jours après ta demande."
    },
    {
-    "t": "det",
-    "x": "Modèle de formulaire de rétractation\n\nÀ l'attention de François PICHON (FlowCal Engineering), La Furetais, 44130 Bouvron, France, via la page [Contact](contact.html) ou à FlowCal_Engineering@outlook.fr :\n\nJe vous notifie par la présente ma rétractation du contrat portant sur la prestation de services ci-dessous : abonnement mensuel RideNCT.\nCommandé le : ………\nNom : ………\nAdresse e-mail du compte RideNCT : ………\nDate : ………"
+    "t": "p",
+    "x": "**Modèle de formulaire de rétractation**"
+   },
+   {
+    "t": "p",
+    "x": "À l'attention de François PICHON (FlowCal Engineering), La Furetais, 44130 Bouvron, France, via la page [Contact](https://ridenct.fr/contact.html) ou à FlowCal_Engineering@outlook.fr :"
+   },
+   {
+    "t": "p",
+    "x": "Je vous notifie par la présente ma rétractation du contrat portant sur la prestation de services ci-dessous : abonnement RideNCT (mensuel / annuel)."
+   },
+   {
+    "t": "p",
+    "x": "Commandé le : ………"
+   },
+   {
+    "t": "p",
+    "x": "Nom : ………"
+   },
+   {
+    "t": "p",
+    "x": "Adresse e-mail du compte RideNCT : ………"
+   },
+   {
+    "t": "p",
+    "x": "Date : ………"
    },
    {
     "t": "h2",
@@ -248,7 +282,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "L'accès est activé en quelques instants après le paiement. En l'absence d'activation, écris via la page [Contact](contact.html). Les abonnements pris sur Google Play ou l'App Store relèvent de leurs propres conditions et de leur propre gestion."
+    "x": "L'accès est activé en quelques instants après le paiement. En l'absence d'activation, écris via la page [Contact](https://ridenct.fr/contact.html). Les abonnements pris sur Google Play ou l'App Store relèvent de leurs propres conditions et de leur propre gestion."
    },
    {
     "t": "h2",
@@ -264,7 +298,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Voir la [politique de confidentialité](confidentialite.html)."
+    "x": "Voir la [politique de confidentialité](app:confidentialite)."
    },
    {
     "t": "h2",
@@ -272,17 +306,18 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Droit français. Écris d'abord via la page [Contact](contact.html) pour chercher une solution amiable. Tu peux ensuite recourir gratuitement à un médiateur de la consommation : **CM2C – Centre de la médiation de la consommation de conciliateurs de justice**, 49 rue de Ponthieu, 75008 Paris, [contact@cm2c.net](mailto:contact@cm2c.net), 01 89 47 00 14. Tu peux déclarer ton litige directement sur [www.cm2c.net](https://www.cm2c.net)."
+    "x": "Droit français. Écris d'abord via la page [Contact](https://ridenct.fr/contact.html) pour chercher une solution amiable. Tu peux ensuite recourir gratuitement au médiateur de la consommation : **CM2C** (Centre de la médiation de la consommation de conciliateurs de justice), 49 rue de Ponthieu, 75008 Paris, [www.cm2c.net](https://www.cm2c.net), [contact@cm2c.net](mailto:contact@cm2c.net), 01 89 47 00 14. Tu peux déclarer ton litige directement sur la plate-forme CM2C."
    },
-  {
+   {
     "t": "p",
-    "x": "![Médiateur de la consommation CM2C](img/mediateur-cm2c.png)"
-  }
+    "x": "![Médiateur de la consommation CM2C](img:mediateur-cm2c)"
+   }
   ]
  },
  "mentions": {
   "title": "Mentions légales",
   "date": "",
+  "version": "2026-11-17.2",
   "blocks": [
    {
     "t": "h2",
@@ -290,11 +325,11 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**François PICHON**, entrepreneur individuel, exerçant sous le nom commercial **FlowCal Engineering**."
+    "x": "François PICHON, entrepreneur individuel, exerçant sous le nom commercial **FlowCal Engineering**."
    },
    {
     "t": "ul",
-    "x": "SIREN : 107 094 708 · SIRET : 107 094 708 00016\nActivité : édition et développement de logiciels (code APE 5829C)\nAdresse : La Furetais, 44130 Bouvron, France\nTVA : non applicable, article 293 B du CGI (franchise en base)\nDirecteur de la publication : François PICHON\nStatut : entrepreneur individuel (EI)\nContact : e-mail : [FlowCal_Engineering@outlook.fr](mailto:FlowCal_Engineering@outlook.fr) · téléphone : 07 88 78 85 90 · formulaire de la page [Contact](contact.html)"
+    "x": "SIREN : 107 094 708 · SIRET : 107 094 708 00016\nActivité : édition et développement de logiciels (code APE 5829C)\nAdresse : La Furetais, 44130 Bouvron, France\nTVA : non applicable, article 293 B du CGI (franchise en base)\nDirecteur de la publication : François PICHON\nStatut : entrepreneur individuel (EI)\nContact : e-mail : [FlowCal_Engineering@outlook.fr](mailto:FlowCal_Engineering@outlook.fr) · téléphone : 07 88 78 85 90 · formulaire de la page [Contact](https://ridenct.fr/contact.html)"
    },
    {
     "t": "h2",
@@ -302,7 +337,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Site :** GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis."
+    "x": "Site : GitHub, Inc. (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis."
    },
    {
     "t": "p",
@@ -326,7 +361,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Le détail des données conservées, des services utilisés et de tes droits est sur la page [Politique de confidentialité](confidentialite.html)."
+    "x": "Le détail des données conservées, des services utilisés et de tes droits est sur la page [Politique de confidentialité](app:confidentialite)."
    },
    {
     "t": "h2",
@@ -340,7 +375,8 @@ window.LEGAL_SEED = {
  },
  "confidentialite": {
   "title": "Politique de confidentialité",
-  "date": "novembre 2026",
+  "date": "18 novembre 2026",
+  "version": "2026-11-18.2",
   "blocks": [
    {
     "t": "h2",
@@ -348,7 +384,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "François PICHON, entrepreneur individuel exerçant sous le nom FlowCal Engineering (SIREN 107 094 708), éditeur de RideNCT. Pour toute question ou demande sur tes données, utilise la page [Contact](contact.html). Les coordonnées complètes sont dans les [mentions légales](mentions-legales.html)."
+    "x": "François PICHON, entrepreneur individuel exerçant sous le nom FlowCal Engineering (SIREN 107 094 708), éditeur de RideNCT. Pour toute question ou demande sur tes données, utilise la page [Contact](https://ridenct.fr/contact.html). Les coordonnées complètes sont dans les [mentions légales](app:mentions)."
    },
    {
     "t": "h2",
@@ -368,7 +404,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** adresse e-mail, nom d'utilisateur, mot de passe sous forme chiffrée (illisible, y compris pour nous), statut de l'abonnement (y compris un abonnement offert) et dates de création et de dernière connexion.\n\n**Pourquoi :** te permettre d'utiliser l'application, gratuite ou complète, et savoir si ton abonnement est actif. Base légale : exécution du service que tu demandes.\n\n**Durée :** jusqu'à la suppression de ton compte."
+    "x": "**Données :** adresse e-mail, nom d'utilisateur, mot de passe sous forme chiffrée (illisible, y compris pour nous), statut de l'abonnement (y compris un abonnement offert) et dates de création et de dernière connexion."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** te permettre d'utiliser l'application, gratuite ou complète, et savoir si ton abonnement est actif. Base légale : exécution du service que tu demandes."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** jusqu'à la suppression de ton compte."
    },
    {
     "t": "h3",
@@ -376,7 +420,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** un identifiant anonyme de motard, relié à ton compte quand tu te connectes dans l'application, et la version des conditions d'utilisation que tu as acceptée avec sa date (preuve de ton acceptation).\n\n**Pourquoi :** traiter les signalements que tu fais ou dont tu fais l'objet. Base légale : intérêt légitime (sécurité de la communauté).\n\n**Durée :** supprimé avec le compte."
+    "x": "**Données :** un identifiant anonyme de motard, relié à ton compte quand tu te connectes dans l'application, et la version des conditions d'utilisation que tu as acceptée avec sa date (preuve de ton acceptation)."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** traiter les signalements que tu fais ou dont tu fais l'objet. Base légale : intérêt légitime (sécurité de la communauté)."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** supprimé avec le compte."
    },
    {
     "t": "h3",
@@ -384,7 +436,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** si tu signales un motard : ton compte comme auteur, l'identifiant du motard signalé, le motif et ton commentaire (300 caractères au plus). Si tu signales un circuit : ton compte comme auteur du signalement. Un avertissement de la modération est lié au compte concerné. En cas d'abus : suspension d'un compte ou d'un appareil, avec son motif.\n\n**Pourquoi :** examiner les signalements et protéger la communauté. Base légale : intérêt légitime.\n\n**Durée :** un signalement est supprimé avec le compte de son auteur. Une suspension est conservée tant qu'elle est en vigueur."
+    "x": "**Données :** si tu signales un motard : ton compte comme auteur, l'identifiant du motard signalé, le motif et ton commentaire (300 caractères au plus). Si tu signales un circuit : ton compte comme auteur du signalement. Un avertissement de la modération est lié au compte concerné. En cas d'abus : suspension d'un compte ou d'un appareil, avec son motif."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** examiner les signalements et protéger la communauté. Base légale : intérêt légitime."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** un signalement est supprimé avec le compte de son auteur. Une suspension est conservée tant qu'elle est en vigueur."
    },
    {
     "t": "h3",
@@ -392,7 +452,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** uniquement quand tu publies un circuit : son titre, sa description, son niveau, sa distance, sa durée, sa région, son tracé (liste de points), ton nom d'utilisateur affiché comme auteur, le compte auteur et le nombre de téléchargements. Tes autres trajets ne sont jamais envoyés.\n\n**Pourquoi :** les rendre visibles et téléchargeables par les autres motards. Base légale : ton consentement, donné en publiant le circuit.\n\n**Durée :** jusqu'à ce que tu supprimes le circuit depuis l'application, ou que tu supprimes ton compte. Un circuit peut aussi être retiré par la modération s'il enfreint les [conditions d'utilisation](cgu.html) ou s'il reçoit trop de signalements. Un circuit téléchargé par un autre motard reste sur son téléphone."
+    "x": "**Données :** uniquement quand tu publies un circuit : son titre, sa description, son niveau, sa distance, sa durée, sa région, son tracé (liste de points), ton nom d'utilisateur affiché comme auteur, le compte auteur et le nombre de téléchargements. Tes autres trajets ne sont jamais envoyés."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** les rendre visibles et téléchargeables par les autres motards. Base légale : ton consentement, donné en publiant le circuit."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** jusqu'à ce que tu supprimes le circuit depuis l'application, ou que tu supprimes ton compte. Un circuit peut aussi être retiré par la modération s'il enfreint les [conditions d'utilisation](app:cgu) ou s'il reçoit trop de signalements. Un circuit téléchargé par un autre motard reste sur son téléphone."
    },
    {
     "t": "h3",
@@ -400,7 +468,11 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** position et type de l'alerte ou de l'événement, avec un identifiant d'appareil aléatoire (sans lien avec ton identité).\n\n**Durée :** suppression automatique à l'expiration : 7 jours après le départ d'une balade (événement), 2 heures pour un accident ou un animal, 24 heures pour les autres dangers (jusqu'à 48 heures au plus si d'autres motards confirment l'alerte). Une trace anonymisée (type d'alerte, zone arrondie à une dizaine de kilomètres, nombre de confirmations) est gardée 400 jours au plus pour mesurer la qualité du service."
+    "x": "**Données :** position et type de l'alerte ou de l'événement, avec un identifiant d'appareil aléatoire (sans lien avec ton identité)."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** suppression automatique à l'expiration : 7 jours après le départ d'une balade (événement), 2 heures pour un accident ou un animal, 24 heures pour les autres dangers (jusqu'à 48 heures au plus si d'autres motards confirment l'alerte). Une trace anonymisée (type d'alerte, zone arrondie à une dizaine de kilomètres, nombre de confirmations) est gardée 400 jours au plus pour mesurer la qualité du service."
    },
    {
     "t": "h3",
@@ -408,7 +480,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** ton adresse e-mail.\n\n**Pourquoi :** te prévenir de la sortie de l'application, rien d'autre. Base légale : ton consentement, donné en envoyant le formulaire.\n\n**Durée :** jusqu'à la sortie de l'application, puis suppression. Tu peux demander ta suppression à tout moment."
+    "x": "**Données :** ton adresse e-mail."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** te prévenir de la sortie de l'application, rien d'autre. Base légale : ton consentement, donné en envoyant le formulaire."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** jusqu'à la sortie de l'application, puis suppression. Tu peux demander ta suppression à tout moment."
    },
    {
     "t": "h3",
@@ -416,7 +496,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** tes réponses au sondage (type de moto, habitudes, besoins) et, si tu le souhaites, ton adresse e-mail pour la bêta.\n\n**Pourquoi :** comprendre les besoins des motards avant la sortie, et te prévenir pour la bêta si tu le demandes. Base légale : ton consentement, donné en envoyant le sondage. Les réponses ne sont pas liées à un compte.\n\n**Durée :** 12 mois au plus, puis suppression ou anonymisation. L'adresse e-mail est supprimée à la fin de la bêta."
+    "x": "**Données :** tes réponses au sondage (type de moto, habitudes, besoins) et, si tu le souhaites, ton adresse e-mail pour la bêta."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** comprendre les besoins des motards avant la sortie, et te prévenir pour la bêta si tu le demandes. Base légale : ton consentement, donné en envoyant le sondage. Les réponses ne sont pas liées à un compte."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** 12 mois au plus, puis suppression ou anonymisation. L'adresse e-mail est supprimée à la fin de la bêta."
    },
    {
     "t": "h3",
@@ -424,7 +512,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** ton nom, ton adresse e-mail, le sujet et ton message.\n\n**Pourquoi :** te répondre. Base légale : intérêt légitime et mesures précontractuelles.\n\n**Durée :** 12 mois au plus après le dernier échange."
+    "x": "**Données :** ton nom, ton adresse e-mail, le sujet et ton message."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** te répondre. Base légale : intérêt légitime et mesures précontractuelles."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** 12 mois au plus après le dernier échange."
    },
    {
     "t": "h3",
@@ -432,7 +528,15 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** une empreinte non réversible de ton adresse IP, avec le type d'action effectuée (inscription à la liste, message, vérification de nom d'utilisateur, code).\n\n**Pourquoi :** limiter le spam et les tentatives abusives. Base légale : intérêt légitime (sécurité du service).\n\n**Durée :** quelques jours au plus, puis suppression automatique."
+    "x": "**Données :** une empreinte non réversible de ton adresse IP, avec le type d'action effectuée (inscription à la liste, message, vérification de nom d'utilisateur, code)."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** limiter le spam et les tentatives abusives. Base légale : intérêt légitime (sécurité du service)."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** quelques jours au plus, puis suppression automatique."
    },
    {
     "t": "h3",
@@ -444,11 +548,11 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Comment :** pour que les motards proches se trouvent et se mettent en relation, l'application échange de courts messages (balises de zone, invitations, négociation de la liaison, chiffrés et signés pour la mise en relation) par un serveur de messagerie MQTT public, EMQX (broker.emqx.io). La voix de l'intercom et les données du radar passent ensuite directement de téléphone à téléphone (WebRTC). Si la liaison directe échoue, elles peuvent transiter par un serveur relais gratuit (Open Relay, Metered). Pour établir la liaison, l'application interroge des serveurs STUN de Google et de Cloudflare, qui reçoivent l'adresse IP de ton appareil, et vérifie la connexion réseau auprès de Google (gstatic.com) et de Cloudflare."
+    "x": "**Alerte de chute et appel à l'aide :** l'alerte envoyée aux motards situés à environ 5 km contient ta position précise (à quelques mètres près), ton nom d'utilisateur affiché et l'heure. Tes contacts d'urgence et, si tu les renseignes, tes informations médicales (groupe sanguin, allergies, traitements, pathologies) sont enregistrés uniquement sur ton téléphone : ils ne servent qu'à préparer les SMS à tes contacts, que ton téléphone envoie, et à l'affichage sur l'écran verrouillé si tu l'actives."
    },
    {
     "t": "p",
-    "x": "**Alerte de chute et appel à l'aide :** l'alerte envoyée aux motards situés à environ 1 km contient ta position précise (à quelques mètres près), ton nom d'utilisateur affiché et l'heure. Tes contacts d'urgence et, si tu les renseignes, tes informations médicales (groupe sanguin, allergies, traitements, pathologies) sont enregistrés uniquement sur ton téléphone : ils ne servent qu'à préparer les SMS à tes contacts, que ton téléphone envoie, et à l'affichage sur l'écran verrouillé si tu l'actives."
+    "x": "**Comment :** pour que les motards proches se trouvent et se mettent en relation, l'application échange de courts messages (balises de zone, invitations, négociation de la liaison, chiffrés et signés pour la mise en relation) par un serveur de messagerie MQTT, EMQX Cloud (EMQ, hébergé en Europe, accès protégé par identifiant). En cas d'indisponibilité, l'application peut utiliser un serveur MQTT public de secours (EMQX, broker.emqx.io). La voix de l'intercom et les données du radar passent ensuite directement de téléphone à téléphone (WebRTC). Si la liaison directe échoue, elles peuvent transiter, toujours chiffrées par WebRTC, par un serveur relais (TURN) de Cloudflare, auquel l'application accède avec des identifiants temporaires délivrés à ton compte connecté ; en secours, elles peuvent passer par un relais gratuit (Open Relay, Metered). Pour établir la liaison, l'application interroge des serveurs STUN de Google et de Cloudflare, qui reçoivent l'adresse IP de ton appareil, et vérifie la connexion réseau auprès de Google (gstatic.com) et de Cloudflare."
    },
    {
     "t": "p",
@@ -460,7 +564,11 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Données :** les actions d'administration (suspension, suppression, abonnement offert…) sont inscrites dans un journal réservé à l'équipe, avec l'adresse e-mail du compte concerné. Des sauvegardes de la base (comptes, abonnements, messages de contact, liste d'attente, signalements) permettent de restaurer le service.\n\n**Durée :** le journal est conservé le temps nécessaire à la traçabilité des actions de modération, pour une durée proportionnée à cette finalité. Pour les sauvegardes, seules les 7 dernières sauvegardes automatiques et les 10 dernières sauvegardes manuelles sont gardées ; les plus anciennes sont effacées au fur et à mesure. Une donnée supprimée disparaît donc aussi des sauvegardes lors de leur renouvellement."
+    "x": "**Données :** les actions d'administration (suspension, suppression, abonnement offert…) sont inscrites dans un journal réservé à l'équipe, avec l'adresse e-mail du compte concerné. Des sauvegardes de la base (comptes, abonnements, messages de contact, liste d'attente, signalements) permettent de restaurer le service."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** le journal est conservé le temps nécessaire à la traçabilité des actions de modération, pour une durée proportionnée à cette finalité. Pour les sauvegardes, seules les 7 dernières sauvegardes automatiques et les 10 dernières sauvegardes manuelles sont gardées ; les plus anciennes sont effacées au fur et à mesure. Une donnée supprimée disparaît donc aussi des sauvegardes lors de leur renouvellement."
    },
    {
     "t": "h3",
@@ -480,7 +588,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "**Pourquoi :** afficher des publicités dans la version gratuite (bannières et plein écran, jamais en roulant ni pendant un intercom). **Base légale :** ton consentement, demandé au premier lancement par un formulaire de consentement (sur iOS, autorisation de suivi). Dans l'Espace économique européen, la publicité n'est affichée qu'avec ce consentement."
+    "x": "**Pourquoi :** afficher des publicités dans la version gratuite (bannières et plein écran, jamais en roulant ni pendant un intercom). Base légale : ton consentement, demandé au premier lancement par un formulaire de consentement (sur iOS, autorisation de suivi). Dans l'Espace économique européen, la publicité n'est affichée qu'avec ce consentement."
    },
    {
     "t": "p",
@@ -508,7 +616,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "ul",
-    "x": "**Supabase** : base de données et connexion, hébergées dans l'Union européenne (Irlande).\n**GitHub (GitHub Pages)** : hébergement du site. GitHub, société américaine, reçoit l'adresse IP des visiteurs.\n**Services cartographiques** du planificateur, listés plus haut.\n**Google (AdMob)** : publicité de la version gratuite de l'application, voir plus haut.\n**EMQX** (serveur MQTT public), **Google** et **Cloudflare** (serveurs STUN), **Metered** (relais Open Relay) : fonctions de proximité de l'application, voir plus haut.\n**Resend, Inc.** (États-Unis) : service d'envoi d'e-mails (confirmation de compte, mot de passe oublié). Il reçoit ton adresse e-mail pour t'envoyer ces messages."
+    "x": "Supabase : base de données et connexion, hébergées dans l'Union européenne (Irlande).\n**GitHub (GitHub Pages)** : hébergement du site. GitHub, société américaine, reçoit l'adresse IP des visiteurs.\n**Services cartographiques** du planificateur, listés plus haut.\n**EMQX Cloud** (EMQ, serveur MQTT) et, en secours, le serveur MQTT public d'EMQX ; **Google** et **Cloudflare** (serveurs STUN) ; **Cloudflare** (relais TURN) et, en secours, **Metered** (relais Open Relay) : fonctions de proximité de l'application, voir plus haut.\n**Resend, Inc.** (États-Unis) : service d'envoi d'e-mails (confirmation de compte, mot de passe oublié). Il reçoit ton adresse e-mail pour t'envoyer ces messages.\n**Google (AdMob)** : publicité de la version gratuite de l'application, voir plus haut."
    },
    {
     "t": "p",
@@ -532,7 +640,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "ul",
-    "x": "**Seul :** depuis la page [Mon compte](compte.html), télécharge tes données ou supprime ton compte.\n**Sur demande :** écris-nous via la page [Contact](contact.html) en précisant ta demande et l'adresse e-mail concernée. Nous répondons dans un délai d'un mois.\n**Réclamation :** si tu estimes que tes droits ne sont pas respectés, tu peux saisir la CNIL ([cnil.fr/plaintes](https://www.cnil.fr/fr/plaintes))."
+    "x": "**Seul :** depuis la page [Mon compte](https://ridenct.fr/compte.html), télécharge tes données ou supprime ton compte.\n**Sur demande :** écris-nous via la page [Contact](https://ridenct.fr/contact.html) en précisant ta demande et l'adresse e-mail concernée. Nous répondons dans un délai d'un mois.\n**Réclamation :** si tu estimes que tes droits ne sont pas respectés, tu peux saisir la CNIL ([cnil.fr/plaintes](https://www.cnil.fr/fr/plaintes))."
    },
    {
     "t": "p",
@@ -544,7 +652,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Cette politique peut évoluer, notamment à l'ouverture du paiement. La date de dernière mise à jour est indiquée en haut de la page."
+    "x": "Cette politique peut évoluer. La date de dernière mise à jour est indiquée en haut de la page."
    }
   ]
  }

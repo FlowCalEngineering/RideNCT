@@ -1,0 +1,1 @@
+(function(){function c(n){var t=document.querySelector('.intercom-tab-btn[data-sub="'+n+'"]');t&&t.click()}document.addEventListener("click",function(n){var t=n.target.closest&&n.target.closest("#btn-ic-invitations, #btn-ic-back");t&&c(t.id==="btn-ic-back"?"sub-intercom-radar":"sub-intercom-invites")})})();

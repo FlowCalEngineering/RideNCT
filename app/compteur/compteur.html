@@ -1,0 +1,122 @@
+        <section id="view-dashboard" class="module-view">
+            <div id="ride-overlay" class="ride-overlay">
+                <button class="btn btn-primary" id="btn-go-ride" style="max-width: 300px; padding: 25px;">Démarrer</button>
+            </div>
+
+            <button id="btn-stop-ride" class="fab-stop" style="display: none;">✕</button>
+            <button type="button" id="btn-eco" class="eco-btn" aria-label="Économie d'énergie" title="Économie d'énergie"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.5 5-7"/></svg></button>
+            <div id="battery-status" class="battery-status">
+                <span id="battery-icon">🔋</span><span id="battery-level">--%</span>
+            </div>
+            <div id="gps-indicator" class="gps-active-icon"></div>
+
+            <div id="dashboard-content" class="dashboard-content hidden">
+                <div class="dash-layout">
+                    <div class="dash-speed-zone">
+                        <div class="modern-gauge">
+                            <svg viewBox="0 0 200 200" class="speed-svg">
+                                <circle cx="100" cy="100" r="80" class="gauge-bg"></circle>
+                                <circle cx="100" cy="100" r="80" class="gauge-progress" id="ui-speed-ring"></circle>
+                            </svg>
+                            <div class="speed-text-container">
+                                <div class="big-data" id="ui-speed">0</div>
+                                <div class="unit" data-u="speed">km/h</div>
+                            </div>
+                        </div>
+                        <div class="small-counters">
+                            <div class="mini-card" title="Distance du trajet">
+                                <svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg>
+                                <div class="mini-value" id="ui-distance">0.00<span class="mini-unit" data-u="dist">km</span></div>
+                            </div>
+                            <div class="mini-card" title="Temps moteur">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
+                                <div class="mini-value" id="ui-engine-hours">0.0<span class="mini-unit">h</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dash-future-zone" id="dash-widget">
+                        <div class="dw-panels">
+                            <div class="dw-panel" data-w="map"><div class="dw-map-slot" id="dw-map-slot"><div class="dw-empty" id="dw-map-empty">Carte en cours de chargement…</div></div></div>
+
+                            <div class="dw-panel" data-w="nav">
+                                <div class="dw-nav" id="dw-nav-on" style="display:none;">
+                                    <div class="dw-nav-main">
+                                        <svg id="dw-nav-icon" viewBox="0 0 24 24"></svg>
+                                        <div class="dw-nav-txt"><div id="dw-nav-dist">--</div><div id="dw-nav-label"></div><div id="dw-nav-street"></div></div>
+                                    </div>
+                                    <div class="dw-nav-trip">
+                                        <div title="Arrivée"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><b id="dw-nav-eta">--:--</b></div>
+                                        <div title="Temps restant"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><b id="dw-nav-time">--</b></div>
+                                        <div title="Distance restante"><svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg><b><span id="dw-nav-km">--</span> <span data-u="dist">km</span></b></div>
+                                    </div>
+                                </div>
+                                <div class="dw-empty" id="dw-nav-off"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><span>Aucun itinéraire en cours</span><small>Crée un trajet dans l'onglet Carte</small></div>
+                            </div>
+
+                            <div class="dw-panel" data-w="music">
+                                <div class="dw-music">
+                                    <div class="dw-m-art"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+                                    <div class="dw-m-info"><div class="dw-m-title" id="dw-m-title">Aucun titre</div><div class="dw-m-artist" id="dw-m-artist"></div><div class="dw-m-bar"><i id="dw-m-fill"></i></div></div>
+                                </div>
+                                <div class="dw-m-ctrl">
+                                    <button type="button" id="dw-m-prev" aria-label="Précédent"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+                                    <button type="button" id="dw-m-play" class="main" aria-label="Lecture / Pause"><svg viewBox="0 0 24 24" id="dw-m-playicon"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+                                    <button type="button" id="dw-m-next" aria-label="Suivant"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+                                </div>
+                                <div class="dw-vol" data-no-swipe>
+                                    <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+                                    <input type="range" id="dw-m-vol" class="dw-range" min="0" max="100" step="1" value="100" aria-label="Volume de la musique">
+                                    <span id="dw-m-vol-val">100%</span>
+                                </div>
+                            </div>
+
+                            <div class="dw-panel" data-w="weather" id="dw-weather">
+                                <div class="dw-empty" id="dw-w-off"><span>Météo indisponible</span><small>En attente de la position</small></div>
+                                <div class="dw-w" id="dw-w-on" style="display:none;">
+                                    <div class="dw-w-now"><span class="dw-w-ic" id="dw-w-ic"></span><div><b id="dw-w-temp">--°</b><small id="dw-w-wind"></small></div></div>
+                                    <div class="dw-w-next" id="dw-w-next"></div>
+                                </div>
+                            </div>
+
+                            <div class="dw-panel dw-scroll" data-w="intercom">
+                                <div class="dw-ic2">
+                                    <div class="dw-row">
+                                        <div class="dw-row-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                                        <div class="dw-row-txt"><b>Mode rencontre</b><small id="dw-ic-auto-sub">Désactivé</small></div>
+                                        <button type="button" id="dw-ic-auto" class="dw-switch" aria-label="Mode rencontre"></button>
+                                    </div>
+                                    <div class="dw-row" id="dw-ic-group-on" style="display:none;">
+                                        <div class="dw-row-ic on"><svg viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-5H5a2 2 0 0 0-2 2z"/></svg></div>
+                                        <div class="dw-row-txt"><b id="dw-ic-room">Groupe</b><small id="dw-ic-room-sub"></small></div>
+                                        <button type="button" id="dw-ic-mic" class="dw-mic" aria-label="Micro"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
+                                        <button type="button" id="dw-ic-leave" class="dw-mic leave" aria-label="Quitter le groupe"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+                                    </div>
+                                    <div class="dw-vols" id="dw-ic-vols" data-no-swipe style="display:none;">
+                                        <div class="dw-vol"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><input type="range" id="dw-ic-vol" class="dw-range" min="0" max="100" step="1" value="100" aria-label="Volume des motards"><span id="dw-ic-vol-val">100%</span></div>
+                                        <div class="dw-vol" id="dw-ic-mvol-row"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><input type="range" id="dw-ic-mvol" class="dw-range" min="0" max="100" step="1" value="100" aria-label="Volume de la musique"><span id="dw-ic-mvol-val">100%</span></div>
+                                    </div>
+                                    <div class="dw-rooms-head" id="dw-ic-rooms-head"><span>Groupes vocaux à proximité</span><button type="button" id="dw-ic-create" aria-label="Créer un groupe">+ Créer</button></div>
+                                    <div class="dw-rooms" id="dw-ic-rooms"></div>
+                                </div>
+                            </div>
+
+                            <div class="dw-panel" data-w="group">
+                                <div class="dw-ic">
+                                    <div class="dw-ic-status"><i id="dw-g-dot"></i><div><b id="dw-g-title">Radar désactivé</b><small id="dw-g-sub"></small></div></div>
+                                    <div class="dw-g-btns"><button type="button" id="dw-g-all">Tous</button><button type="button" id="dw-g-friends">Amis</button></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dw-bar" id="dw-bar" data-no-swipe>
+                            <button type="button" class="dw-btn" data-w="map" title="Carte" aria-label="Carte"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="nav" title="Navigation" aria-label="Navigation"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="music" title="Musique" aria-label="Musique"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="weather" title="Météo" aria-label="Météo"><svg viewBox="0 0 24 24"><path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4"/><path d="M15.9 14A5 5 0 0 0 6 14"/><path d="M17.5 19H9a4 4 0 1 1 .5-8"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="intercom" title="Intercom" aria-label="Intercom"><svg viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-5H5a2 2 0 0 0-2 2z"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="group" title="Groupe" aria-label="Groupe"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5a5 5 0 0 1 4.5 5"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+

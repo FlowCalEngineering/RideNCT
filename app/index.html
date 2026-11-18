@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1c1c1e">
+    
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="core/pwa/icon-180.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="RideNCT">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>RideNCT</title>
+
+    
+    <link href="libs/maplibre-gl/maplibre-gl.css" rel="stylesheet" />
+    <script src="libs/maplibre-gl/maplibre-gl.js"></script>
+
+    
+    <link rel="stylesheet" href="reglage/theme/variables.css">
+    <link rel="stylesheet" href="reglage/theme/styles.css">
+    <link rel="stylesheet" href="compteur/compteur.css">
+    <link rel="stylesheet" href="carte/carte.css">
+    <link rel="stylesheet" href="carte/expert/expert.css">
+    <link rel="stylesheet" href="core/icons.css">
+    <link rel="stylesheet" href="intercom/intercom.css">
+    <link rel="stylesheet" href="atelier/atelier.css">
+    <link rel="stylesheet" href="reglage/reglage.css">
+    <link rel="stylesheet" href="securite/securite.css">
+    <link rel="stylesheet" href="musique/musique.css">
+    <link rel="stylesheet" href="groupe/groupe.css">
+    <link rel="stylesheet" href="profil/profil.css">
+    <link rel="stylesheet" href="route/route.css">
+    <link rel="stylesheet" href="accueil/accueil.css">
+    <link rel="stylesheet" href="core/nav.css">
+    <link rel="stylesheet" href="core/auth.css">
+    <link rel="stylesheet" href="core/plateforme.css">
+    <link rel="stylesheet" href="core/legal.css">
+    <link rel="stylesheet" href="core/abonnement.css">
+    <link rel="stylesheet" href="core/pub.css">
+    <link rel="stylesheet" href="core/racing.css">
+    <link rel="stylesheet" href="core/mosaic.css">
+    <link rel="stylesheet" href="core/overlays.css">
+
+    
+    <script src="core/donnees-compte.js"></script>
+    <script src="reglage/langue/langue.js"></script>
+    <script src="reglage/theme/styles.js"></script>
+    <script src="reglage/theme/styles/Classique/standard.js" data-cat="classique" data-cat-label="Classique"></script>
+    <script src="reglage/theme/styles/Classique/carbone.js" data-cat="classique" data-cat-label="Classique"></script>
+    <script src="reglage/theme/styles/Classique/papier.js" data-cat="classique" data-cat-label="Classique"></script>
+    <script src="reglage/theme/styles/Classique/stealth.js" data-cat="classique" data-cat-label="Classique"></script>
+    <script src="reglage/theme/styles/Racing%20%26%20Sport/chrono.js" data-cat="racing-sport" data-cat-label="Racing &amp; Sport"></script>
+    <script src="reglage/theme/styles/Racing%20%26%20Sport/gulf.js" data-cat="racing-sport" data-cat-label="Racing &amp; Sport"></script>
+    <script src="reglage/theme/styles/Racing%20%26%20Sport/repsol.js" data-cat="racing-sport" data-cat-label="Racing &amp; Sport"></script>
+    <script src="reglage/theme/styles/Racing%20%26%20Sport/zone-rouge.js" data-cat="racing-sport" data-cat-label="Racing &amp; Sport"></script>
+    <script src="reglage/theme/styles/Visibilit%C3%A9%20%26%20Condition/alpine.js" data-cat="visibilite-condition" data-cat-label="Visibilité &amp; Condition"></script>
+    <script src="reglage/theme/styles/Visibilit%C3%A9%20%26%20Condition/pluie.js" data-cat="visibilite-condition" data-cat-label="Visibilité &amp; Condition"></script>
+    <script src="reglage/theme/styles/Style%20%26%20N%C3%A9o-R%C3%A9tro/neon.js" data-cat="style-neo-retro" data-cat-label="Style &amp; Néo-Rétro"></script>
+    <script src="reglage/theme/theme.js"></script>
+    <script src="core/prefs.js"></script>
+    <script src="core/plateforme.js"></script>
+    <script src="core/orient.js"></script>
+    <script src="core/legal-textes.js"></script>
+    <script src="core/legal.js"></script>
+    <script src="core/avertissements.js"></script>
+    <script src="core/auth.js"></script>
+    <script src="core/abonnement-config.js"></script>
+    <script src="core/abonnement.js"></script>
+    <script src="core/pub-config.js"></script>
+    <script src="core/pub.js"></script>
+    <script src="core/signaux.js"></script>
+    <script src="core/qr.js"></script>
+    <script src="core/wake-lock.js"></script>
+</head>
+<body>
+
+    <main id="app-content">
+                <section id="view-home" class="module-view active">
+            <div class="hm" id="hm"></div>
+        </section>
+                <section id="view-dashboard" class="module-view">
+            <div id="ride-overlay" class="ride-overlay">
+                <button class="btn btn-primary" id="btn-go-ride" style="max-width: 300px; padding: 25px;">Démarrer</button>
+            </div>
+
+            <button id="btn-stop-ride" class="fab-stop" style="display: none;">✕</button>
+            <button type="button" id="btn-eco" class="eco-btn" aria-label="Économie d'énergie" title="Économie d'énergie"><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.5 5-7"/></svg></button>
+            <div id="battery-status" class="battery-status">
+                <span id="battery-icon">🔋</span><span id="battery-level">--%</span>
+            </div>
+            <div id="gps-indicator" class="gps-active-icon"></div>
+
+            <div id="dashboard-content" class="dashboard-content hidden">
+                <div class="dash-layout">
+                    <div class="dash-speed-zone">
+                        <div class="modern-gauge">
+                            <svg viewBox="0 0 200 200" class="speed-svg">
+                                <circle cx="100" cy="100" r="80" class="gauge-bg"></circle>
+                                <circle cx="100" cy="100" r="80" class="gauge-progress" id="ui-speed-ring"></circle>
+                            </svg>
+                            <div class="speed-text-container">
+                                <div class="big-data" id="ui-speed">0</div>
+                                <div class="unit" data-u="speed">km/h</div>
+                            </div>
+                        </div>
+                        <div class="small-counters">
+                            <div class="mini-card" title="Distance du trajet">
+                                <svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg>
+                                <div class="mini-value" id="ui-distance">0.00<span class="mini-unit" data-u="dist">km</span></div>
+                            </div>
+                            <div class="mini-card" title="Temps moteur">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
+                                <div class="mini-value" id="ui-engine-hours">0.0<span class="mini-unit">h</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dash-future-zone" id="dash-widget">
+                        <div class="dw-panels">
+                            <div class="dw-panel" data-w="map"><div class="dw-map-slot" id="dw-map-slot"><div class="dw-empty" id="dw-map-empty">Carte en cours de chargement…</div></div></div>
+
+                            <div class="dw-panel" data-w="nav">
+                                <div class="dw-nav" id="dw-nav-on" style="display:none;">
+                                    <div class="dw-nav-main">
+                                        <svg id="dw-nav-icon" viewBox="0 0 24 24"></svg>
+                                        <div class="dw-nav-txt"><div id="dw-nav-dist">--</div><div id="dw-nav-label"></div><div id="dw-nav-street"></div></div>
+                                    </div>
+                                    <div class="dw-nav-trip">
+                                        <div title="Arrivée"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><b id="dw-nav-eta">--:--</b></div>
+                                        <div title="Temps restant"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><b id="dw-nav-time">--</b></div>
+                                        <div title="Distance restante"><svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg><b><span id="dw-nav-km">--</span> <span data-u="dist">km</span></b></div>
+                                    </div>
+                                </div>
+                                <div class="dw-empty" id="dw-nav-off"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><span>Aucun itinéraire en cours</span><small>Crée un trajet dans l'onglet Carte</small></div>
+                            </div>
+
+                            <div class="dw-panel" data-w="music">
+                                <div class="dw-music">
+                                    <div class="dw-m-art"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+                                    <div class="dw-m-info"><div class="dw-m-title" id="dw-m-title">Aucun titre</div><div class="dw-m-artist" id="dw-m-artist"></div><div class="dw-m-bar"><i id="dw-m-fill"></i></div></div>
+                                </div>
+                                <div class="dw-m-ctrl">
+                                    <button type="button" id="dw-m-prev" aria-label="Précédent"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+                                    <button type="button" id="dw-m-play" class="main" aria-label="Lecture / Pause"><svg viewBox="0 0 24 24" id="dw-m-playicon"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+                                    <button type="button" id="dw-m-next" aria-label="Suivant"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+                                </div>
+                                <div class="dw-vol" data-no-swipe>
+                                    <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+                                    <input type="range" id="dw-m-vol" class="dw-range" min="0" max="100" step="1" value="100" aria-label="Volume de la musique">
+                                    <span id="dw-m-vol-val">100%</span>
+                                </div>
+                            </div>
+
+                            <div class="dw-panel" data-w="weather" id="dw-weather">
+                                <div class="dw-empty" id="dw-w-off"><span>Météo indisponible</span><small>En attente de la position</small></div>
+                                <div class="dw-w" id="dw-w-on" style="display:none;">
+                                    <div class="dw-w-now"><span class="dw-w-ic" id="dw-w-ic"></span><div><b id="dw-w-temp">--°</b><small id="dw-w-wind"></small></div></div>
+                                    <div class="dw-w-next" id="dw-w-next"></div>
+                                </div>
+                            </div>
+
+                            <div class="dw-panel dw-scroll" data-w="intercom">
+                                <div class="dw-ic2">
+                                    <div class="dw-row">
+                                        <div class="dw-row-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                                        <div class="dw-row-txt"><b>Mode rencontre</b><small id="dw-ic-auto-sub">Désactivé</small></div>
+                                        <button type="button" id="dw-ic-auto" class="dw-switch" aria-label="Mode rencontre"></button>
+                                    </div>
+                                    <div class="dw-row" id="dw-ic-group-on" style="display:none;">
+                                        <div class="dw-row-ic on"><svg viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-5H5a2 2 0 0 0-2 2z"/></svg></div>
+                                        <div class="dw-row-txt"><b id="dw-ic-room">Groupe</b><small id="dw-ic-room-sub"></small></div>
+                                        <button type="button" id="dw-ic-mic" class="dw-mic" aria-label="Micro"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
+                                        <button type="button" id="dw-ic-leave" class="dw-mic leave" aria-label="Quitter le groupe"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+                                    </div>
+                                    <div class="dw-vols" id="dw-ic-vols" data-no-swipe style="display:none;">
+                                        <div class="dw-vol"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><input type="range" id="dw-ic-vol" class="dw-range" min="0" max="100" step="1" value="100" aria-label="Volume des motards"><span id="dw-ic-vol-val">100%</span></div>
+                                        <div class="dw-vol" id="dw-ic-mvol-row"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><input type="range" id="dw-ic-mvol" class="dw-range" min="0" max="100" step="1" value="100" aria-label="Volume de la musique"><span id="dw-ic-mvol-val">100%</span></div>
+                                    </div>
+                                    <div class="dw-rooms-head" id="dw-ic-rooms-head"><span>Groupes vocaux à proximité</span><button type="button" id="dw-ic-create" aria-label="Créer un groupe">+ Créer</button></div>
+                                    <div class="dw-rooms" id="dw-ic-rooms"></div>
+                                </div>
+                            </div>
+
+                            <div class="dw-panel" data-w="group">
+                                <div class="dw-ic">
+                                    <div class="dw-ic-status"><i id="dw-g-dot"></i><div><b id="dw-g-title">Radar désactivé</b><small id="dw-g-sub"></small></div></div>
+                                    <div class="dw-g-btns"><button type="button" id="dw-g-all">Tous</button><button type="button" id="dw-g-friends">Amis</button></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dw-bar" id="dw-bar" data-no-swipe>
+                            <button type="button" class="dw-btn" data-w="map" title="Carte" aria-label="Carte"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="nav" title="Navigation" aria-label="Navigation"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="music" title="Musique" aria-label="Musique"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="weather" title="Météo" aria-label="Météo"><svg viewBox="0 0 24 24"><path d="M12 2v2M4.9 4.9l1.4 1.4M20 12h2M19.1 4.9l-1.4 1.4"/><path d="M15.9 14A5 5 0 0 0 6 14"/><path d="M17.5 19H9a4 4 0 1 1 .5-8"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="intercom" title="Intercom" aria-label="Intercom"><svg viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-5h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-5H5a2 2 0 0 0-2 2z"/></svg></button>
+                            <button type="button" class="dw-btn" data-w="group" title="Groupe" aria-label="Groupe"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5a5 5 0 0 1 4.5 5"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                <section id="view-gps" class="module-view">
+            <h1 class="module-header" id="gps-title" style="display:none; position:absolute; top:0; left:0; right:0; z-index:5; pointer-events:none;"></h1>
+            <div class="map-wrapper">
+                <div id="map-container"></div>
+
+                <div id="sub-gps-carte" class="gps-sub-view view-transparent active">
+                    <div id="main-map-badge" class="map-status-badge">Prêt 🛰️</div>
+
+                    <div class="nav-top">
+                    
+                    <div id="map-weather" class="map-weather mw-loading" role="button" aria-label="Météo — ouvrir l'onglet Météo">
+                        <div class="mw-row"><span class="mw-ic" id="mw-ic"></span><span class="mw-temp" id="mw-temp">--°</span></div>
+                        <div class="mw-wind"><svg viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg><span id="mw-wind">--</span></div>
+                        <div class="mw-sep"></div>
+                        <div class="mw-nlabel" id="mw-nlabel">+1h</div>
+                        <div class="mw-row"><span class="mw-ic sm" id="mw-nic"></span><span class="mw-ntemp" id="mw-ntemp">--°</span></div>
+                        <div class="mw-nrain dry" id="mw-nrain"><svg viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg><span id="mw-nrain-v">--%</span></div>
+                    </div>
+
+                    
+                    
+                    
+                    <div id="nav-instruction-hud" class="nav-hud" style="display: none;">
+                        <div class="nav-hud-main">
+                            <div class="nav-hud-ico">
+                                <svg id="nav-turn-icon" viewBox="0 0 24 24"></svg>
+                                <div id="nav-exit-badge" class="nav-exit" style="display: none;">1</div>
+                            </div>
+                            <div class="nav-hud-txt">
+                                <div id="nav-distance">-- m</div>
+                                <div id="nav-label"></div>
+                                <div id="nav-street"></div>
+                            </div>
+                            <button id="btn-voice" class="nav-voice" type="button" title="Guidage vocal" aria-label="Guidage vocal"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"></path><path class="vw" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path><line class="vx" x1="16" y1="9" x2="22" y2="15"></line><line class="vx" x1="22" y1="9" x2="16" y2="15"></line></svg></button>
+                        </div>
+                        <div id="nav-next" class="nav-next" style="display: none;"><span>Puis</span><svg id="nav-next-icon" viewBox="0 0 24 24"></svg></div>
+                        <div id="nav-radar" class="nav-radar" style="display: none;"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20z"></path><line x1="12" y1="10" x2="12" y2="14"></line><line x1="12" y1="17" x2="12" y2="17.01"></line></svg><span id="nav-radar-txt">Zone de danger</span></div>
+                    </div>
+                    </div>
+
+                    
+                    <div id="nav-trip-bar" class="nav-trip">
+                <div class="nt-cell nt-route" title="Arrivée"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><b id="nt-eta">--:--</b></div>
+                <div class="nt-cell nt-route" title="Temps restant"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><b id="nt-time">--</b></div>
+                <div class="nt-cell nt-route" title="Distance restante"><svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM8 17h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg><b><span id="nt-dist">--</span> <span data-u="dist">km</span></b></div>
+                <div class="nt-cell nt-speedw" title="Compteur">
+                    <svg viewBox="0 0 200 200" class="nt-ring"><circle cx="100" cy="100" r="80" class="nt-ring-bg"></circle><circle cx="100" cy="100" r="80" class="nt-ring-fg" id="nt-ring"></circle></svg>
+                    <div class="nt-sp"><b id="nt-speed">0</b><i data-u="speed">km/h</i></div>
+                    <div id="nt-limit" class="nt-limit" style="display: none;">--</div>
+                </div>
+            </div>
+
+
+                    <div id="poi-filters" class="poi-filters">
+                        <button class="poi-chip fuel" data-cat="fuel" title="Essence" aria-label="Essence"><svg viewBox="0 0 24 24"><path d="M3 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"></path><path d="M3 22h12"></path><path d="M6 8h6"></path><path d="M15 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V9l-3-3"></path></svg></button>
+                        <button class="poi-chip food" data-cat="food" title="Restaurants" aria-label="Restaurants"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"></path><path d="M21 15v7"></path></svg></button>
+                        <button class="poi-chip drink" data-cat="drink" title="Cafés et bars" aria-label="Cafés et bars"><svg viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"></path><path d="M6 2v2"></path><path d="M10 2v2"></path><path d="M14 2v2"></path></svg></button>
+                        <button class="poi-chip event" data-cat="event" title="Événements" aria-label="Événements"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button>
+                    </div>
+
+                    <button id="btn-report" class="report-btn" type="button" aria-label="Signaler un danger ou une balade" title="Signaler">
+                        <svg viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+
+                    <button id="btn-toggle-poi" class="poi-toggle-btn" type="button" aria-label="Choisir les points à afficher" title="Points à afficher">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </button>
+
+                    <button id="btn-clear-route-map" class="clear-route-btn" aria-label="Supprimer l'itinéraire" title="Supprimer l'itinéraire">
+                        <svg viewBox="0 0 24 24"><path d="M3 12h4l3-6 4 12 3-6h4"></path><line x1="3" y1="3" x2="21" y2="21"></line></svg>
+                    </button>
+
+                    <button id="btn-recenter" class="recenter-btn">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+
+                    <button id="btn-start-nav" class="pill-action-btn" style="flex: none; width: auto; min-width: clamp(140px, 40vw, 200px); padding: 12px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: auto; background: var(--accent-color); color: var(--on-accent); pointer-events: auto;">
+                        <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                        <span>Démarrer</span>
+                    </button>
+
+                    
+                <div id="route-bottom-sheet" class="bottom-sheet">
+                    <button id="btn-toggle-sheet" class="sheet-toggle-btn">
+                        <svg class="sheet-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+                        <span>Itinéraire</span>
+                        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                    </button>
+
+                    <div class="sheet-content" id="sheet-content-area">
+                        <button id="btn-clear-route" class="pill-action-btn clear-route-sheet-btn" style="display: none; width: 100%; flex: none; margin-bottom: 15px; padding: 14px; background: rgba(255,69,58,0.15); color: var(--danger-color);"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg><span>Supprimer l'itinéraire</span></button>
+                        <div id="waypoints-container">
+                            <div class="input-wrapper" id="wrap-wp-start">
+                                <input type="text" id="input-wp-start" class="floating-input" readonly placeholder="📍 Départ">
+                                <div id="list-wp-start" class="autocomplete-list"></div>
+                            </div>
+                            <div class="input-wrapper" id="wrap-wp-dest">
+                                <input type="text" id="input-wp-dest" class="floating-input" readonly placeholder="🏁 Destination">
+                                <div id="list-wp-dest" class="autocomplete-list"></div>
+                            </div>
+                        </div>
+                        
+                        <button id="btn-add-waypoint" class="btn" style="background: rgba(var(--tint),0.05); font-size: 0.9rem; font-weight: 700; padding: 18px; border-radius: 14px; margin-bottom: 20px;">+ Ajouter étape</button>
+                        
+                        <div style="display: flex; gap: 10px; flex-shrink: 0; margin-bottom: 20px;">
+                            <button class="btn route-mode-btn active" data-mode="sinueux" style="flex: 1; padding: 14px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 800; background: var(--accent-color); color: var(--on-accent); border-radius: 14px;">
+                                <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 22 C 6 13, 16 15, 16 9 C 16 5, 12 3, 9 2"></path><path d="M14 22 C 14 15, 22 17, 22 9 C 22 4, 17 1, 15 2"></path><path d="M10 22 C 10 14, 19 16, 19 9 C 19 4.5, 14.5 2, 12 2" stroke-dasharray="3 4"></path></svg>
+                                <span>Sinueux</span>
+                            </button>
+                            <button class="btn route-mode-btn" data-mode="sans-axe" style="flex: 1; padding: 14px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 800; background: rgba(var(--tint),0.1); color: var(--text-main); border-radius: 14px;">
+                                <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 22L9 2"></path><path d="M20 22L15 2"></path><line x1="12" y1="22" x2="12" y2="18"></line><line x1="12" y1="13" x2="12" y2="9"></line><line x1="12" y1="4" x2="12" y2="2"></line><line x1="3" y1="21" x2="21" y2="3" stroke-width="2.5"></line></svg>
+                                <span>Sans Axes</span>
+                            </button>
+                            <button class="btn route-mode-btn" data-mode="rapide" style="flex: 1; padding: 14px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 800; background: rgba(var(--tint),0.1); color: var(--text-main); border-radius: 14px;">
+                                <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 22L9 2"></path><path d="M20 22L15 2"></path><line x1="12" y1="22" x2="12" y2="18"></line><line x1="12" y1="13" x2="12" y2="9"></line><line x1="12" y1="4" x2="12" y2="2"></line></svg>
+                                <span>Rapide</span>
+                            </button>
+                        </div>
+
+                        <div id="route-info-display" style="display: none; justify-content: space-around; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 14px; margin-bottom: 15px; font-weight: 800; font-size: 0.9rem; border: 1px solid rgba(var(--tint),0.05);"></div>
+                        
+                        <div id="route-actions" class="action-row" style="margin-top: auto; padding-top: 15px; flex-wrap: wrap;">
+                            <button id="btn-save-route" class="pill-action-btn" style="background: rgba(var(--tint),0.1); color: var(--text-main);"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg><span>Sauver</span></button>
+                            <button id="btn-offline-route" class="pill-action-btn" style="background: rgba(var(--tint),0.1); color: var(--text-main);"><svg viewBox="0 0 24 24"><path d="M12 3v12"></path><polyline points="7 11 12 16 17 11"></polyline><path d="M5 20h14"></path></svg><span>Hors ligne</span></button>
+                            <button id="btn-start-create" class="pill-action-btn" style="background: var(--accent-color); color: var(--on-accent);"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg><span>Démarrer</span></button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+
+                
+                
+                
+                <div id="sub-gps-myroadbook" class="gps-sub-view view-solid" style="justify-content: flex-start; align-items: flex-start; padding-top: 25px;">
+                    
+                    <h2 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 10px; width: 100%; text-transform: uppercase; letter-spacing: 1px;">Itinéraire Actif</h2>
+                    <div style="background: rgba(var(--tint),0.05); padding: 15px; border-radius: 15px; width: 100%; margin-bottom: 30px; border: 1px solid rgba(var(--tint),0.05);">
+                        <div style="color: var(--text-main); font-weight: 700; margin-bottom: 5px; font-size: 0.9rem;" id="active-route-name">Aucun trajet actif</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 15px;" id="active-route-dist">
+                            <span style="display:flex; align-items:center; gap:5px;"><svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><circle cx="5" cy="19" r="2"></circle><path d="M5 17v-4a2 2 0 0 1 2-2h10a2 2 0 0 0 2-2V7"></path><circle cx="19" cy="5" r="2"></circle></svg> -- km</span>
+                        </div>
+                    </div>
+
+                    <h2 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 15px; width: 100%; text-transform: uppercase; letter-spacing: 1px;">Historique</h2>
+                    <div id="recorded-rides-container" style="width: 100%; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 20px; text-align: center;" id="recorded-empty">Aucune balade enregistrée.</div>
+                    </div>
+                    <div id="rides-space" style="width: 100%; color: var(--text-muted); font-size: 0.72rem; text-align: center; margin-top: 8px;"></div>
+                </div>
+
+                
+                
+                
+                <div id="sub-gps-roadbooks" class="gps-sub-view view-solid" style="justify-content: flex-start; align-items: flex-start;">
+                    
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 style="font-size: 1rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; margin: 0;">Bibliothèque</h2>
+                        
+                        
+                        <input type="file" id="input-import-gpx" accept=".gpx" style="display: none;">
+                        
+                        
+                        <button type="button" class="btn" data-offline-open title="Cartes hors ligne" aria-label="Cartes hors ligne" style="background: rgba(var(--tint),0.1); color: var(--text-main); width: auto; padding: 10px 12px; margin-left: auto; margin-right: 8px; border-radius: 12px; display: flex; align-items: center;"><svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 3v12"></path><polyline points="7 11 12 16 17 11"></polyline><path d="M5 20h14"></path></svg></button>
+                        <button id="btn-import-gpx" class="btn" style="background: rgba(var(--tint),0.1); color: var(--text-main); width: auto; padding: 10px 15px; font-size: 0.75rem; border-radius: 12px; display: flex; align-items: center; gap: 6px;">
+                            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Ajouter
+                        </button>
+                    </div>
+
+                    <div id="library-container" style="width: 100%; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 40px; text-align: center;" id="library-empty">Aucun roadbook sauvegardé.</div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="gps-top-nav" id="gps-nav-bar">
+                <button class="gps-tab-btn active" data-sub="sub-gps-carte" title="Carte" aria-label="Carte"><svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></button>
+                <button class="gps-tab-btn" data-sub="sub-gps-myroadbook" title="Roadbook" aria-label="Roadbook"><svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg></button>
+                <button class="gps-tab-btn" data-sub="sub-gps-roadbooks" title="Bibliothèque" aria-label="Bibliothèque"><svg viewBox="0 0 24 24"><path d="M4 4v16"></path><path d="M8 8v12"></path><path d="M12 6v14"></path><path d="m16 6 4 14"></path></svg></button>
+            </div>
+        </section>
+                <section id="view-intercom" class="module-view">
+            <h1 class="module-header">Intercom</h1>
+            
+
+            
+            <div id="sub-intercom-radar" class="intercom-sub-view active">
+                
+                
+                <button id="btn-show-create-hud" class="mz-ban" style="margin-bottom: 9px;">
+                    <span class="mz-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span>
+                    <span><b>Créer un canal</b><small>Parler en roulant</small></span>
+                </button>
+                <div class="mz" style="margin-bottom: 9px;">
+                    <button id="btn-scan-qr" class="mz-t" style="min-height: 150px;">
+                        <span class="mz-ic c4 top"><svg viewBox="0 0 24 24"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3M7 12h10"></path></svg></span>
+                        <b>Scanner un QR</b><small>Rejoindre un canal</small>
+                    </button>
+                    <div class="mz-t" style="min-height: 150px;">
+                        <span class="mz-ic c1 top"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                        <b>Mode rencontre</b><small id="intercom-auto-status">Désactivé</small>
+                        <button id="intercom-toggle-auto" class="radar-switch" aria-label="Activer le mode rencontre" style="margin-top: 8px;"></button>
+                    </div>
+                </div>
+                <div class="mz-t" data-no-swipe style="flex-direction: row; align-items: center; gap: 10px; padding: 12px 14px; margin-bottom: 9px; flex-shrink: 0; cursor: default;">
+                    <span style="display: flex; color: var(--text-muted);"><svg class="vi" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg></span>
+                    <input type="range" id="ic-voice-vol-auto" min="0" max="100" value="100" class="vol-slider" aria-label="Volume des motards">
+                    <span id="ic-voice-vol-auto-val" style="width: 42px; text-align: right; font-size: 0.8rem; font-weight: 800; color: var(--text-main);">100%</span>
+                </div>
+                <div id="intercom-auto-participants" style="display: none; flex-wrap: wrap; gap: 10px; margin-bottom: 9px; justify-content: center;"></div>
+
+                <button id="btn-ic-invitations" class="mz-row" style="margin-bottom: 9px;">
+                    <span class="mz-ic c3"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg></span>
+                    <div><b>Invitations</b><small>Rejoindre un groupe</small></div>
+                    <svg class="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"></path></svg>
+                </button>
+
+                
+                <div class="card" style="flex: none;">
+                    <h2 style="font-size: 1rem; font-style: italic; margin-bottom: 10px;">Canaux à proximité</h2>
+                    <div id="intercom-active-rooms-list" style="display: flex; flex-direction: column;">
+                        <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px 10px;">Recherche en cours...</div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div id="sub-intercom-invites" class="intercom-sub-view">
+                <button id="btn-ic-back" class="mz-row" style="margin-bottom: 9px;"><span class="mz-ic"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg></span><div><b>Retour</b></div></button>
+                <div class="card">
+                    <h2 style="font-size: 1.1rem; margin-bottom: 10px;">Invitations reçues</h2>
+                    <div id="intercom-received-invites-list" style="display: flex; flex-direction: column;">
+                        <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 20px 10px;">Aucune invitation en attente.</div>
+                    </div>
+                </div>
+            </div>
+
+            
+            
+            <div id="intercom-active-call" style="display: none; flex-direction: column; flex: 1; animation: fadeIn 0.3s ease-out;">
+                
+                
+                <div class="ic-hd">
+                    <div class="ic-hd-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01"></path><path d="M7 20v-4"></path><path d="M12 20v-8"></path><path d="M17 20V8"></path><path d="M22 4v16"></path></svg></div>
+                    <div class="ic-hd-txt">
+                        <div class="ic-hd-name"><span id="active-call-name">Nom du Canal</span><span id="active-call-privacy-badge"></span></div>
+                        <div id="active-call-desc">Connexion mains libres activée</div>
+                    </div>
+                    <button class="ic-sq" id="btn-hud-code" style="display:none;" aria-label="Partager le code du canal"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                    <button class="ic-sq" id="btn-hud-invite" aria-label="Inviter"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></button>
+                    <button class="ic-sq" id="ic-mic-settings-btn" aria-label="Réglages du micro"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></button>
+                </div>
+
+                <div class="ic-parts" data-no-swipe><div id="active-call-participants"></div></div>
+
+                
+                <div id="ic-volumes" data-no-swipe style="flex-shrink: 0; background: rgba(var(--tint),0.04); border: 1px solid rgba(var(--tint),0.06); border-radius: 16px; padding: 12px 14px; margin-top: 8px; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="width: 26px; display: flex; justify-content: center; color: var(--text-muted); flex-shrink: 0;"><svg class="vi" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Volume des motards</div>
+                            <input type="range" id="ic-voice-vol" min="0" max="100" value="100" class="vol-slider" aria-label="Volume général des motards">
+                        </div>
+                        <span id="ic-voice-vol-val" style="width: 42px; text-align: right; font-size: 0.8rem; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums;">100%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                        <span style="width: 26px; display: flex; justify-content: center; color: var(--text-muted); flex-shrink: 0;"><svg class="vi" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Volume de la musique</div>
+                            <input type="range" id="ic-music-vol" min="0" max="100" value="80" class="vol-slider" aria-label="Volume de la musique partagée">
+                        </div>
+                        <span id="ic-music-vol-val" style="width: 42px; text-align: right; font-size: 0.8rem; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums;">80%</span>
+                    </div>
+                </div>
+
+                
+                <div id="ic-music-card" style="flex-shrink: 0; margin-top: 8px;">
+                    <div id="ic-music-now" style="display: none; background: rgba(10,132,255,0.12); border: 1px solid rgba(10,132,255,0.3); border-radius: 16px; padding: 12px 14px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="display: flex; color: #0a84ff;"><svg class="vi" viewBox="0 0 24 24" style="width:26px;height:26px;"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div id="ic-music-now-who" style="font-size: 0.7rem; font-weight: 800; color: #0a84ff; text-transform: uppercase; letter-spacing: 1px;"></div>
+                                <div id="ic-music-now-title" style="font-size: 0.95rem; font-weight: 900; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                                <div id="ic-music-now-artist" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                            </div>
+                            <button id="ic-music-listen" class="btn" style="width: auto; padding: 10px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; background: rgba(128,128,128,0.2); color: var(--text-main); display: flex; align-items: center;"><svg class="vi" viewBox="0 0 24 24" style="width:18px;height:18px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+                        </div>
+                    </div>
+                    <div id="ic-music-self" style="display: none; background: rgba(48,209,88,0.12); border: 1px solid rgba(48,209,88,0.3); border-radius: 16px; padding: 12px 14px; margin-bottom: 10px;">
+                        <div style="font-size: 0.7rem; font-weight: 800; color: #30d158; text-transform: uppercase; letter-spacing: 1px;">Tu partages ta musique</div>
+                        <div id="ic-music-self-title" style="font-size: 0.95rem; font-weight: 900; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;">Aucun titre en cours</div>
+                        <div id="ic-music-self-artist" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+                        <div data-no-swipe style="display: flex; justify-content: center; gap: 14px; margin-top: 10px;">
+                            <button class="btn" id="ic-music-prev" style="width: 52px; padding: 12px 0; border-radius: 14px; background: rgba(128,128,128,0.2); color: var(--text-main); display: flex; align-items: center; justify-content: center;" aria-label="Précédent"><svg class="vi" viewBox="0 0 24 24" style="width:20px;height:20px;"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+                            <button class="btn" id="ic-music-play" style="width: 70px; padding: 12px 0; border-radius: 14px; background: var(--accent-color); color: var(--on-accent); display: flex; align-items: center; justify-content: center;" aria-label="Lecture / Pause"><svg class="vi" viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor;"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+                            <button class="btn" id="ic-music-next" style="width: 52px; padding: 12px 0; border-radius: 14px; background: rgba(128,128,128,0.2); color: var(--text-main); display: flex; align-items: center; justify-content: center;" aria-label="Suivant"><svg class="vi" viewBox="0 0 24 24" style="width:20px;height:20px;"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+                        </div>
+                    </div>
+                    <button id="ic-qm-btn" class="ic-alert"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> Alertes &amp; messages</button>
+                    <div class="ic-duo">
+                        <button id="ic-music-share-btn" class="ic-tile"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> Partager ma musique</button>
+                        <button id="ic-route-share-btn" class="ic-tile"><svg class="vi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg> Partager un itinéraire</button>
+                    </div>
+                </div>
+
+                <div class="ic-bar">
+                    <button id="btn-toggle-mic" class="mic-toggle-btn mic-on">
+                        <svg id="icon-mic-on" viewBox="0 0 24 24" style="width: 22px; height: 22px; fill: currentColor;"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2" fill="none" stroke="currentColor" stroke-width="2"></path></svg>
+                        <svg id="icon-mic-off" viewBox="0 0 24 24" style="width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.5; display: none;"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23M12 19v4M8 23h8"></path></svg>
+                        <span id="text-mic-status">Micro actif</span>
+                    </button>
+                    <button class="btn btn-danger ic-hang" id="btn-leave-room">Raccrocher</button>
+                </div>
+            </div>
+            <div class="intercom-top-nav" id="intercom-nav-bar">
+                <button class="intercom-tab-btn active" data-sub="sub-intercom-radar" title="Radar" aria-label="Radar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"></circle><path d="M16.2 7.8a6 6 0 0 1 0 8.4"></path><path d="M7.8 16.2a6 6 0 0 1 0-8.4"></path><path d="M19 5a10 10 0 0 1 0 14"></path><path d="M5 19A10 10 0 0 1 5 5"></path></svg></button>
+                <button class="intercom-tab-btn" data-sub="sub-intercom-invites" title="Invitations" aria-label="Invitations"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 6L2 7"></path></svg></button>
+            </div>
+        </section>
+        
+                <section id="view-maintenance" class="module-view">
+            <h1 class="module-header" id="at-h1">Atelier</h1>
+
+            <div id="at-pagebar" class="at-pagebar">
+                <button id="at-back" class="at-back" aria-label="Retour à l'Atelier"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <div class="at-pagetitle"><div id="at-pagetitle-t">Historique</div><div id="at-pagetitle-s"></div></div>
+                <button id="at-page-add" class="at-back at-page-add" aria-label="Ajouter une intervention"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+            </div>
+
+            <div id="at-head">
+            <div class="at-label" style="margin-top: 5px;">Moto sélectionnée</div>
+            <div id="atelier-moto-carousel" class="moto-carousel"></div>
+
+            
+            <div class="at-meters">
+                <div class="card at-meter">
+                    <div id="atelier-km-total" class="at-meter-val">0</div>
+                    <div class="at-meter-lbl">Kilomètres</div>
+                </div>
+                <div class="card at-meter">
+                    <div id="atelier-hr-total" class="at-meter-val">0.0</div>
+                    <div class="at-meter-lbl">Heures</div>
+                </div>
+                <button id="btn-edit-meters" class="at-icon-btn" aria-label="Modifier les compteurs">
+                    <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                </button>
+            </div>
+
+            
+            <div id="atelier-alerts" class="at-alerts"></div>
+            </div>
+
+            
+            <div id="sub-atelier-home" class="atelier-sub-view active">
+                <div class="at-home-grid">
+                    <button class="at-home-tile primary" data-go="sub-atelier-nouveau"><span class="ic"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></span><span class="t">Nouvelle intervention</span><span class="s">Noter une vidange, une réparation…</span></button>
+                    <button class="at-home-tile" data-go="sub-atelier-tableau"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span><span class="t">À prévoir</span><span class="s" id="home-s-forecast"></span></button>
+                    <button class="at-home-tile" data-go="sub-atelier-historique"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><polyline points="3 3 3 8 8 8"></polyline><polyline points="12 7 12 12 15 14"></polyline></svg></span><span class="t">Historique</span><span class="s" id="home-s-history"></span></button>
+                    <button class="at-home-tile wide" data-go="sub-atelier-carnet"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span><span class="t">Carnet</span><span class="s" id="home-s-carnet"></span></button>
+                </div>
+            </div>
+
+
+            
+            <div id="sub-atelier-historique" class="atelier-sub-view">
+                <div id="atelier-log-stats" class="at-tiles"></div>
+                <input type="search" id="atelier-search" class="atelier-input at-search" placeholder="Rechercher (vidange, piston, notes...)">
+                <div id="atelier-log-filters" class="at-chips"></div>
+                <div id="atelier-logs-list" style="display: flex; flex-direction: column;"></div>
+            </div>
+
+            
+            <div id="sub-atelier-tableau" class="atelier-sub-view">
+                <div class="at-label">Entretiens à prévoir</div>
+                <div id="atelier-pace" style="font-size:0.78rem; color: var(--text-muted); font-weight:700; margin: -4px 0 12px;"></div>
+                <div id="atelier-watch"></div>
+                <div id="atelier-riding"></div>
+                <div id="atelier-forecast-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                <button id="btn-add-task" class="at-add-task" style="margin-top: 12px;">+ Ajouter un entretien récurrent</button>
+            </div>
+
+            
+            <div id="sub-atelier-carnet" class="atelier-sub-view">
+                <div class="at-seg" id="carnet-seg">
+                    <button data-pane="fiche" class="active">Fiche</button>
+                    <button data-pane="docs">Documents</button>
+                    <button data-pane="data">Données</button>
+                </div>
+                <div id="carnet-fiche" class="at-pane active"></div>
+                <div id="carnet-docs" class="at-pane"></div>
+                <div id="carnet-data" class="at-pane"></div>
+            </div>
+
+            
+            <div id="sub-atelier-nouveau" class="atelier-sub-view">
+                <div class="card">
+                    <div id="log-form-title" class="at-label" style="display:none; color: var(--at-warn);">Modification d'une intervention</div>
+
+                    <div class="input-group">
+                        <label>Quelle intervention ?</label>
+                        <input type="text" id="log-title" class="atelier-input" list="atelier-title-suggestions" placeholder="Ex: Vidange, Piston, Gicleur..." autocomplete="off">
+                        <datalist id="atelier-title-suggestions"></datalist>
+                        <div id="log-quick" class="at-chips at-quick"></div>
+                    </div>
+
+                    <div id="log-task-check" class="at-check" style="display:none;">
+                        <input type="checkbox" id="log-task-reset" checked>
+                        <label for="log-task-reset" id="log-task-reset-label" style="margin:0; text-transform:none; letter-spacing:0; font-size:0.85rem; color: var(--text-main);"></label>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <div class="input-group" style="flex: 1.2; min-width: 0;">
+                            <label>Date</label>
+                            <input type="date" id="log-date" class="atelier-input" aria-label="Date de l'intervention">
+                        </div>
+                        <div class="input-group" style="flex: 1; min-width: 0;">
+                            <label>Km</label>
+                            <input type="number" inputmode="decimal" id="log-km" class="atelier-input" placeholder="Km">
+                        </div>
+                    </div>
+
+                    <button type="button" id="log-more-toggle" class="at-more-toggle"><span>Plus de détails</span><small>catégorie, heures, coût, notes, photos</small><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <div id="log-more" class="at-more">
+                        <div class="input-group">
+                            <label>Catégorie</label>
+                            <div id="log-cats" class="at-chips" style="margin-bottom:0; flex-wrap: wrap;"></div>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <div class="input-group" style="flex: 1; min-width: 0;">
+                                <label>Heures</label>
+                                <input type="number" inputmode="decimal" id="log-hr" class="atelier-input" placeholder="Heures" step="0.1">
+                            </div>
+                            <div class="input-group" style="flex: 1; min-width: 0;">
+                                <label>Coût (€)</label>
+                                <input type="number" inputmode="decimal" id="log-cost" class="atelier-input" placeholder="0" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Fait par</label>
+                            <input type="text" id="log-shop" class="atelier-input" placeholder="Moi, garage…" maxlength="60">
+                        </div>
+                        <div class="input-group">
+                            <label>Notes & Pièces</label>
+                            <textarea id="log-notes" class="atelier-input" rows="3" placeholder="Huile 10W40, réglages carburateur..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label>Photos / Factures (4 max)</label>
+                            <input type="file" id="log-invoice" accept="image/*" multiple style="display: none;">
+                            <button id="btn-upload-invoice" class="btn at-ghost"><svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; display: inline-block; vertical-align: -4px; margin-right: 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Ajouter des images</button>
+                            <div id="log-photos" class="at-photos"></div>
+                        </div>
+                    </div>
+
+                    <button id="btn-save-log" class="btn btn-primary" style="margin-top: 6px;">Enregistrer l'intervention</button>
+                    <button id="btn-cancel-edit" class="btn at-ghost" style="margin-top: 10px; display: none;">Annuler la modification</button>
+                </div>
+            </div>
+            <div class="atelier-top-nav">
+                <button class="atelier-tab-btn active" data-sub="sub-atelier-home" id="atelier-tab-home" title="Accueil" aria-label="Accueil"></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-historique" title="Historique" aria-label="Historique"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><polyline points="3 3 3 8 8 8"></polyline><polyline points="12 7 12 12 15 14"></polyline></svg></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-tableau" id="atelier-tab-forecast" title="Prévisions" aria-label="Prévisions"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-carnet" id="atelier-tab-carnet" title="Carnet" aria-label="Carnet"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></button>
+                <button class="atelier-tab-btn" data-sub="sub-atelier-nouveau" id="atelier-tab-new" title="Ajouter" aria-label="Ajouter"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></button>
+            </div>
+        </section>
+
+        <div id="at-toast"></div>
+                <section id="view-settings" class="module-view set-home">
+            <h1 class="module-header" id="set-h1">Réglages</h1>
+
+            <div id="set-pagebar" class="at-pagebar">
+                <button type="button" id="set-back" class="at-back" aria-label="Retour aux réglages"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <div class="at-pagetitle"><div id="set-pagetitle-t">Réglages</div></div>
+            </div>
+
+            
+            <div id="set-sub-home" class="set-sub-view active">
+                <div class="at-home-grid">
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-appearance"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2c0-.6-.2-1-.5-1.4a2 2 0 0 1 1.5-3.3H17a5 5 0 0 0 5-5C22 6 17.5 2 12 2z"/></svg></span><span class="t">Apparence</span><span class="s" id="set-s-appearance"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-display"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 14l4-4"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/></svg></span><span class="t">Compteur et écran</span><span class="s" id="set-s-display"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-offline"><span class="ic"><svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span><span class="t">Cartes hors ligne</span><span class="s">Précision, zones, itinéraires, téléchargement en roulant</span></button>
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-mic"><span class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></span><span class="t">Micro intercom</span><span class="s">Anti-bruit, filtre vent et moteur, volume, choix du micro</span></button>
+                    <button type="button" class="at-home-tile wide" data-sgo="set-sub-route"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z"/></svg></span><span class="t">Mode route</span><span class="s" id="set-s-route"></span></button>
+                    <button type="button" class="at-home-tile wide" data-sgo="set-sub-account"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span><span class="t">Compte</span><span class="s" id="set-s-account"></span></button>
+                    <button type="button" class="at-home-tile wide" data-open-perms><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="t">Autorisations</span><span class="s">GPS, micro, notifications, appel d'urgence…</span></button>
+                    <button type="button" class="at-home-tile wide" data-open-legal><span class="ic"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="t">Informations légales</span><span class="s">CGU, CGV, mentions légales, confidentialité</span></button>
+                </div>
+            </div>
+
+            
+            <div id="set-sub-appearance" class="set-sub-view" data-title="Apparence">
+                <div class="card">
+                    <div class="setting-title">Style de l'application</div>
+                    <div class="style-tabs" id="style-tabs" role="tablist"></div>
+                    <div class="style-grid" id="style-grid"></div>
+                    <div class="setting-hint" id="style-hint"></div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Barre de navigation</div>
+                    <div class="nv-lbl">Emplacement</div>
+                    <div class="nv-choice" id="nv-choice">
+                        <button type="button" data-nav="bottom"><span class="nv-pre nv-bot"><i></i></span><b>Flottante</b><small>Barre en bas, style Racing</small></button>
+                        <button type="button" data-nav="side"><span class="nv-pre nv-sid"><i></i></span><b>Latérale</b><small>Depuis le bord droit</small></button>
+                    </div>
+                    <div class="nv-lbl">Style</div>
+                    <div class="nv-choice" id="nv-style">
+                        <button type="button" data-style="classic"><span class="nv-pre nv-cls"><i></i></span><b>Classique</b><small>Icônes et libellés</small></button>
+                        <button type="button" data-style="slim"><span class="nv-pre nv-fin"><i></i></span><b>Fine</b><small>Sobre, icônes seules</small></button>
+                    </div>
+                    <div class="setting-hint">Choisis où se trouve la navigation entre les onglets et son apparence.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Style du compteur</div>
+                    <div class="nv-choice sp-choice" id="sp-style">
+                        <button type="button" data-sp="barre"><span class="nv-pre"><svg viewBox="0 0 80 50"><text x="40" y="26" text-anchor="middle" font-size="24" font-weight="900" font-style="italic" fill="currentColor">112</text><g transform="skewX(-20)" fill="#ff6a1a"><rect x="30" y="34" width="5" height="6"/><rect x="37" y="34" width="5" height="6"/><rect x="44" y="34" width="5" height="6"/><rect x="51" y="34" width="5" height="6" opacity=".3"/><rect x="58" y="34" width="5" height="6" opacity=".3"/></g></svg></span><b>Barre</b><small>Chiffre et barre de régime</small></button>
+                        <button type="button" data-sp="cadran"><span class="nv-pre"><svg viewBox="0 0 80 50"><circle cx="40" cy="26" r="19" fill="none" stroke="#ff6a1a" stroke-width="5" stroke-dasharray="3 2" opacity=".95"/><text x="40" y="31" text-anchor="middle" font-size="14" font-weight="900" font-style="italic" fill="currentColor">112</text></svg></span><b>Cadran</b><small>Arc segmenté autour du chiffre</small></button>
+                        <button type="button" data-sp="asym"><span class="nv-pre"><svg viewBox="0 0 80 50"><text x="6" y="32" font-size="26" font-weight="900" font-style="italic" fill="currentColor">112</text><g fill="currentColor" opacity=".35" transform="skewX(-10)"><rect x="60" y="8" width="16" height="10"/><rect x="60" y="21" width="16" height="10"/><rect x="60" y="34" width="16" height="10"/></g></svg></span><b>Asymétrique</b><small>Gros chiffre, stats à droite</small></button>
+                        <button type="button" data-sp="plein"><span class="nv-pre"><svg viewBox="0 0 80 50"><text x="40" y="34" text-anchor="middle" font-size="34" font-weight="900" font-style="italic" fill="currentColor">112</text></svg></span><b>Plein cadre</b><small>Chiffre géant, fond rayé</small></button>
+                    </div>
+                    <div class="setting-hint">Apparence du widget Compteur dans l'onglet Route.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Thème de l'application et de la carte</div>
+                    <button class="btn setting-btn" id="btn-toggle-theme">Sombre (Carte de nuit)</button>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Couleur d'accentuation (interface)</div>
+                    <div class="swatch-row" id="accent-swatch-row"></div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Couleur du tracé de navigation</div>
+                    <div class="swatch-row" id="route-color-row"></div>
+                </div>
+            </div>
+
+            
+            <div id="set-sub-display" class="set-sub-view" data-title="Compteur et écran">
+                <div class="card">
+                    <div class="setting-title">Unité de vitesse</div>
+                    <button class="btn setting-btn" id="btn-toggle-unit">Kilomètres (km/h)</button>
+                    <div class="setting-hint">Compteur, navigation et récapitulatif de trajet. L'Atelier et le Roadbook restent en kilomètres.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Écran</div>
+                    <button class="btn setting-btn" id="btn-toggle-wake">Allumé pendant la balade</button>
+                    <div class="setting-hint">Empêche la mise en veille de l'écran pendant que tu roules.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Signaux du canal vocal</div>
+                    <button class="btn setting-btn" id="btn-toggle-cue">Son et vibration</button>
+                    <div class="setting-hint">Un petit bip et une vibration quand un motard rejoint ou quitte ton canal.</div>
+                    <div class="setting-title">Rappels d'échéances</div>
+                    <button class="btn setting-btn" id="btn-toggle-remind">Activés</button>
+                    <div class="setting-hint">Notification sur le téléphone avant l'échéance du contrôle technique, de l'assurance, du permis et des entretiens datés (30, 7, 1 jour avant et le jour même).</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Mesures du téléphone</div>
+                    <button class="btn setting-btn" id="btn-toggle-sensors">Enregistrées pendant la balade</button>
+                    <div class="setting-hint">Accélération et rotation du téléphone, 10 fois par seconde en plus du GPS, pour les analyses (inclinaison, freinages). Elles restent sur ton téléphone.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Économie d'énergie</div>
+                    <button class="btn setting-btn" id="btn-toggle-eco">Désactivée</button>
+                    <div class="setting-hint">Pendant la balade : écran noir et épuré (vitesse et distance), cartes et widgets en pause. Pendant la balade, la petite feuille du compteur l'active ou la coupe d'un appui.</div>
+                </div>
+            </div>
+
+            
+            <div id="set-sub-account" class="set-sub-view" data-title="Compte"><div id="set-account-host"></div><div id="set-blocked-host"></div></div>
+
+            
+            <div id="set-sub-route" class="set-sub-view" data-title="Mode route">
+                <div class="card">
+                    <div class="setting-title">Activation</div>
+                    <button class="btn setting-btn" id="btn-route-mode-set">Automatique (plein écran au démarrage)</button>
+                    <div class="setting-hint">L'onglet Route (ex-Compteur) affiche deux espaces : glisse vers le haut ou le bas dans chacun pour changer de widget (compteur, carte, météo, musique, intercom), glisse la poignée centrale pour les redimensionner. Automatique : « Démarrer » ouvre cet écran en plein écran (barre de navigation masquée, le bouton du bas, à droite de la poignée, la ré-affiche). Manuel : la barre de navigation reste visible.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Commandes vocales</div>
+                    <button class="btn setting-btn" id="btn-route-voice-set">Désactivées</button>
+                    <div class="setting-title" style="margin-top:14px;">Mot d'activation</div>
+                    <button class="btn setting-btn" id="btn-route-wake-set">Activé</button>
+                    <button class="btn setting-btn" id="btn-route-word-set" style="margin-top:8px;">« Ride »</button>
+                    <div class="setting-hint">Dis le mot puis la commande (« Ride, suivant »). Dit seul, le mot ouvre 7 secondes pour la commande suivante. Évite les déclenchements par erreur (casque, intercom, vent).</div>
+                    <div class="setting-title" style="margin-top:14px;">Confirmation</div>
+                    <button class="btn setting-btn" id="btn-route-fb-set">Bip de confirmation</button>
+                    <div class="setting-hint">Une pastille micro s'affiche toujours sur l'écran Route (à l'écoute, commande comprise, pas compris). Tu peux y ajouter un bip ou une voix qui répète la commande.</div>
+                    <div class="setting-hint"><b>Commandes :</b> « suivant », « précédent », « pause », « coupe / active le micro », « volume plus / moins » · « compteur », « carte », « météo », « intercom », « musique », « plein écran » · « démarre / arrête la balade » · « recentre », « zoom avant / arrière » · « signale un accident / gravillons / un animal / un danger » · « économie d'énergie » (plein écran) · « rejoins / quitte le groupe », « active / coupe le mode rencontre », « qui est dans le groupe », « invite Paul » · invitation reçue : « oui » / « non », « accepte / refuse l'invitation (de Paul) », « mes invitations » · « mets le volume à 50 », « c'est quoi ce titre », « mets en aléatoire » · « va-t-il pleuvoir », « quel vent » · « je roule à combien », « distance parcourue », « niveau de batterie », « limite de vitesse », « que dois-je faire », « où suis-je » · « direction Lyon », « emmène-moi à… », « café / resto / essence le plus proche » (aussi parking, pharmacie, hôpital, hôtel, garage, toilettes, distributeur), « j'ai faim », « arrête la navigation », « à quelle heure on arrive », « quel temps il fait ». Dis-le comme tu veux : « passe cette chanson », « c'est trop fort », « on y va », « j'ai faim ». « Enregistre ma position comme maison » (ou travail), puis « rentre à la maison ». Les destinations déjà utilisées sont retrouvées en premier. Si le vent ou le micro abîme la phrase (« ène à : 12 rue… »), l'appli retrouve quand même l'adresse, la corrige au besoin (mot parasite, numéro dit en lettres) et affiche ce qu'elle a compris ; « autre adresse » permet de la redire sans répéter « emmène-moi ». Si la phrase n'est pas comprise, l'appli propose la commande la plus proche (« oui » pour la lancer). Après une proposition : « oui », « non », « le deuxième », « un autre ». La compréhension se fait sur le téléphone, sans serveur ; seule la recherche des lieux utilise le réseau (ou tes cartes hors ligne). Dépend de la reconnaissance vocale de l'appareil.</div>
+                </div>
+                </div>
+
+            
+            <div id="set-sub-offline" class="set-sub-view" data-title="Cartes hors ligne"><div id="set-offline-host"></div></div>
+
+            
+            <div id="set-sub-mic" class="set-sub-view" data-title="Micro intercom"><div id="set-mic-host"></div></div>
+        </section>
+                <section id="view-security" class="module-view sec-home">
+            <h1 class="module-header" id="sec-h1">Sécurité</h1>
+
+            <div id="sec-pagebar" class="at-pagebar">
+                <button type="button" id="sec-back" class="at-back" aria-label="Retour à Sécurité"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <div class="at-pagetitle"><div id="sec-pagetitle-t">Sécurité</div></div>
+            </div>
+
+            
+            <div id="sec-sub-home" class="sec-sub-view active">
+                <div class="card security-card" id="security-status-card">
+                    <div class="sensor-title">Détection de chute</div>
+                    <h2 id="security-status-text" class="sensor-status">INACTIF</h2>
+                    <div class="sec-sub" id="security-sub">Active la surveillance pendant que tu roules. Garde l'appli ouverte, écran allumé.</div>
+                </div>
+                <div class="sec-actions">
+                    <button class="btn btn-primary" id="btn-toggle-security">Activer Surveillance</button>
+                    <button class="btn btn-danger" id="btn-sos-manual">SOS</button>
+                </div>
+                <div class="at-home-grid">
+                    <button type="button" class="at-home-tile" data-sgo="sec-sub-contacts"><span class="ic"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span><span class="t">Contacts</span><span class="s" id="sec-s-contacts"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="sec-sub-med"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.6-9.5 9-9.5 9z"/><path d="M12 9v6M9 12h6"/></svg></span><span class="t">Fiche médicale</span><span class="s" id="sec-s-med"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="sec-sub-detect"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span><span class="t">Détection</span><span class="s" id="sec-s-detect"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="sec-sub-share"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19a10 10 0 0 1 0-14"/></svg></span><span class="t">Motards proches</span><span class="s" id="sec-s-share"></span></button>
+                    <button type="button" class="at-home-tile wide" id="sec-aide" data-sgo="sec-sub-aide"><span class="ic"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.1L3 17.7 6.3 21l6.3-6.3a4 4 0 0 0 5.1-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span><span class="t">Demander de l'aide</span><span class="s">Crevaison, panne : les motards à moins de 5 km sont prévenus</span></button>
+                    <button type="button" class="at-home-tile wide" id="sec-test"><span class="ic"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></span><span class="t">Tester l'alerte</span><span class="s">Sans appel ni envoi, pour voir comment ça se passe</span></button>
+                </div>
+            </div>
+
+            <div id="sec-sub-aide" class="sec-sub-view" data-title="Demander de l'aide">
+                <div id="aide-page" class="aide-page"></div>
+            </div>
+
+            <div id="sec-sub-badges" class="sec-sub-view" data-title="Mes badges">
+                <div id="badges-page" class="aide-page"></div>
+            </div>
+
+            <div id="sec-sub-contacts" class="sec-sub-view" data-title="Contacts d'urgence">
+            <div class="card sec-card">
+                <div class="sec-h">Contacts d'urgence</div>
+                <div class="sec-hint" style="margin-top:0">Le 1er contact est <b>appelé</b> dès qu'un accident est détecté. Les suivants reçoivent un <b>SMS pré-rempli</b> (tu n'as qu'à appuyer sur Envoyer) avec ta position si tu ne réponds pas.</div>
+                <div id="sec-contacts"></div>
+                <div class="sec-add">
+                    <input id="sec-c-name" type="text" maxlength="30" placeholder="Nom" autocomplete="off">
+                    <input id="sec-c-phone" type="tel" maxlength="20" placeholder="Téléphone" autocomplete="off">
+                    <button type="button" id="sec-c-add" class="sec-btn">Ajouter</button>
+                </div>
+                <button type="button" id="sec-c-pick" class="sec-link" style="display:none">Choisir dans mes contacts</button>
+            </div>
+
+            <div class="card sec-card">
+                <div class="sec-h">Délai avant l'envoi du message</div>
+                <div class="sec-seg" id="sec-delay">
+                    <button type="button" data-v="30">30 s</button><button type="button" data-v="60">1 min</button><button type="button" data-v="300">5 min</button>
+                </div>
+                <div class="sec-hint">Sans réponse de ta part (« Je vais bien ») pendant ce délai, les motards proches sont prévenus et le SMS s'ouvre, prêt à envoyer.</div>
+            </div>
+
+            </div>
+
+            <div id="sec-sub-med" class="sec-sub-view" data-title="Fiche médicale">
+            <div class="card sec-card">
+                <div class="sec-h">Fiche médicale</div>
+                <div class="med-grid">
+                    <label>Groupe sanguin<select id="med-blood"><option value="">—</option><option>A+</option><option>A−</option><option>B+</option><option>B−</option><option>AB+</option><option>AB−</option><option>O+</option><option>O−</option></select></label>
+                    <label>Allergies<input id="med-allergies" type="text" maxlength="120" placeholder="ex. pénicilline" autocomplete="off"></label>
+                    <label>Traitements en cours<input id="med-meds" type="text" maxlength="120" placeholder="ex. anticoagulant" autocomplete="off"></label>
+                    <label>Pathologies<input id="med-conditions" type="text" maxlength="120" placeholder="ex. diabète, asthme" autocomplete="off"></label>
+                    <label>Autres informations<textarea id="med-notes" rows="2" maxlength="200" placeholder="ex. porte des lentilles, pacemaker…"></textarea></label>
+                </div>
+                <div class="sec-row" style="margin-top:14px"><div><div class="sec-h" style="margin:0">Sur l'écran verrouillé</div><div class="sec-hint" style="margin-top:4px">Une notification visible sans déverrouiller le téléphone tant que la surveillance est active (Android).</div></div><button type="button" class="radar-switch" id="sec-lock" aria-label="Fiche médicale sur l'écran verrouillé"></button></div>
+                <div class="sec-row" style="margin-top:14px"><div><div class="sec-h" style="margin:0">Dans le SMS</div><div class="sec-hint" style="margin-top:4px">Ajoute groupe sanguin, allergies et traitements au message envoyé à tes contacts.</div></div><button type="button" class="radar-switch" id="sec-smsmed" aria-label="Fiche médicale dans le SMS"></button></div>
+                <button type="button" class="sec-link" id="sec-med-view" style="display:none">Voir la fiche comme un secouriste</button>
+            </div>
+
+            </div>
+
+            <div id="sec-sub-detect" class="sec-sub-view" data-title="Détection">
+            <div class="card sec-card">
+                <div class="sec-row">
+                    <div><div class="sec-h" style="margin:0">Activation automatique</div><div class="sec-hint" style="margin-top:4px">La surveillance s'active quand tu appuies sur « Démarrer » pour une balade, et s'arrête à la fin du trajet.</div></div>
+                    <button type="button" class="radar-switch" id="sec-auto" aria-label="Activer la surveillance au départ d'une balade"></button>
+                </div>
+            </div>
+            <div class="card sec-card">
+                <div class="sec-h">Sensibilité de la détection</div>
+                <div class="sec-seg" id="sec-sens">
+                    <button type="button" data-v="low">Faible</button><button type="button" data-v="mid">Moyenne</button><button type="button" data-v="high">Élevée</button>
+                </div>
+                <div class="sec-hint" id="sec-sens-hint"></div>
+            </div>
+
+            <div class="card sec-card">
+                <div class="sec-h">Compte à rebours avant l'alerte</div>
+                <div class="sec-seg" id="sec-pre">
+                    <button type="button" data-v="10">10 s</button><button type="button" data-v="15">15 s</button><button type="button" data-v="30">30 s</button>
+                </div>
+                <div class="sec-hint">Après une chute détectée, l'écran « Tu vas bien ? » s'affiche. Rien n'est envoyé ni appelé tant que ce compte à rebours n'est pas terminé.</div>
+            </div>
+
+            </div>
+
+            <div id="sec-sub-share" class="sec-sub-view" data-title="Motards proches">
+            <div class="card sec-card">
+                <div class="sec-row">
+                    <div><div class="sec-h" style="margin:0">Alerte aux motards proches</div><div class="sec-hint" style="margin-top:4px">Un accident détecté s'affiche sur la carte des motards dans un rayon de 5 km, et tu reçois les leurs, comme les demandes d'aide (crevaison, panne).</div></div>
+                    <button type="button" class="radar-switch" id="sec-share" aria-label="Alerte aux motards proches"></button>
+                </div>
+            </div>
+
+            </div>
+        </section>
+                <section id="view-music" class="module-view">
+
+            
+            <audio id="vroom-audio-player" preload="metadata" playsinline style="display: none;"></audio>
+
+            
+            <div id="sub-music-local" class="music-sub-view active">
+                <div class="card" style="padding: 25px 15px; flex-shrink: 0;">
+                    <div class="player-artwork" id="local-artwork"><svg class="vi" viewBox="0 0 24 24" style="width:60px;height:60px;stroke-width:1.5;opacity:.45"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+                    <div class="player-track-title" id="local-title">Aucun titre chargé</div>
+                    <div class="player-track-artist" id="local-artist">RideNCT Player</div>
+
+                    <div class="player-progress-container" data-no-swipe>
+                        <div class="player-time" id="local-time-current">0:00</div>
+                        <div class="player-progress-bar" id="local-progress-bar">
+                            <div class="player-progress-fill" id="local-progress-fill"></div>
+                        </div>
+                        <div class="player-time" id="local-time-total">0:00</div>
+                    </div>
+
+                    <div class="player-controls">
+                        <button class="btn-ctrl tiny" id="btn-local-shuffle" aria-label="Lecture aléatoire"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg></button>
+                        <button class="btn-ctrl sec" id="btn-local-prev" aria-label="Précédent"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+                        <button class="btn-ctrl main" id="btn-local-play" aria-label="Lecture / Pause"><svg viewBox="0 0 24 24" id="icon-local-play"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><svg viewBox="0 0 24 24" id="icon-local-pause" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg></button>
+                        <button class="btn-ctrl sec" id="btn-local-next" aria-label="Suivant"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
+                        <button class="btn-ctrl tiny" id="btn-local-repeat" aria-label="Répéter"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg><span class="rep1" id="rep1-badge" style="display:none;">1</span></button>
+                    </div>
+
+                    <div class="mu-volume" id="local-volume-row" data-no-swipe style="display:none;">
+                        <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>
+                        <input type="range" id="local-volume" min="0" max="100" step="1" value="100" aria-label="Volume">
+                        <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                </div>
+
+                <div class="mu-tiles" data-no-swipe>
+                    <button type="button" class="mu-tile" data-mt="sources"><span class="ic c1"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></span><b>Sources</b><small>Dossier · Drive</small></button>
+                    <button type="button" class="mu-tile" data-mt="shuffle"><span class="ic c3"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></span><b>Aléatoire</b><small id="mt-shuf">Désactivé</small></button>
+                </div>
+
+                <input type="file" id="local-file-input" accept="audio/*,.mp3,.m4a,.aac,.flac,.ogg,.opus,.wav" multiple style="display: none;">
+                <div class="mu-actions">
+                    <button class="btn" id="btn-load-local">+ Ajouter des musiques</button>
+                    <button class="btn" id="btn-clear-local" style="flex: 0 0 auto; width: auto; padding: 16px 20px; color: var(--danger-color);">Vider</button>
+                </div>
+
+                <div class="mu-count" id="local-count"></div>
+                <div class="local-playlist" id="local-playlist-container">
+                    <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 24px 10px;">Votre playlist locale est vide.</div>
+                </div>
+            </div>
+
+            
+            <div id="sub-music-sources" class="music-sub-view">
+                <button type="button" class="mu-back" id="mu-back" aria-label="Retour au lecteur"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Lecteur</button>
+
+                <div class="card mu-card">
+                    <div class="mu-card-head">
+                        <div class="mu-logo system"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+                        <div style="min-width:0;"><div class="mu-card-title">Dossier de l'appareil</div><div class="mu-card-sub" id="dir-status">Aucun dossier choisi</div></div>
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);font-weight:600;line-height:1.5;margin-bottom:14px;">Choisis le dossier où se trouvent toutes tes musiques : RideNCT les ajoute (sous-dossiers compris) et les garde dans l'app, même hors ligne.</div>
+                    <button class="mu-primary" id="dir-pick">Choisir le dossier de musique</button>
+                    <button class="mu-secondary" id="dir-sync" style="display:none;">↻ Resynchroniser le dossier</button>
+                    <input type="file" id="dir-fallback" webkitdirectory directory multiple style="display:none;">
+                </div>
+
+                <div class="card mu-card">
+                    <div class="mu-card-head">
+                        <div class="mu-logo drive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+                        <div style="min-width:0;"><div class="mu-card-title">Google Drive</div><div class="mu-card-sub">Par lien de partage · sans connexion</div></div>
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);font-weight:600;line-height:1.5;margin-bottom:12px;">Colle les liens de tes fichiers Drive partagés en « Toute personne disposant du lien ». Aucune connexion Google nécessaire.</div>
+                    <textarea id="gl-link" class="mu-input" rows="3" placeholder="Colle un ou plusieurs liens (un par ligne).&#10;Option : Nom du titre | lien" autocomplete="off" autocapitalize="off" spellcheck="false" style="resize:none;"></textarea>
+                    <details id="gl-key-block" style="margin-bottom:12px;"><summary style="font-size:0.74rem;font-weight:800;color:var(--text-muted);cursor:pointer;padding:6px 0;">Avancé : dossiers entiers (clé API)</summary><input type="text" id="gl-key" class="mu-input" placeholder="Clé API Google (facultatif)" autocomplete="off" autocapitalize="off" spellcheck="false" style="margin-top:8px;"><div style="font-size:0.7rem;color:var(--text-muted);font-weight:600;line-height:1.5;margin:-4px 0 4px;">Sans clé, RideNCT ne peut pas lister un dossier : colle plutôt les liens des fichiers. La clé se règle une seule fois (par toi, dans le code).</div></details>
+                    <button class="mu-primary" id="gl-go">Ajouter ce lien</button>
+                    <div id="gl-list" style="margin-top:12px;"></div>
+                    <button class="mu-secondary" id="gl-sync" style="display:none;">↻ Resynchroniser les liens</button>
+                </div>
+            </div>
+            <div class="music-nav" id="music-nav-bar" data-no-swipe>
+                <button class="music-tab-btn active" data-sub="sub-music-local" title="Ma musique" aria-label="Ma musique"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></button>
+                <button class="music-tab-btn" data-sub="sub-music-sources" title="Sources" aria-label="Sources"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg></button>
+            </div>
+        </section>
+
+        <div id="mu-toast"></div>
+                <section id="view-weather" class="module-view" style="justify-content: flex-start; padding-bottom: 40px;">
+            <h1 class="module-header">Météo</h1>
+            
+            
+            <div class="mz">
+                <div class="mz-t now r2">
+                    <div class="l top">Maintenant</div>
+                    <div class="big" id="weather-temp" style="font-size: 3.4rem;">--°</div>
+                    <b id="weather-desc" style="margin-top: 4px;">Recherche...</b>
+                    <div id="weather-icon"><svg viewBox="0 0 24 24" style="width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></div>
+                </div>
+                <div class="mz-t"><div class="l top">Vent</div><div class="big" id="weather-wind">--</div></div>
+                <div class="mz-t"><div class="l top">Pluie</div><div class="big" id="weather-rain" style="color: #1d7ae8;">--</div></div>
+            </div>
+
+            <div class="mz-lab" style="margin-top: 16px; margin-bottom: 8px;">Prochaines 24h</div>
+
+            
+            <div id="weather-hourly-container" style="display: flex; gap: 9px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; width: 100%; max-width: 100%; flex-shrink: 0;">
+                
+            </div>
+
+            
+            <div style="margin-top: 20px; margin-bottom: 20px; text-align: center; flex-shrink: 0;">
+                <button id="btn-refresh-weather" class="btn" style="background: rgba(var(--tint),0.07); color: var(--text-muted); font-size: 0.8rem; padding: 15px; width: 100%;">Actualiser les données</button>
+            </div>
+        </section>
+        
+                <section id="view-community" class="module-view">
+            <h1 class="module-header">Communauté</h1>
+
+            
+            
+            <div id="sub-comm-radar" class="comm-sub-view active">
+                <div class="mz-t cm-radar" style="min-height: 190px; padding: 0; align-items: center; justify-content: center; margin-bottom: 9px; cursor: default; flex-shrink: 0;">
+                    <svg viewBox="0 0 200 200" class="cm-radar-svg"><defs><linearGradient id="cmrg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff6a1a" stop-opacity="0"/><stop offset="1" stop-color="#ff6a1a" stop-opacity=".55"/></linearGradient></defs>
+                        <g fill="none" stroke="currentColor" stroke-opacity=".28" stroke-width="6"><circle cx="100" cy="100" r="86"/><circle cx="100" cy="100" r="58"/><circle cx="100" cy="100" r="30"/></g>
+                        <path class="cm-sweep" d="M100 100 L100 14 A86 86 0 0 1 176 56 Z" fill="url(#cmrg)"/><circle cx="100" cy="100" r="8" fill="#ff6a1a"/></svg>
+                </div>
+                <div class="mz" style="margin-bottom: 9px;">
+                    <div class="mz-t" style="min-height: 150px;">
+                        <span class="mz-ic c4 top"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></span>
+                        <b>Global</b><small id="radar-status-all">Désactivé</small>
+                        <button id="radar-toggle-all" class="radar-switch" aria-label="Activer le radar global" style="margin-top: 8px;"></button>
+                    </div>
+                    <div class="mz-t" style="min-height: 150px;">
+                        <span class="mz-ic c1 top"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                        <b>Amis seulement</b><small id="radar-status-friends">Désactivé</small>
+                        <button id="radar-toggle-friends" class="radar-switch" aria-label="Activer le radar amis" style="margin-top: 8px;"></button>
+                    </div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.72rem; line-height: 1.4; margin: 0 4px 9px;"><b>Global</b> : visible par tous les motards de l'app à moins de 150 m. <b>Amis</b> : position et profil échangés uniquement avec tes amis.</p>
+
+                <div class="card">
+                    <div class="comm-label"><span>À proximité</span><span id="nearby-count">0</span></div>
+                    <div id="nearby-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+
+            
+            <div id="sub-comm-events" class="comm-sub-view">
+                <button type="button" id="ev-create-btn" class="ev-create">
+                    <i class="ev-plus"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></i>
+                    <span class="ev-ct"><b>Créer une balade</b><small>Invite tes amis</small></span>
+                </button>
+                <div class="ev-filter">
+                    <button type="button" class="ev-chip active" data-f="all">Tous</button>
+                    <button type="button" class="ev-chip" data-f="joined">Je participe</button>
+                    <button type="button" class="ev-chip" data-f="mine">Mes événements</button>
+                </div>
+                <div id="ev-sr"><div class="cm-sr"><label class="cm-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="ev-q" type="search" placeholder="Rechercher" maxlength="40"></label><button type="button" class="cm-rg" id="ev-rg"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Région</span></button></div>
+                <div class="cm-chips" id="ev-lv"></div></div>
+                <div class="card">
+                    <div class="comm-label"><span id="ev-label">À venir</span><span id="ev-count">0</span></div>
+                    <div id="ev-list" style="display: flex; flex-direction: column; gap: 10px;"><div class="comm-empty">Chargement…</div></div>
+                </div>
+            </div>
+
+            
+            <div id="sub-comm-croise" class="comm-sub-view">
+                <div class="card">
+                    <div class="comm-label"><span>Motards croisés</span><span id="crossed-count">0</span></div>
+                    <div id="crossed-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+
+            
+            <div id="sub-comm-amis" class="comm-sub-view">
+                <div class="card">
+                    <div class="comm-label"><span>Mes Amis</span><span id="friends-count">0</span></div>
+                    <div id="friends-list" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="comm-empty">Bientôt disponible : ajoute tes potes pour voir s'ils roulent !</div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div id="sub-comm-demandes" class="comm-sub-view">
+                <div class="card">
+                    <div class="comm-label"><span>Demandes d'amis</span><span id="requests-count">0</span></div>
+                    <div id="requests-list" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="comm-empty">Aucune demande en attente.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comm-top-nav" id="comm-nav-bar">
+                <button class="comm-tab-btn active" data-sub="sub-comm-radar" title="Radar" aria-label="Radar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"></circle><path d="M16.2 7.8a6 6 0 0 1 0 8.4"></path><path d="M7.8 16.2a6 6 0 0 1 0-8.4"></path><path d="M19 5a10 10 0 0 1 0 14"></path><path d="M5 19A10 10 0 0 1 5 5"></path></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-events" title="Événements" aria-label="Événements"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-croise" title="Croisés" aria-label="Croisés"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-amis" title="Amis" aria-label="Amis"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-demandes" title="Invitations" aria-label="Invitations"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></button>
+            </div>
+        </section>
+                <section id="view-profile" class="module-view">
+            <h1 class="module-header">Profil</h1>
+            
+            <div class="card" id="btn-edit-profile" style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer;">
+                <div class="av-big" id="profile-av-wrap"><div id="profile-avatar" style="width: 70px; height: 70px; background: var(--accent-color); color: var(--on-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; flex-shrink: 0;">?</div><span id="profile-av-badge"></span></div>
+                <div style="flex: 1; min-width: 0;">
+                    <h2 style="font-size: 1.3rem; margin-bottom: 2px;" id="profile-name">Pilote Inconnu</h2>
+                    <div id="profile-acct" style="margin-bottom: 6px;"></div>
+                    <div id="profile-main-badge" style="display: none; color: var(--accent-color); font-size: 0.85rem; font-weight: 800; margin-bottom: 6px;"></div>
+                    <div id="profile-social" style="color: var(--accent-color); font-size: 0.85rem; font-weight: 800; margin-bottom: 6px; display: none;"></div>
+                    <div id="profile-bio" style="color: var(--text-main); font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px; display: none; opacity: 0.9;"></div>
+                    <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Modifier <svg class="vi" viewBox="0 0 24 24" style="width:13px;height:13px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+                </div>
+            </div>
+            
+            <div class="card" id="pf-trophy" style="margin-top: 15px; cursor: pointer;"></div>
+
+            <div class="mz pf-go" style="margin-top: 9px;">
+                <button type="button" class="mz-row" data-pfgo="pf-records" ><span class="mz-ic c5"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path></svg></span><div><b>Records</b></div></button>
+                <button type="button" class="mz-row" data-pfgo="pf-bornes" ><span class="mz-ic c1"><svg viewBox="0 0 24 24"><path d="M5 22V3M5 4h13l-3 4 3 4H5"></path></svg></span><div><b>Bornes</b></div></button>
+            </div>
+
+            <button type="button" class="mz-row" id="pf-back" style="margin-top: 15px;"><span class="mz-ic"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg></span><div><b>Profil</b><small>Retour</small></div></button>
+
+            <div class="pf-pane active" id="pf-garage">
+            <div class="card" style="margin-top: 15px;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Mon Garage</div>
+                
+                <div id="moto-list-container" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                </div>
+                
+                <button class="btn" id="btn-add-moto" style="background: var(--active-bg); text-align: left; width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Ajouter une moto</span>
+                    <span style="font-size: 1.2rem;">+</span>
+                </button>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 15px;">
+                <div class="card" style="flex: 1; text-align: center;">
+                    <div id="stat-rides" style="font-size: 1.5rem; font-weight: 900; color: var(--text-main);">0</div>
+                    <div style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; margin-top: 5px; font-weight: 800;">Balades</div>
+                </div>
+                <div class="card" style="flex: 1; text-align: center;">
+                    <div id="stat-distance" style="font-size: 1.5rem; font-weight: 900; color: var(--text-main);">0</div>
+                    <div style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; margin-top: 5px; font-weight: 800;">Km Parcourus</div>
+                </div>
+            </div>
+
+                <div class="card" style="margin-top: 15px;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">Sauvegarde</div>
+                    <div class="pf-hint">Un seul fichier avec tout : profil, motos, trajets, circuits, sécurité, réglages et carnet d'entretien avec photos. Les cartes hors ligne ne sont pas incluses.</div>
+                    <div class="pf-btns">
+                        <button type="button" class="btn btn-primary" id="pf-export">Exporter</button>
+                        <button type="button" class="btn" id="pf-import" style="background: var(--active-bg);">Importer</button>
+                    </div>
+                    <input type="file" id="pf-file" accept=".json,application/json" hidden>
+                </div>
+            </div>
+
+            <div class="pf-pane" id="pf-records"></div>
+            <div class="pf-pane" id="pf-bornes"></div>
+            <div class="profile-top-nav" id="pf-tabs">
+                <button type="button" class="profile-tab-btn active" data-pf="pf-garage" title="Garage" aria-label="Garage"><svg viewBox="0 0 24 24"><g transform="translate(1.5 2.5) rotate(-16 5 16)"><circle cx="5" cy="16" r="3.4" style="fill:none;stroke:currentColor;stroke-width:1.6"></circle><circle cx="19" cy="16" r="3.4" style="fill:none;stroke:currentColor;stroke-width:1.6"></circle><path style="fill:currentColor;stroke:none" d="M2.5 9.2l3.2.8c1.5.4 3.2 1.4 5 1 1.4-.3 2.3-1.5 3.8-1.5l1.3-2.2c.9.5 1.4 1.4 1.4 2.6l-1.6.8-1.6 4-4 1.2-2.7-1 .4-2.3-3.3-.9z"></path><path style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round" d="M5 16l6-1.6M16.2 7.5L19 16M15 5.8l2.2-.6M17.2 9.6h3.8"></path></g></svg></button>
+                <button type="button" class="profile-tab-btn" data-pf="pf-records" title="Records" aria-label="Records"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"></path></svg></button>
+                <button type="button" class="profile-tab-btn" data-pf="pf-bornes" title="Bornes" aria-label="Bornes"><svg viewBox="0 0 24 24"><path d="M5 22V3M5 4h13l-3 4 3 4H5"></path></svg><i class="pf-dot" id="pf-new" hidden></i></button>
+            </div>
+        </section>
+        
+    </main>
+    <div id="ad-slot" aria-hidden="true"></div>
+
+    
+<div id="rm" class="rm" hidden>
+    <div id="eco-tbt" aria-live="off"><svg id="eco-tbt-icon" viewBox="0 0 24 24"></svg><div class="eco-tbt-txt"><div id="eco-tbt-dist">--</div><div id="eco-tbt-street"></div></div><div class="eco-tbt-trip"><b id="eco-tbt-eta">--:--</b><span id="eco-tbt-km"></span></div></div>
+    <div class="rm-pane" id="rm-a" data-i="0"><div class="rm-chip"></div><div class="rm-sw"><button type="button" class="rm-up" aria-label="Widget précédent"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="rm-dn" aria-label="Widget suivant"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="rm-edge"></div></div>
+    <div class="rm-div" id="rm-div">
+        <button type="button" class="rm-go" id="rm-go" aria-label="Démarrer la balade"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><span>Démarrer</span></button>
+        <button type="button" class="rm-ib" id="rm-eco" aria-label="Économie d'énergie" hidden><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.5 5-7"/></svg></button>
+        <div class="rm-grip" id="rm-grip" aria-label="Glisser pour redimensionner"><i></i></div>
+        <button type="button" class="rm-ib" id="rm-imm" aria-label="Plein écran"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+    <div class="rm-pane" id="rm-b" data-i="1"><div class="rm-chip"></div><div class="rm-sw"><button type="button" class="rm-up" aria-label="Widget précédent"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="rm-dn" aria-label="Widget suivant"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="rm-edge"></div></div>
+</div>
+        <div class="pill-nav-container">
+        <div class="pill-nav-row">
+        
+        <button class="nav-btn nav-home active" data-target="view-home" aria-label="Accueil">
+            <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>
+            <span>Accueil</span>
+        </button>
+        <div class="pill-nav-wrap" id="pill-nav-wrap">
+        <nav class="pill-nav" id="main-nav-bar" aria-label="Navigation principale">
+            <button class="nav-btn" data-group="route">
+                <svg viewBox="0 0 24 24"><path d="M3.4 17A10 10 0 1 1 20.6 17"></path><path d="M12 14l3-3"></path></svg>
+                <span>Route</span>
+            </button>
+            <button class="nav-btn" data-group="carte">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Carte</span>
+            </button>
+            <button class="nav-btn" data-group="comm">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <i class="nav-dot" id="nav-comm-dot" hidden></i>
+                <span>Communauté</span>
+            </button>
+            <button class="nav-btn" data-group="moi">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <i class="nav-dot" id="nav-moi-dot" hidden></i>
+                <span>Moi</span>
+            </button>
+        </nav>
+        <div class="nav-legacy" id="nav-legacy" hidden>
+
+            <button class="nav-btn" data-target="view-dashboard">
+                <svg viewBox="0 0 24 24"><path d="M3.4 17A10 10 0 1 1 20.6 17"></path><path d="M12 14l3-3"></path></svg>
+                <span>Route</span>
+            </button>
+            <button class="nav-btn" data-target="view-gps">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Carte</span>
+            </button>
+            
+            
+            <button class="nav-btn" data-target="view-music">
+                <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                <span>Musique</span>
+            </button>
+            <button class="nav-btn" data-target="view-weather">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <span>Météo</span>
+            </button>
+            
+            
+            <button class="nav-btn" data-target="view-intercom">
+                <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3v4z"></path><path d="M3 19a2 2 0 0 0 2 2h1v-6H3v4z"></path></svg>
+                <span>Intercom</span>
+            </button>
+            
+            
+            <button class="nav-btn" data-target="view-community">
+                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Groupe</span>
+            </button>
+            <button class="nav-btn" data-target="view-profile">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Profil</span>
+                <i class="nav-dot" id="nav-pf-new" hidden></i>
+            </button>
+            
+            
+            <button class="nav-btn" data-target="view-maintenance">
+                <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                <span>Atelier</span>
+            </button>
+            <button class="nav-btn" data-target="view-security">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Sécurité</span>
+            </button>
+            <button class="nav-btn" data-target="view-settings">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Réglages</span>
+            </button>
+        </div>
+        </div>
+        </div>
+        <div class="nav-sub" id="nav-sub"></div>
+
+    </div>
+    <div class="nav-scrim" id="nav-scrim"></div>
+    <button class="nav-grip" id="nav-grip" aria-label="Ouvrir le menu"></button>
+    <button class="nav-gear" id="nav-gear" aria-label="Réglages"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+
+    
+    <script src="core/dialog.js"></script>
+    <script src="core/annonces.js"></script>
+    <script src="core/saisie.js"></script>
+    <script src="core/permissions.js"></script>
+    <script src="compteur/compteur.js"></script>
+    <script src="carte/carte.js"></script>
+    <script src="carte/map/map.js"></script>
+    <script src="carte/map/brouter.js"></script>
+    <script src="carte/map/hors-trace.js"></script>
+    <script src="carte/creer/creer.js"></script>
+    <script src="carte/creer/qualite.js"></script>
+    <script src="carte/creer/recherche.js"></script>
+    <script src="carte/creer/etapes.js"></script>
+    <script src="carte/creer/variantes.js"></script>
+    <script src="carte/creer/choisir-carte.js"></script>
+    <script src="carte/capteurs.js"></script>
+    <script src="carte/chrono.js"></script>
+    <script src="carte/recap.js"></script>
+    <script src="carte/communaute.js"></script>
+    <script src="carte/roadbook/roadbook.js"></script>
+    <script src="carte/bibliotheque/bibliotheque.js"></script>
+    <script src="carte/bibliotheque/playlists.js"></script>
+    <script src="carte/bibliotheque/apercu.js"></script>
+    <script src="carte/bibliotheque/partage.js"></script>
+    <script src="carte/points/points.js"></script>
+    <script src="carte/hors-ligne/hors-ligne.js"></script>
+    <script src="carte/hors-ligne/itineraire-hors-ligne.js"></script>
+    <script src="carte/expert/moteur.js"></script>
+    <script src="carte/expert/expert.js"></script>
+    <script src="core/icons.js"></script>
+    <script src="intercom/intercom.js"></script>
+    <script src="intercom/intercom-inv.js"></script>
+    <script src="intercom/rencontre/rencontre.js"></script>
+    <script src="intercom/groupe/canaux.js"></script>
+    <script src="intercom/groupe/acces.js"></script>
+    <script src="intercom/groupe/partage-code.js"></script>
+    <script src="intercom/groupe/qr-canal.js"></script>
+    <script src="intercom/invitation/invitation.js"></script>
+    <script src="atelier/atelier.js"></script>
+    <script src="atelier/donnees.js"></script>
+    <script src="atelier/prevision/prevision.js"></script>
+    <script src="atelier/prevision/usure.js"></script>
+    <script src="atelier/prevision/predictif.js"></script>
+    <script src="atelier/historique/historique.js"></script>
+    <script src="atelier/ajouter/ajouter.js"></script>
+    <script src="atelier/carnet/carnet.js"></script>
+    <script src="atelier/rappels.js"></script>
+    <script src="reglage/reglage.js"></script>
+    <script src="securite/securite.js"></script>
+    <script src="securite/badges.js"></script>
+    <script src="securite/aide.js"></script>
+    <script src="musique/musique.js"></script>
+    <script src="musique/musique-mosaic.js"></script>
+    <script src="intercom/groupe/partage-musique.js"></script>
+    <script src="intercom/groupe/partage-itineraire.js"></script>
+    <script src="intercom/groupe/rapide.js"></script>
+    <script src="intercom/groupe/micro.js"></script>
+    <script src="meteo/meteo.js"></script>
+    <script src="p2p/mqtt.js"></script>
+    <script src="groupe/groupe.js"></script>
+    <script src="p2p/securite.js"></script>
+    <script src="p2p/identite.js"></script>
+    <script src="p2p/connexion.js"></script>
+    <script src="p2p/intercom.js"></script>
+    <script src="p2p/turn.js"></script>
+    <script src="p2p/radar.js"></script>
+    <script src="p2p/carte.js"></script>
+    <script src="p2p/reconnexion.js"></script>
+    <script src="p2p/canal-reseau.js"></script>
+    <script src="groupe/ui.js"></script>
+    <script src="groupe/amis/amis.js"></script>
+    <script src="groupe/croise/croise.js"></script>
+    <script src="groupe/radar/radar.js"></script>
+    <script src="groupe/radar/radar-blips.js"></script>
+    <script src="groupe/radar/signalement.js"></script>
+    <script src="profil/profil.js"></script>
+    <script src="profil/records.js"></script>
+    <script src="profil/profil-nav.js"></script>
+    <script src="profil/sauvegarde.js"></script>
+    <script src="meteo/meteo-carte.js"></script>
+    <script src="core/app-manager.js"></script>
+    <script src="route/voix.js"></script>
+    <script src="route/route.js"></script>
+    <script src="route/route-voix.js"></script>
+    <script src="accueil/accueil.js"></script>
+    <script src="core/nav-scroll.js"></script>
+    <script src="core/main.js"></script>
+    <script src="core/shapes.js"></script>
+
+</body>
+</html>
