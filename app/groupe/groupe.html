@@ -1,0 +1,87 @@
+        <section id="view-community" class="module-view">
+            <h1 class="module-header">Communauté</h1>
+
+            <!-- ONGLET 1 : RADAR & PROXIMITÉ -->
+            <!-- ONGLET 1 : RADAR & PROXIMITÉ -->
+            <div id="sub-comm-radar" class="comm-sub-view active">
+                <div class="mz-t cm-radar" style="min-height: 190px; padding: 0; align-items: center; justify-content: center; margin-bottom: 9px; cursor: default; flex-shrink: 0;">
+                    <svg viewBox="0 0 200 200" class="cm-radar-svg"><defs><linearGradient id="cmrg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff6a1a" stop-opacity="0"/><stop offset="1" stop-color="#ff6a1a" stop-opacity=".55"/></linearGradient></defs>
+                        <g fill="none" stroke="currentColor" stroke-opacity=".28" stroke-width="6"><circle cx="100" cy="100" r="86"/><circle cx="100" cy="100" r="58"/><circle cx="100" cy="100" r="30"/></g>
+                        <path class="cm-sweep" d="M100 100 L100 14 A86 86 0 0 1 176 56 Z" fill="url(#cmrg)"/><circle cx="100" cy="100" r="8" fill="#ff6a1a"/></svg>
+                </div>
+                <div class="mz" style="margin-bottom: 9px;">
+                    <div class="mz-t" style="min-height: 150px;">
+                        <span class="mz-ic c4 top"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></span>
+                        <b>Global</b><small id="radar-status-all">Désactivé</small>
+                        <button id="radar-toggle-all" class="radar-switch" aria-label="Activer le radar global" style="margin-top: 8px;"></button>
+                    </div>
+                    <div class="mz-t" style="min-height: 150px;">
+                        <span class="mz-ic c1 top"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                        <b>Amis seulement</b><small id="radar-status-friends">Désactivé</small>
+                        <button id="radar-toggle-friends" class="radar-switch" aria-label="Activer le radar amis" style="margin-top: 8px;"></button>
+                    </div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.72rem; line-height: 1.4; margin: 0 4px 9px;"><b>Global</b> : visible par tous les motards de l'app à moins de 150 m. <b>Amis</b> : position et profil échangés uniquement avec tes amis.</p>
+
+                <div class="card">
+                    <div class="comm-label"><span>À proximité</span><span id="nearby-count">0</span></div>
+                    <div id="nearby-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET ÉVÉNEMENTS : balades et rendez-vous de la communauté -->
+            <div id="sub-comm-events" class="comm-sub-view">
+                <button type="button" id="ev-create-btn" class="ev-create">
+                    <i class="ev-plus"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></i>
+                    <span class="ev-ct"><b>Créer une balade</b><small>Invite tes amis</small></span>
+                </button>
+                <div class="ev-filter">
+                    <button type="button" class="ev-chip active" data-f="all">Tous</button>
+                    <button type="button" class="ev-chip" data-f="joined">Je participe</button>
+                    <button type="button" class="ev-chip" data-f="mine">Mes événements</button>
+                </div>
+                <div id="ev-sr"><div class="cm-sr"><label class="cm-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="ev-q" type="search" placeholder="Rechercher" maxlength="40"></label><button type="button" class="cm-rg" id="ev-rg"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Région</span></button></div>
+                <div class="cm-chips" id="ev-lv"></div></div>
+                <div class="card">
+                    <div class="comm-label"><span id="ev-label">À venir</span><span id="ev-count">0</span></div>
+                    <div id="ev-list" style="display: flex; flex-direction: column; gap: 10px;"><div class="comm-empty">Chargement…</div></div>
+                </div>
+            </div>
+
+            <!-- ONGLET 2 : CROISÉS -->
+            <div id="sub-comm-croise" class="comm-sub-view">
+                <div class="card">
+                    <div class="comm-label"><span>Motards croisés</span><span id="crossed-count">0</span></div>
+                    <div id="crossed-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET 3 : AMIS -->
+            <div id="sub-comm-amis" class="comm-sub-view">
+                <div class="card">
+                    <div class="comm-label"><span>Mes Amis</span><span id="friends-count">0</span></div>
+                    <div id="friends-list" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="comm-empty">Bientôt disponible : ajoute tes potes pour voir s'ils roulent !</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET 4 : DEMANDES -->
+            <div id="sub-comm-demandes" class="comm-sub-view">
+                <div class="card">
+                    <div class="comm-label"><span>Demandes d'amis</span><span id="requests-count">0</span></div>
+                    <div id="requests-list" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="comm-empty">Aucune demande en attente.</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation des sous-onglets : pastille d'icônes en bas (sur le côté en paysage), comme la carte -->
+            <div class="comm-top-nav" id="comm-nav-bar">
+                <button class="comm-tab-btn active" data-sub="sub-comm-radar" title="Radar" aria-label="Radar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"></circle><path d="M16.2 7.8a6 6 0 0 1 0 8.4"></path><path d="M7.8 16.2a6 6 0 0 1 0-8.4"></path><path d="M19 5a10 10 0 0 1 0 14"></path><path d="M5 19A10 10 0 0 1 5 5"></path></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-events" title="Événements" aria-label="Événements"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-croise" title="Croisés" aria-label="Croisés"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-amis" title="Amis" aria-label="Amis"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></button>
+                <button class="comm-tab-btn" data-sub="sub-comm-demandes" title="Invitations" aria-label="Invitations"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></button>
+            </div>
+        </section>
+

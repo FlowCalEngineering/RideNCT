@@ -1,0 +1,168 @@
+            #view-security { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+            #view-security .security-card { flex: 0 0 auto; display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 22px 16px; margin-bottom: 12px; }
+            #view-security .sensor-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+            #view-security .sensor-status { font-size: 2rem; margin: 14px 0 8px; color: var(--text-muted); font-weight: 700; }
+            #view-security .sec-sub { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; line-height: 1.35; }
+            #view-security .sec-card { flex: 0 0 auto; margin-bottom: 12px; padding: 16px; }
+            #view-security .sec-h { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 12px; }
+            #view-security .sec-hint { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; line-height: 1.4; margin-top: 10px; }
+            #view-security .sec-hint b { color: var(--text-main); }
+            #view-security .sec-seg { display: flex; padding: 4px; background: var(--active-bg); border-radius: 40px; }
+            #view-security .sec-seg button { flex: 1; padding: 11px 6px; border: none; border-radius: 40px; background: transparent; color: var(--text-muted); font-weight: 800; font-size: 0.8rem; cursor: pointer; font-family: inherit; transition: 0.2s; }
+            #view-security .sec-seg button.on { background: var(--accent-color); color: var(--on-accent); }
+            #view-security .sec-row { display: flex; align-items: center; gap: 14px; justify-content: space-between; }
+            #view-security .sec-ct { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid rgba(128,128,128,0.15); }
+            #view-security .sec-ct:first-child { border-top: none; }
+            #view-security .sec-ct i { width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--accent-color); color: var(--accent-color); display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 900; font-size: 0.85rem; }
+            #view-security .sec-ct.first i { border-color: #ff453a; color: #ff453a; }
+            #view-security .sec-ct div { flex: 1; min-width: 0; }
+            #view-security .sec-ct b { display: block; font-size: 0.9rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            #view-security .sec-ct span { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+            #view-security .sec-ct button { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,69,58,0.4); background: transparent; color: #ff453a; cursor: pointer; }
+            #view-security .sec-add { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+            #view-security .sec-add input { flex: 1 1 110px; min-width: 0; padding: 11px 12px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.3); background: var(--active-bg); color: var(--text-main); font-family: inherit; font-size: 1rem; }
+            #view-security .sec-btn { padding: 11px 16px; border: none; border-radius: 12px; background: var(--accent-color); color: var(--on-accent); font-weight: 800; font-size: 0.8rem; cursor: pointer; font-family: inherit; }
+            #view-security .sec-link { display: block; margin: 12px auto 0; background: none; border: none; color: var(--accent-color); font-weight: 800; font-size: 0.78rem; cursor: pointer; font-family: inherit; }
+            #view-security #sec-share { margin-left: auto; }
+
+            /* Alerte plein écran (accident détecté) */
+            .sos-overlay { position: fixed; inset: 0; z-index: 10000; background: #b3120a; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center; animation: sos-flash 1s steps(2) infinite; }
+            @keyframes sos-flash { 0% { background: #b3120a; } 50% { background: #7d0b06; } }
+            .sos-overlay h1 { font-size: 1.7rem; font-weight: 900; margin: 0; letter-spacing: 1px; text-transform: uppercase; }
+            .sos-overlay p { margin: 0; font-size: 0.95rem; font-weight: 600; max-width: 320px; line-height: 1.4; }
+            .sos-count { font-size: 4.2rem; font-weight: 900; line-height: 1; }
+            .sos-steps { font-size: 0.8rem; font-weight: 700; opacity: 0.9; max-width: 320px; line-height: 1.5; }
+            .sos-ok { width: 100%; max-width: 340px; padding: 20px; border: none; border-radius: 20px; background: #fff; color: #b3120a; font-weight: 900; font-size: 1.15rem; cursor: pointer; font-family: inherit; }
+            .sos-sec { width: 100%; max-width: 340px; padding: 13px; border: 2px solid rgba(255,255,255,0.7); border-radius: 16px; background: transparent; color: #fff; font-weight: 800; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
+            /* Alerte reçue d'un motard proche */
+            .sos-in { position: fixed; top: 10px; left: 10px; right: 10px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+            .sos-card { pointer-events: auto; background: rgba(28,28,30,0.97); color: #fff; border: 2px solid #ff453a; border-radius: 18px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); max-width: 460px; width: 100%; margin: 0 auto; }
+            .sos-card b { display: block; font-size: 0.95rem; color: #ff453a; }
+            .sos-card span { font-size: 0.78rem; font-weight: 600; opacity: 0.9; }
+            .sos-card .sos-b { display: flex; gap: 6px; margin-top: 10px; }
+            .sos-card button { flex: 1; padding: 10px 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #fff; font-weight: 800; font-size: 0.74rem; cursor: pointer; font-family: inherit; }
+            .sos-card button.main { background: #ff453a; border-color: #ff453a; }
+            .sos-mk { width: 38px; height: 38px; border-radius: 50%; background: #ff453a; border: 3px solid #fff; box-shadow: 0 0 0 4px rgba(255,69,58,0.35), 0 4px 12px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+            .sos-mk svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Zone de toucher confortable pour le lien de test */
+#sec-test { min-height: 44px; padding: 10px 16px; }
+
+#view-security #sec-lock, #view-security #sec-smsmed, #view-security #sec-auto { margin-left: auto; flex: none; }
+#view-security .med-grid { display: flex; flex-direction: column; gap: 10px; }
+#view-security .med-grid label { display: flex; flex-direction: column; gap: 5px; font-size: .7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+#view-security .med-grid input, #view-security .med-grid select, #view-security .med-grid textarea { padding: 11px 12px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.3); background: var(--active-bg); color: var(--text-main); font-family: inherit; font-size: 1rem; font-weight: 600; text-transform: none; letter-spacing: 0; resize: none; }
+/* Compte à rebours avant l'alerte : orange (rien n'est encore envoyé) */
+.sos-pre { z-index: 10002; background: #b45309; animation: sos-flash-pre 1s steps(2) infinite; }
+@keyframes sos-flash-pre { 0% { background: #b45309; } 50% { background: #7c3a06; } }
+.sos-pre .sos-ok { color: #b45309; }
+/* Fiche médicale plein écran */
+.med-sheet { position: fixed; inset: 0; z-index: 10003; background: rgba(0,0,0,.85); display: flex; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
+.med-box { width: 100%; max-width: 380px; background: #fff; color: #111; border-radius: 22px; padding: 22px 18px; display: flex; flex-direction: column; gap: 10px; }
+.med-box h2 { margin: 0; font-size: 1.3rem; font-weight: 900; color: #b3120a; text-transform: uppercase; letter-spacing: 1px; }
+.med-who { font-weight: 800; font-size: 1rem; margin-bottom: 4px; }
+.med-r, .med-c { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-top: 1px solid #e5e5e5; text-decoration: none; color: inherit; }
+.med-r span, .med-c span { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #777; }
+.med-r b, .med-c b { font-size: 1rem; font-weight: 800; }
+.med-c b { color: #b3120a; }
+.med-box .sos-ok { background: #111; color: #fff; margin-top: 6px; max-width: none; }
+
+/* Accueil en tuiles + sous-pages, comme l'Atelier */
+#view-security .sec-sub-view { display: none; flex-direction: column; flex-shrink: 0; padding-bottom: 40px; animation: fadeIn 0.2s ease-out; }
+#view-security .sec-sub-view.active { display: flex; }
+#view-security.sec-home .at-pagebar { display: none; }
+#view-security:not(.sec-home) .module-header { display: none; }
+#view-security .sec-actions { display: flex; gap: 10px; margin-bottom: 14px; }
+#view-security .sec-actions .btn { margin: 0; }
+#view-security .sec-actions #btn-toggle-security { flex: 1; }
+#view-security .sec-actions #btn-sos-manual { flex: 0 0 96px; }
+#view-security .at-home-tile.wide { min-height: 0; flex-direction: row; flex-wrap: wrap; align-items: center; }
+#view-security .at-home-tile.wide .t { flex: 1; }
+#view-security .at-home-tile.wide .s { flex-basis: 100%; }
+#view-security .at-home-tile .s.ok { color: #30d158; } #view-security .at-home-tile .s.warn { color: #ff9f0a; }
+
+
+/* Bouton SOS : plein, contrasté, lisible au soleil */
+#btn-sos-manual { background: #d70015; color: #fff; font-weight: 900; letter-spacing: 1px; }
+
+/* « Tu vas bien ? » : bouton énorme, utilisable avec des gants */
+.sos-pre .sos-ok { padding: 42px 20px; font-size: 1.7rem; max-width: 420px; }
+
+/* ---- Demande d'aide entre motards ---- */
+.aide-note { font-size: .78rem; color: var(--text-muted); font-weight: 600; line-height: 1.45; text-align: center; padding: 0 6px; }
+.aide-wait { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 26px 0; font-weight: 800; color: var(--text-muted); }
+.aide-wait i { width: 10px; height: 10px; border-radius: 50%; background: #ff9f0a; animation: aidePulse 1.2s ease-in-out infinite; }
+@keyframes aidePulse { 50% { opacity: .25; transform: scale(.7); } }
+.aide-big { background: var(--surface-color); border-radius: 22px; padding: 26px 14px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
+.aide-big small { font-size: .72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-weight: 800; }
+.aide-big b { font-size: 2.8rem; font-weight: 900; color: var(--text-main); }
+.aide-big span { color: var(--text-muted); font-weight: 700; font-size: .9rem; }
+.aide-btn { display: block; width: 100%; border: none; border-radius: 16px; padding: 18px; font-size: 1rem; font-weight: 900; background: var(--accent-color); color: var(--on-accent); }
+.aide-btn.sec { background: var(--surface-color); color: var(--text-main); }
+/* carte reçue par les motards proches */
+.aide-in { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); left: 10px; right: 10px; z-index: 10001; display: flex; flex-direction: column; gap: 8px; }
+.aide-card { background: var(--bg-color); border-radius: 24px; padding: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.55); display: flex; flex-direction: column; gap: 8px; }
+.aide-al { background: #ff453a; color: #fff; border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.aide-al span { font-size: .8rem; font-weight: 700; opacity: .92; } .aide-al b { font-size: 1.5rem; font-weight: 900; } .aide-al em { font-style: normal; font-size: .78rem; font-weight: 800; background: rgba(255,255,255,.22); border-radius: 10px; padding: 4px 9px; align-self: flex-start; margin-top: 6px; }
+.aide-mini { height: 150px; border-radius: 16px; overflow: hidden; background: #26332f; }
+.aide-sub { text-align: center; padding: 12px; font-weight: 800; color: var(--text-muted); font-size: .9rem; }
+/* carte plein écran du motard qui vient */
+.aide-map { position: fixed; inset: 0; z-index: 10002; background: var(--bg-color); }
+#aide-mp { position: absolute; inset: 0; }
+.aide-top { position: absolute; left: 12px; right: 12px; top: calc(env(safe-area-inset-top, 0px) + 12px); background: color-mix(in srgb, var(--bg-color) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.aide-top b { font-size: 1rem; color: var(--text-main); } .aide-top span { font-size: .76rem; font-weight: 700; color: var(--text-muted); }
+.aide-bot { position: absolute; left: 12px; right: 12px; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); background: color-mix(in srgb, var(--bg-color) 94%, transparent); border-radius: 24px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.aide-eta { display: flex; justify-content: space-between; align-items: baseline; } .aide-eta b { font-size: 1.9rem; font-weight: 900; color: var(--text-main); } .aide-eta span { color: var(--text-muted); font-weight: 800; }
+.aide-row { display: flex; gap: 8px; } .aide-row .aide-btn:first-child { flex: 2; } .aide-row .aide-btn:last-child { flex: 1; }
+
+.aide-of { background: var(--surface-color); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.aide-oh { display: flex; align-items: center; gap: 12px; }
+.aide-ic { width: 40px; height: 40px; border-radius: 13px; background: var(--active-bg); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex: none; }
+.aide-oh b { display: block; font-size: 1.05rem; color: var(--text-main); } .aide-oh small { font-size: .74rem; color: var(--text-muted); font-weight: 700; }
+.aide-od { margin-left: auto; text-align: right; font-weight: 900; font-size: 1.15rem; color: var(--text-main); } .aide-od small { display: block; }
+.aide-of .aide-btn { padding: 15px; }
+
+/* feuille du bas (même habillage que la feuille ⚠ de la carte) */
+.aide-ov { z-index: 10002; }
+.aide-sh { display: flex; flex-direction: column; gap: 12px; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); }
+.aide-hd { position: relative; text-align: center; padding: 6px 44px 2px; }
+.aide-hd b { font-size: 1.05rem; font-weight: 900; color: var(--text-main); }
+.aide-x { position: absolute; right: 0; top: 0; width: 38px; height: 38px; border: none; border-radius: 50%; background: var(--active-bg); color: var(--text-main); font-size: .95rem; font-weight: 800; }
+.aide-of, .aide-big { background: var(--active-bg); }
+.aide-ic { background: var(--surface-color); }
+.aide-note { margin: 0; }
+#rp-aide .rp-grid { grid-template-columns: 1fr 1fr; }
+#rp-aide .rp-atile { padding: 20px 6px 16px; font-size: .95rem; }
+.rp-urg { text-align: center; margin-top: 14px; font-size: .78rem; font-weight: 700; color: var(--text-muted); }
+
+/* page plein écran « Demander de l'aide » (Sécurité) : cartes et tuiles de l'onglet */
+.aide-page { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.aide-page .at-home-tile { min-height: 124px; }
+.aide-st .sensor-status { font-size: 2.1rem; }
+.aide-st.on .sensor-status { color: #30d158; }
+.aide-nm { font-size: 1.1rem; font-weight: 900; color: var(--text-main); }
+.aide-eta2 { text-align: right; display: flex; flex-direction: column; gap: 2px; } .aide-eta2 b { font-size: 1.2rem; font-weight: 900; color: var(--text-main); } .aide-eta2 span { font-size: .74rem; font-weight: 700; color: var(--text-muted); }
+.aide-urg .sec-hint b { color: var(--danger-color); }
+
+/* demande d'aide en cours : pastille sur le bouton ⚠ de la carte */
+body.aide-active #btn-report::after { content: ''; position: absolute; top: 4px; right: 4px; width: 13px; height: 13px; border-radius: 50%; background: #ff453a; border: 2px solid var(--bg-color, #1c1c1e); animation: aidePulse 1.2s ease-in-out infinite; }
+
+/* A6 · badges */
+.aide-bdg { display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%; cursor: pointer; }
+.aide-bar { display: block; height: 7px; border-radius: 4px; background: rgba(120,120,128,.35); overflow: hidden; }
+.aide-bar i { display: block; height: 100%; border-radius: 4px; background: #ff9f0a; }
+.aide-bg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.aide-b { background: var(--card-bg, rgba(120,120,128,.18)); border-radius: 16px; padding: 12px 4px; text-align: center; font-size: .72rem; }
+.aide-b i:not(.aide-bi) { display: block; width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 6px; border: 3px solid; font-style: normal; line-height: 38px; font-size: 20px; }
+.aide-b b { display: block; font-weight: 800; }
+.aide-b small { display: block; opacity: .6; margin-top: 2px; }
+.aide-b.off { opacity: .45; filter: grayscale(1); }
+
+.aide-bi { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 6px; border: 3px solid #8e8e93; color: #8e8e93; box-sizing: border-box; }
+.aide-bi .vi { width: 22px; height: 22px; vertical-align: 0; }
+.aide-bi.off { opacity: .45; }
+.pf-tr-h { display: flex; justify-content: space-between; font-size: .75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+.pf-tr-row { display: flex; gap: 8px; }
+.pf-tr-row .aide-bi { margin: 0; width: 44px; height: 44px; }
+#badges-ov .aide-bg { margin-top: 6px; }
+.aide-b .aide-bi.off { opacity: 1; }

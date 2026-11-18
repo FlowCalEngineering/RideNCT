@@ -1,0 +1,184 @@
+        <section id="view-gps" class="module-view">
+            <h1 class="module-header" id="gps-title" style="display:none; position:absolute; top:0; left:0; right:0; z-index:5; pointer-events:none;"></h1>
+            <div class="map-wrapper">
+                <div id="map-container"></div>
+
+                <div id="sub-gps-carte" class="gps-sub-view view-transparent active">
+                    <div id="main-map-badge" class="map-status-badge">Prêt 🛰️</div>
+
+                    <div class="nav-top">
+                    <!-- ☁️ Widget météo (actuelle + prévision +1h) -->
+                    <div id="map-weather" class="map-weather mw-loading" role="button" aria-label="Météo — ouvrir l'onglet Météo">
+                        <div class="mw-row"><span class="mw-ic" id="mw-ic"></span><span class="mw-temp" id="mw-temp">--°</span></div>
+                        <div class="mw-wind"><svg viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg><span id="mw-wind">--</span></div>
+                        <div class="mw-sep"></div>
+                        <div class="mw-nlabel" id="mw-nlabel">+1h</div>
+                        <div class="mw-row"><span class="mw-ic sm" id="mw-nic"></span><span class="mw-ntemp" id="mw-ntemp">--°</span></div>
+                        <div class="mw-nrain dry" id="mw-nrain"><svg viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg><span id="mw-nrain-v">--%</span></div>
+                    </div>
+
+                    
+                    <!-- 🟢 HUD TURN-BY-TURN : Format compact (Max 5-10% de l'écran) -->
+                    <!-- 🟢 BANDEAU DE GUIDAGE : virage à venir (icône, distance, manœuvre, rue) + aperçu du suivant -->
+                    <div id="nav-instruction-hud" class="nav-hud" style="display: none;">
+                        <div class="nav-hud-main">
+                            <div class="nav-hud-ico">
+                                <svg id="nav-turn-icon" viewBox="0 0 24 24"></svg>
+                                <div id="nav-exit-badge" class="nav-exit" style="display: none;">1</div>
+                            </div>
+                            <div class="nav-hud-txt">
+                                <div id="nav-distance">-- m</div>
+                                <div id="nav-label"></div>
+                                <div id="nav-street"></div>
+                            </div>
+                            <button id="btn-voice" class="nav-voice" type="button" title="Guidage vocal" aria-label="Guidage vocal"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"></path><path class="vw" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path><line class="vx" x1="16" y1="9" x2="22" y2="15"></line><line class="vx" x1="22" y1="9" x2="16" y2="15"></line></svg></button>
+                        </div>
+                        <div id="nav-next" class="nav-next" style="display: none;"><span>Puis</span><svg id="nav-next-icon" viewBox="0 0 24 24"></svg></div>
+                        <div id="nav-radar" class="nav-radar" style="display: none;"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20z"></path><line x1="12" y1="10" x2="12" y2="14"></line><line x1="12" y1="17" x2="12" y2="17.01"></line></svg><span id="nav-radar-txt">Zone de danger</span></div>
+                    </div>
+                    </div>
+
+                    <!-- 📊 BARRE DE TRAJET (visible pendant le suivi) -->
+                    <div id="nav-trip-bar" class="nav-trip">
+                <div class="nt-cell nt-route" title="Arrivée"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><b id="nt-eta">--:--</b></div>
+                <div class="nt-cell nt-route" title="Temps restant"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><b id="nt-time">--</b></div>
+                <div class="nt-cell nt-route" title="Distance restante"><svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM8 17h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/></svg><b><span id="nt-dist">--</span> <span data-u="dist">km</span></b></div>
+                <div class="nt-cell nt-speedw" title="Compteur">
+                    <svg viewBox="0 0 200 200" class="nt-ring"><circle cx="100" cy="100" r="80" class="nt-ring-bg"></circle><circle cx="100" cy="100" r="80" class="nt-ring-fg" id="nt-ring"></circle></svg>
+                    <div class="nt-sp"><b id="nt-speed">0</b><i data-u="speed">km/h</i></div>
+                    <div id="nt-limit" class="nt-limit" style="display: none;">--</div>
+                </div>
+            </div>
+
+
+                    <div id="poi-filters" class="poi-filters">
+                        <button class="poi-chip fuel" data-cat="fuel" title="Essence" aria-label="Essence"><svg viewBox="0 0 24 24"><path d="M3 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"></path><path d="M3 22h12"></path><path d="M6 8h6"></path><path d="M15 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V9l-3-3"></path></svg></button>
+                        <button class="poi-chip food" data-cat="food" title="Restaurants" aria-label="Restaurants"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"></path><path d="M21 15v7"></path></svg></button>
+                        <button class="poi-chip drink" data-cat="drink" title="Cafés et bars" aria-label="Cafés et bars"><svg viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"></path><path d="M6 2v2"></path><path d="M10 2v2"></path><path d="M14 2v2"></path></svg></button>
+                        <button class="poi-chip event" data-cat="event" title="Événements" aria-label="Événements"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></button>
+                    </div>
+
+                    <button id="btn-report" class="report-btn" type="button" aria-label="Signaler un danger ou une balade" title="Signaler">
+                        <svg viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </button>
+
+                    <button id="btn-toggle-poi" class="poi-toggle-btn" type="button" aria-label="Choisir les points à afficher" title="Points à afficher">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </button>
+
+                    <button id="btn-clear-route-map" class="clear-route-btn" aria-label="Supprimer l'itinéraire" title="Supprimer l'itinéraire">
+                        <svg viewBox="0 0 24 24"><path d="M3 12h4l3-6 4 12 3-6h4"></path><line x1="3" y1="3" x2="21" y2="21"></line></svg>
+                    </button>
+
+                    <button id="btn-recenter" class="recenter-btn">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+
+                    <button id="btn-start-nav" class="pill-action-btn" style="flex: none; width: auto; min-width: clamp(140px, 40vw, 200px); padding: 12px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: auto; background: var(--accent-color); color: var(--on-accent); pointer-events: auto;">
+                        <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                        <span>Démarrer</span>
+                    </button>
+
+                    <!-- 🧭 Création d'itinéraire : tiroir intégré à la carte (ex-onglet « Créer ») -->
+                <div id="route-bottom-sheet" class="bottom-sheet">
+                    <button id="btn-toggle-sheet" class="sheet-toggle-btn">
+                        <svg class="sheet-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+                        <span>Itinéraire</span>
+                        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                    </button>
+
+                    <div class="sheet-content" id="sheet-content-area">
+                        <button id="btn-clear-route" class="pill-action-btn clear-route-sheet-btn" style="display: none; width: 100%; flex: none; margin-bottom: 15px; padding: 14px; background: rgba(255,69,58,0.15); color: var(--danger-color);"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg><span>Supprimer l'itinéraire</span></button>
+                        <div id="waypoints-container">
+                            <div class="input-wrapper" id="wrap-wp-start">
+                                <input type="text" id="input-wp-start" class="floating-input" readonly placeholder="📍 Départ">
+                                <div id="list-wp-start" class="autocomplete-list"></div>
+                            </div>
+                            <div class="input-wrapper" id="wrap-wp-dest">
+                                <input type="text" id="input-wp-dest" class="floating-input" readonly placeholder="🏁 Destination">
+                                <div id="list-wp-dest" class="autocomplete-list"></div>
+                            </div>
+                        </div>
+                        
+                        <button id="btn-add-waypoint" class="btn" style="background: rgba(var(--tint),0.05); font-size: 0.9rem; font-weight: 700; padding: 18px; border-radius: 14px; margin-bottom: 20px;">+ Ajouter étape</button>
+                        
+                        <div style="display: flex; gap: 10px; flex-shrink: 0; margin-bottom: 20px;">
+                            <button class="btn route-mode-btn active" data-mode="sinueux" style="flex: 1; padding: 14px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 800; background: var(--accent-color); color: var(--on-accent); border-radius: 14px;">
+                                <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M6 22 C 6 13, 16 15, 16 9 C 16 5, 12 3, 9 2"></path><path d="M14 22 C 14 15, 22 17, 22 9 C 22 4, 17 1, 15 2"></path><path d="M10 22 C 10 14, 19 16, 19 9 C 19 4.5, 14.5 2, 12 2" stroke-dasharray="3 4"></path></svg>
+                                <span>Sinueux</span>
+                            </button>
+                            <button class="btn route-mode-btn" data-mode="sans-axe" style="flex: 1; padding: 14px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 800; background: rgba(var(--tint),0.1); color: var(--text-main); border-radius: 14px;">
+                                <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 22L9 2"></path><path d="M20 22L15 2"></path><line x1="12" y1="22" x2="12" y2="18"></line><line x1="12" y1="13" x2="12" y2="9"></line><line x1="12" y1="4" x2="12" y2="2"></line><line x1="3" y1="21" x2="21" y2="3" stroke-width="2.5"></line></svg>
+                                <span>Sans Axes</span>
+                            </button>
+                            <button class="btn route-mode-btn" data-mode="rapide" style="flex: 1; padding: 14px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 800; background: rgba(var(--tint),0.1); color: var(--text-main); border-radius: 14px;">
+                                <svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 22L9 2"></path><path d="M20 22L15 2"></path><line x1="12" y1="22" x2="12" y2="18"></line><line x1="12" y1="13" x2="12" y2="9"></line><line x1="12" y1="4" x2="12" y2="2"></line></svg>
+                                <span>Rapide</span>
+                            </button>
+                        </div>
+
+                        <div id="route-info-display" style="display: none; justify-content: space-around; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 14px; margin-bottom: 15px; font-weight: 800; font-size: 0.9rem; border: 1px solid rgba(var(--tint),0.05);"></div>
+                        
+                        <div id="route-actions" class="action-row" style="margin-top: auto; padding-top: 15px; flex-wrap: wrap;">
+                            <button id="btn-save-route" class="pill-action-btn" style="background: rgba(var(--tint),0.1); color: var(--text-main);"><svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg><span>Sauver</span></button>
+                            <button id="btn-offline-route" class="pill-action-btn" style="background: rgba(var(--tint),0.1); color: var(--text-main);"><svg viewBox="0 0 24 24"><path d="M12 3v12"></path><polyline points="7 11 12 16 17 11"></polyline><path d="M5 20h14"></path></svg><span>Hors ligne</span></button>
+                            <button id="btn-start-create" class="pill-action-btn" style="background: var(--accent-color); color: var(--on-accent);"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg><span>Démarrer</span></button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+
+                <!-- ========================================== -->
+                <!-- ONGLET 2 : ROADBOOK (Actif + Historique)   -->
+                <!-- ========================================== -->
+                <div id="sub-gps-myroadbook" class="gps-sub-view view-solid" style="justify-content: flex-start; align-items: flex-start; padding-top: 25px;">
+                    
+                    <h2 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 10px; width: 100%; text-transform: uppercase; letter-spacing: 1px;">Itinéraire Actif</h2>
+                    <div style="background: rgba(var(--tint),0.05); padding: 15px; border-radius: 15px; width: 100%; margin-bottom: 30px; border: 1px solid rgba(var(--tint),0.05);">
+                        <div style="color: var(--text-main); font-weight: 700; margin-bottom: 5px; font-size: 0.9rem;" id="active-route-name">Aucun trajet actif</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 15px;" id="active-route-dist">
+                            <span style="display:flex; align-items:center; gap:5px;"><svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><circle cx="5" cy="19" r="2"></circle><path d="M5 17v-4a2 2 0 0 1 2-2h10a2 2 0 0 0 2-2V7"></path><circle cx="19" cy="5" r="2"></circle></svg> -- km</span>
+                        </div>
+                    </div>
+
+                    <h2 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 15px; width: 100%; text-transform: uppercase; letter-spacing: 1px;">Historique</h2>
+                    <div id="recorded-rides-container" style="width: 100%; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 20px; text-align: center;" id="recorded-empty">Aucune balade enregistrée.</div>
+                    </div>
+                    <div id="rides-space" style="width: 100%; color: var(--text-muted); font-size: 0.72rem; text-align: center; margin-top: 8px;"></div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- ONGLET 3 : BIBLIOTHÈQUE (Sauvegardes)      -->
+                <!-- ========================================== -->
+                <div id="sub-gps-roadbooks" class="gps-sub-view view-solid" style="justify-content: flex-start; align-items: flex-start;">
+                    
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 style="font-size: 1rem; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; margin: 0;">Bibliothèque</h2>
+                        
+                        <!-- Input invisible pour charger le fichier -->
+                        <input type="file" id="input-import-gpx" accept=".gpx" style="display: none;">
+                        
+                        <!-- Bouton stylisé pour déclencher l'input -->
+                        <button type="button" class="btn" data-offline-open title="Cartes hors ligne" aria-label="Cartes hors ligne" style="background: rgba(var(--tint),0.1); color: var(--text-main); width: auto; padding: 10px 12px; margin-left: auto; margin-right: 8px; border-radius: 12px; display: flex; align-items: center;"><svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 3v12"></path><polyline points="7 11 12 16 17 11"></polyline><path d="M5 20h14"></path></svg></button>
+                        <button id="btn-import-gpx" class="btn" style="background: rgba(var(--tint),0.1); color: var(--text-main); width: auto; padding: 10px 15px; font-size: 0.75rem; border-radius: 12px; display: flex; align-items: center; gap: 6px;">
+                            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Ajouter
+                        </button>
+                    </div>
+
+                    <div id="library-container" style="width: 100%; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 40px; text-align: center;" id="library-empty">Aucun roadbook sauvegardé.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sous-menus Carte / Roadbook / Bibliothèque : en bas, loin de la caméra frontale -->
+            <div class="gps-top-nav" id="gps-nav-bar">
+                <button class="gps-tab-btn active" data-sub="sub-gps-carte" title="Carte" aria-label="Carte"><svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></button>
+                <button class="gps-tab-btn" data-sub="sub-gps-myroadbook" title="Roadbook" aria-label="Roadbook"><svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg></button>
+                <button class="gps-tab-btn" data-sub="sub-gps-roadbooks" title="Bibliothèque" aria-label="Bibliothèque"><svg viewBox="0 0 24 24"><path d="M4 4v16"></path><path d="M8 8v12"></path><path d="M12 6v14"></path><path d="m16 6 4 14"></path></svg></button>
+            </div>
+        </section>
+

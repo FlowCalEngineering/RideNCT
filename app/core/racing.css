@@ -1,0 +1,75 @@
+/* Formes « Racing » partagées : coins coupés, liseré d'accent à gauche, titres italiques, boutons inclinés.
+   Une seule feuille pour tous les écrans (chargée en dernier). Couleur = --accent-color du thème.
+   Désactivable : <html data-shapes="off">. */
+:root { --rc: #ff6a1a; --rc-on: #fff; --rc-cut: 18px; --rc-cut-s: 12px; }   /* --rc = orange Racing (le thème peut le redéfinir) */
+html:not([data-shapes="off"]) .card, html:not([data-shapes="off"]) .at-home-tile, html:not([data-shapes="off"]) .hm-t, html:not([data-shapes="off"]) .hm-inv, html:not([data-shapes="off"]) .hm-ban, html:not([data-shapes="off"]) .hm-hero, html:not([data-shapes="off"]) .hm-big, html:not([data-shapes="off"]) .hm-sci > button:first-child {
+        border-radius: 0 !important;
+        clip-path: polygon(0 0, calc(100% - var(--rc-cut)) 0, 100% var(--rc-cut), 100% 100%, var(--rc-cut) 100%, 0 calc(100% - var(--rc-cut)));
+    }
+html:not([data-shapes="off"]) .card, html:not([data-shapes="off"]) .at-home-tile, html:not([data-shapes="off"]) .hm-t, html:not([data-shapes="off"]) .hm-ban { border-left: 3px solid var(--rc) !important; }
+html:not([data-shapes="off"]) .hm-sci > button:first-child { --rc-cut: var(--rc-cut-s); border-left: 3px solid var(--rc); }
+html:not([data-shapes="off"]) .hm-hero:not(.riding) { border-left: 6px solid var(--rc); background: linear-gradient(135deg, #f6f6f8, #cfd0d6); color: #111; }
+html:not([data-shapes="off"]) .hm-hero:not(.riding)::before { display: none; }
+html:not([data-shapes="off"]) .hm-hero:not(.riding) .go { background: var(--rc); color: #fff; }
+html:not([data-shapes="off"]) .module-header, html:not([data-shapes="off"]) .setting-title { font-style: italic; }
+html:not([data-shapes="off"]) .module-header { letter-spacing: 2.5px; }
+html:not([data-shapes="off"]) .btn { border-radius: 0 !important; font-style: italic; clip-path: polygon(0 0, calc(100% - var(--rc-cut-s)) 0, 100% var(--rc-cut-s), 100% 100%, var(--rc-cut-s) 100%, 0 calc(100% - var(--rc-cut-s))); }
+/* Accueil : mosaïque Racing (tuiles à coins coupés, titre du héros en italique majuscules, bouton incliné) */
+html:not([data-shapes="off"]) .hm-hero .h { text-transform: uppercase; font-style: italic; font-size: 1.55rem; font-weight: 900; letter-spacing: -.01em; line-height: 1.02; }
+html:not([data-shapes="off"]) .hm-hero .go, html:not([data-shapes="off"]) .hm-big { border-radius: 0 !important; transform: skewX(-12deg); font-style: italic; text-transform: uppercase; letter-spacing: .04em; }
+html:not([data-shapes="off"]) .hm-hero .go > *, html:not([data-shapes="off"]) .hm-big > * { transform: skewX(12deg); }
+html:not([data-shapes="off"]) .hm-t .v { font-style: italic; }
+html:not([data-shapes="off"]) .hm-top h1 { font-style: italic; text-transform: uppercase; font-weight: 900; }
+html:not([data-shapes="off"]) .hm-me { border-radius: 0 !important; background: #fff; color: #111; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+html:not([data-shapes="off"]) .hm-t .l { font-style: italic; }
+html:not([data-shapes="off"]) .hm-inv { border: 0; border-left: 3px solid var(--rc); }
+html:not([data-shapes="off"]) .hm-inv .b, html:not([data-shapes="off"]) .hm-pen, html:not([data-shapes="off"]) .nav-gear, html:not([data-shapes="off"]) .hm-sci > button:first-child.plus { border-radius: 0 !important; }
+html:not([data-shapes="off"]) .hm-pen, html:not([data-shapes="off"]) .nav-gear { clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px)); }
+/* Route : panneaux Compteur / Carte taillés, pastilles de stats en biais, bouton Démarrer incliné */
+html:not([data-shapes="off"]) #rm .rm-pane { border-radius: 0; box-shadow: inset 3px 0 0 var(--rc); clip-path: polygon(0 0, calc(100% - var(--rc-cut)) 0, 100% var(--rc-cut), 100% 100%, var(--rc-cut) 100%, 0 calc(100% - var(--rc-cut))); }
+html:not([data-shapes="off"]) #rm #rm-sd, html:not([data-shapes="off"]) #rm #rm-sh, html:not([data-shapes="off"]) #rm .rm-sbat { border-radius: 0; transform: skewX(-10deg); }
+html:not([data-shapes="off"]) #rm #rm-sd > *, html:not([data-shapes="off"]) #rm #rm-sh > *, html:not([data-shapes="off"]) #rm .rm-sbat > * { transform: skewX(10deg); }
+html:not([data-shapes="off"]) #rm .rm-up, html:not([data-shapes="off"]) #rm .rm-dn { border-radius: 0; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
+html:not([data-shapes="off"]) #rm .rm-go, html:not([data-shapes="off"]) #rm .rm-grip { border-radius: 0; transform: skewX(-12deg); font-style: italic; text-transform: uppercase; letter-spacing: .04em; }
+html:not([data-shapes="off"]) #rm .rm-go > * { transform: skewX(12deg); }
+html:not([data-shapes="off"]) #rm .big, html:not([data-shapes="off"]) #rm-speed { font-style: italic; }
+/* Widgets de la Route : intercom, musique, carte, itinéraire */
+html:not([data-shapes="off"]) #rm .rm-icb { border-radius: 0; box-shadow: inset 3px 0 0 var(--rc); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); }
+html:not([data-shapes="off"]) #rm .rm-icb b { font-style: italic; }
+html:not([data-shapes="off"]) #rm .dw-m-ctrl button, html:not([data-shapes="off"]) #rm .rm-mapbtns button, html:not([data-shapes="off"]) #rm .rm-danger, html:not([data-shapes="off"]) #rm #rm-zout, html:not([data-shapes="off"]) #rm #rm-zin, html:not([data-shapes="off"]) #rm #rm-center, html:not([data-shapes="off"]) #rm .rm-ib { border-radius: 0 !important; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
+html:not([data-shapes="off"]) #rm .dw-m-ctrl button.main { background: var(--rc); color: var(--rc-on); }
+html:not([data-shapes="off"]) #rm .dw-m-title, html:not([data-shapes="off"]) #rm .dw-nav-txt #dw-nav-dist, html:not([data-shapes="off"]) #rm .dw-w-now b { font-style: italic; }
+html:not([data-shapes="off"]) #rm .dw-nav, html:not([data-shapes="off"]) #rm .dw-w-next { border-radius: 0; }
+html:not([data-shapes="off"]) #rm .rm-navstrip, html:not([data-shapes="off"]) #rm .rm-sguide, html:not([data-shapes="off"]) #rm .rm-limit { border-radius: 0; }
+html:not([data-shapes="off"]) #rm .rm-navstrip { box-shadow: inset 3px 0 0 var(--rc); }
+/* Balayage des autres écrans : boutons, pastilles, tuiles, lecteur, météo */
+html:not([data-shapes="off"]) .ev-create, html:not([data-shapes="off"]) .ev-chip, html:not([data-shapes="off"]) .at-icon-btn, html:not([data-shapes="off"]) .btn-ctrl, html:not([data-shapes="off"]) .mu-vbtn, html:not([data-shapes="off"]) .pf-next, html:not([data-shapes="off"]) .pf-b, html:not([data-shapes="off"]) .at-empty, html:not([data-shapes="off"]) .player-artwork, html:not([data-shapes="off"]) .local-playlist, html:not([data-shapes="off"]) .cm-seg, html:not([data-shapes="off"]) .cm-seg button, html:not([data-shapes="off"]) .radar-switch, html:not([data-shapes="off"]) #view-profile div:has(> #stat-rides), html:not([data-shapes="off"]) #view-profile div:has(> #stat-distance), html:not([data-shapes="off"]) #view-weather > div[style*="border-radius: 32px"] { border-radius: 0 !important; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)); }
+html:not([data-shapes="off"]) .at-home-tile .ic, html:not([data-shapes="off"]) .profile-top-nav, html:not([data-shapes="off"]) .music-nav, html:not([data-shapes="off"]) .intercom-top-nav { border-radius: 0 !important; clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px)); }
+html:not([data-shapes="off"]) .ev-create { font-style: italic; text-transform: uppercase; letter-spacing: .04em; }
+html:not([data-shapes="off"]) .ev-chip.active, html:not([data-shapes="off"]) .cm-seg button.on { background: var(--rc); color: var(--rc-on); }
+html:not([data-shapes="off"]) .profile-top-nav, html:not([data-shapes="off"]) .music-nav, html:not([data-shapes="off"]) .intercom-top-nav { border-top: 2px solid var(--rc); }
+html:not([data-shapes="off"]) .profile-tab-btn, html:not([data-shapes="off"]) .music-tab-btn, html:not([data-shapes="off"]) .intercom-tab-btn { border-radius: 0 !important; transform: skewX(-12deg); }
+html:not([data-shapes="off"]) .profile-tab-btn > *, html:not([data-shapes="off"]) .music-tab-btn > *, html:not([data-shapes="off"]) .intercom-tab-btn > * { transform: skewX(12deg); }
+html:not([data-shapes="off"]) .profile-tab-btn.active, html:not([data-shapes="off"]) .music-tab-btn.active, html:not([data-shapes="off"]) .intercom-tab-btn.active { background: var(--rc); color: var(--rc-on); }
+html:not([data-shapes="off"]) #btn-local-play.main { background: var(--rc); color: var(--rc-on); }
+html:not([data-shapes="off"]) #weather-temp, html:not([data-shapes="off"]) #local-title { font-style: italic; }
+/* Accueil en mosaïque : Météo haute à gauche, raccourcis en 2×2 à droite (seulement si la Météo est affichée) */
+html:not([data-shapes="off"]) .hm-grid:has(> .hm-blk[data-b="weather"]) { grid-auto-flow: dense; }
+html:not([data-shapes="off"]) .hm-grid:has(> .hm-blk[data-b="weather"]) > .hm-blk[data-b="weather"] { grid-column: 1; grid-row: span 2; }
+html:not([data-shapes="off"]) .hm-grid:has(> .hm-blk[data-b="weather"]) > .hm-blk[data-b="weather"] > .hm-t { height: 100%; min-height: 200px; }
+html:not([data-shapes="off"]) .hm-grid:has(> .hm-blk[data-b="weather"]) > .hm-blk[data-b="weather"] .hm-t .v { font-size: 2.6rem; }
+html:not([data-shapes="off"]) .hm-grid:has(> .hm-blk[data-b="weather"]) > .hm-blk.w[data-b="places"] { grid-column: 2; grid-row: span 2; }
+html:not([data-shapes="off"]) .hm-grid:has(> .hm-blk[data-b="weather"]) > .hm-blk[data-b="places"] .hm-sc { grid-template-columns: 1fr 1fr; height: 100%; }
+html:not([data-shapes="off"]) .hm-grid:has(> .hm-blk[data-b="weather"]) > .hm-blk[data-b="places"] .hm-sci > button:first-child { height: 100%; }
+/* Boutons d'action orange (comme la maquette) */
+html:not([data-shapes="off"]) #rm .rm-go { background: var(--rc) !important; color: var(--rc-on) !important; }
+html:not([data-shapes="off"]) .profile-tab-btn.active, html:not([data-shapes="off"]) .music-tab-btn.active, html:not([data-shapes="off"]) .intercom-tab-btn.active, html:not([data-shapes="off"]) .ev-chip.active, html:not([data-shapes="off"]) .cm-seg button.on { background: var(--rc) !important; color: var(--rc-on) !important; }
+html:not([data-shapes="off"]) .btn-primary, html:not([data-shapes="off"]) .ev-create { background: var(--rc) !important; color: var(--rc-on) !important; }
+/* Accent choisi par l'utilisateur (≠ blanc) : les formes Racing prennent cette couleur et l'Accueil garde son bandeau/avatar à l'accent */
+html:not([data-accent="blanc"]) { --rc: var(--accent-color); --rc-on: var(--on-accent); }
+html:not([data-accent="blanc"]):not([data-shapes="off"]) .hm-hero:not(.riding) { background: var(--accent-color); color: var(--on-accent); }
+html:not([data-accent="blanc"]):not([data-shapes="off"]) .hm-hero:not(.riding)::before { display: block; }
+html:not([data-accent="blanc"]):not([data-shapes="off"]) .hm-hero:not(.riding) .go { background: var(--on-accent); color: var(--accent-color); }
+html:not([data-accent="blanc"]):not([data-shapes="off"]) .hm-me { background: var(--accent-color); color: var(--on-accent); }
+html:not([data-shapes="off"]) .mu-tile { border-radius: 0; box-shadow: inset 3px 0 0 var(--rc); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); }
+html:not([data-shapes="off"]) .mu-tile b { font-style: italic; }

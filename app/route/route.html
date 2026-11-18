@@ -1,0 +1,12 @@
+<!-- MODE ROUTE : 2 espaces redimensionnables, chacun affiche un widget (glisser haut/bas pour en changer) -->
+<div id="rm" class="rm" hidden>
+    <div id="eco-tbt" aria-live="off"><svg id="eco-tbt-icon" viewBox="0 0 24 24"></svg><div class="eco-tbt-txt"><div id="eco-tbt-dist">--</div><div id="eco-tbt-street"></div></div><div class="eco-tbt-trip"><b id="eco-tbt-eta">--:--</b><span id="eco-tbt-km"></span></div></div>
+    <div class="rm-pane" id="rm-a" data-i="0"><div class="rm-chip"></div><div class="rm-sw"><button type="button" class="rm-up" aria-label="Widget précédent"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="rm-dn" aria-label="Widget suivant"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="rm-edge"></div></div>
+    <div class="rm-div" id="rm-div">
+        <button type="button" class="rm-go" id="rm-go" aria-label="Démarrer la balade"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><span>Démarrer</span></button>
+        <button type="button" class="rm-ib" id="rm-eco" aria-label="Économie d'énergie" hidden><svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.5 5-7"/></svg></button>
+        <div class="rm-grip" id="rm-grip" aria-label="Glisser pour redimensionner"><i></i></div>
+        <button type="button" class="rm-ib" id="rm-imm" aria-label="Plein écran"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+    <div class="rm-pane" id="rm-b" data-i="1"><div class="rm-chip"></div><div class="rm-sw"><button type="button" class="rm-up" aria-label="Widget précédent"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="rm-dn" aria-label="Widget suivant"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div><div class="rm-edge"></div></div>
+</div>
