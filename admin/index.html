@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>RideNCT admin</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#14161a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RideNCT admin">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+  <symbol id="ic-mail" viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 7l9 6 9-6"/></symbol>
+  <symbol id="ic-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6M17 4.5a3.5 3.5 0 010 7M22 20c0-2.6-1.8-4.8-4.5-5.7"/></symbol>
+  <symbol id="ic-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <symbol id="ic-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="ic-sliders" viewBox="0 0 24 24"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="ic-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="ic-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></symbol>
+  <symbol id="ic-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12z"/><circle cx="7.5" cy="8.5" r="1.2"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 17v-6a6 6 0 0112 0v6l2 2H4zM10 21a2 2 0 004 0"/></symbol>
+</svg>
+
+<section id="login" class="login">
+  <form id="login-form" class="login-card" autocomplete="on">
+    <div class="brand"><span class="dot"></span>RideNCT admin</div>
+    <label>E-mail<input id="login-email" type="email" required autocomplete="username"></label>
+    <label>Mot de passe<input id="login-pass" type="password" required autocomplete="current-password"></label>
+    <button class="btn primary" type="submit">Se connecter</button>
+    <p id="login-error" class="error" hidden></p>
+  </form>
+  <form id="mfa-form" class="login-card" hidden autocomplete="off">
+    <div class="brand"><span class="dot"></span>Double authentification</div>
+    <label>Code à 6 chiffres de ton application<input id="mfa-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code"></label>
+    <button class="btn primary" type="submit">Valider</button>
+    <p id="mfa-error" class="error" hidden></p>
+  </form>
+</section>
+
+<div id="app" class="app" hidden>
+  <div id="loadbar" class="loadbar" hidden></div>
+
+  <aside class="side" id="side">
+    <div class="brand"><span class="dot"></span>RideNCT admin</div>
+    <button id="open-palette" class="searchbtn" type="button"><svg class="ic"><use href="#ic-search"/></svg><span>Rechercher</span><kbd>Ctrl K</kbd></button>
+    <nav id="nav" aria-label="Navigation principale">
+      <button data-sec="home"><svg class="ic"><use href="#ic-home"/></svg>Accueil</button>
+      <button data-sec="users"><svg class="ic"><use href="#ic-users"/></svg>Utilisateurs</button>
+      <button data-sec="mod"><svg class="ic"><use href="#ic-ban"/></svg>Modération<span id="badge-reports" class="count" hidden></span></button>
+      <button data-sec="msg"><svg class="ic"><use href="#ic-mail"/></svg>Messages et annonces<span id="badge-messages" class="count" hidden></span></button>
+      <button data-sec="track"><svg class="ic"><use href="#ic-list"/></svg>Suivi</button>
+      <button data-sec="sys"><svg class="ic"><use href="#ic-sliders"/></svg>Système<span id="badge-maint" class="count" hidden>!</span></button>
+    </nav>
+    <div class="side-foot">
+      <div id="me" class="muted small"></div>
+      <div id="role-badge" class="small"></div>
+      <button id="logout" class="btn ghost">Déconnexion</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <button id="menu-toggle" class="btn menu-toggle" type="button" aria-label="Menu"><svg class="ic"><use href="#ic-menu"/></svg></button>
+      <header class="page-head">
+        <div><h1 id="page-title"></h1><p id="page-desc" class="muted"></p></div>
+        <div class="head-right"><span id="updated" class="muted small"></span><button class="btn primary" id="install-app" type="button" hidden>Installer l'app</button><button class="btn" id="refresh" type="button">Actualiser</button></div>
+      </header>
+    </div>
+    <nav id="tabs" class="tabs" hidden aria-label="Sections"></nav>
+    <div id="banner" class="banner" hidden role="alert"><span id="banner-text"></span><button id="banner-close" type="button" aria-label="Fermer">×</button></div>
+
+    <!-- ACCUEIL -->
+    <div class="pane" id="pane-home-overview">
+      <div id="home-todo" class="todo"></div>
+      <div id="dash-cards" class="cards"></div>
+      <div id="home-hub"></div>
+      <div class="grid2">
+        <div class="panel"><h2>Abonnements</h2><div id="dash-subs"></div></div>
+        <div class="panel"><h2>Signalements</h2><div id="dash-reports"></div></div>
+      </div>
+      <div class="panel"><h2>Abonnements à suivre</h2><p class="muted small">Impayés, abonnements expirés encore actifs et fins de période sous 7 jours.</p><div class="table-wrap"><table id="dash-attention"></table></div></div>
+    </div>
+
+    <div class="pane" id="pane-home-health" hidden>
+      <p class="muted small">Contrôles automatiques de l'état de RideNCT et de l'envoi d'e-mails.</p>
+      <div class="panel flush"><div id="health-list"></div></div>
+      <div class="panel"><h2>E-mails (Resend)</h2><div id="health-mail" class="muted">—</div></div>
+    </div>
+
+    <div class="pane" id="pane-home-stats" hidden>
+      <div class="toolbar">
+        <select id="stats-days" aria-label="Période"><option value="30">30 jours</option><option value="90">90 jours</option><option value="180">180 jours</option></select>
+      </div>
+      <div id="stats-cards" class="cards"></div>
+      <div class="panel"><h2>Inscriptions par jour</h2><div id="chart-signups"></div></div>
+      <div class="panel"><h2>Dernières connexions par jour</h2><div id="chart-logins"></div></div>
+      <div class="panel"><h2>Signalements créés par jour</h2><div id="chart-reports"></div></div>
+      <div class="panel"><h2>Parcours des utilisateurs</h2><div id="funnel"></div></div>
+      <div class="panel"><h2>Dangers par jour et heure (heure de Paris)</h2><div id="timing-grid"></div></div>
+      <div class="grid2">
+        <div class="panel"><h2>Zones les plus signalées</h2><div class="table-wrap"><table id="zones-table"></table></div><p class="muted small">Cases d'environ 10 km.</p></div>
+        <div class="panel"><h2>Fiabilité des signalements</h2><div class="table-wrap"><table id="quality-table"></table></div><p class="muted small">« Démentis » : plus de démentis que de confirmations. Inclut les signalements déjà expirés ou supprimés depuis l'activation de l'archive.</p></div>
+      </div>
+      <p class="muted small">Revenu estimé : abonnés payants actifs uniquement (offerts exclus), au tarif 2,99 €/mois et 24,99 €/an. Les signalements purgés n'apparaissent plus dans la courbe.</p>
+    </div>
+
+    <!-- SIGNALEMENTS -->
+    <div class="pane" id="pane-reports-map" hidden>
+      <div class="toolbar">
+        <select id="map-kind" aria-label="Type"><option value="all">Tout</option><option value="danger">Dangers</option><option value="ride">Balades</option></select>
+        <select id="map-period" aria-label="Période"><option value="0">Toute période</option><option value="1">24 h</option><option value="7">7 jours</option><option value="30">30 jours</option></select>
+        <label class="check"><input id="map-expired" type="checkbox">Expirés</label>
+        <label class="check"><input id="map-heat" type="checkbox">Chaleur</label>
+        <button class="btn" id="map-zone" type="button">Purger une zone</button>
+      </div>
+      <p id="map-hint" class="hint" hidden>Clique et glisse sur la carte pour tracer un rectangle. Échap pour annuler.</p>
+      <div class="panel flush"><div id="map"></div></div>
+      <p id="map-count" class="muted small"></p>
+    </div>
+
+    <div class="pane" id="pane-reports-review" hidden>
+      <p class="muted small">Dangers actifs avec plus de démentis que de confirmations (au moins 2 démentis), ou créés par un appareil ayant fait 5 signalements ou plus en 1 heure.</p>
+      <div id="review-bulk" class="bulk" hidden></div>
+      <div class="panel flush"><div class="table-wrap"><table id="review-table"></table></div></div>
+    </div>
+
+    <div class="pane" id="pane-reports-warnings" hidden>
+      <p class="muted small">Avertissements affichés aux utilisateurs dans l'app : automatiques (seuil de signalements atteint) ou envoyés par un admin depuis la fiche. Un avertissement reste « non lu » tant que l'utilisateur n'a pas cliqué « J'ai compris ».</p>
+      <div class="toolbar"><label class="check"><input id="warn-unread-only" type="checkbox">Non lus seulement</label></div>
+      <div class="panel flush"><div id="warnings-list"></div></div>
+    </div>
+
+    <div class="pane" id="pane-reports-riders" hidden>
+      <p class="muted small">Signalements faits par les utilisateurs de l'app. Au seuil de signalements (comptes différents, tous appareils cumulés), un avertissement (« la communauté vous a signalé, respectez les CGU ») s'affiche à l'utilisateur dans l'app. Aucune sanction automatique : tu bannis toi-même l'abonnement ou le compte (à vie) depuis la fiche utilisateur. Le seuil d'alerte se règle dans Réglages › Modération. Méfie-toi des signalants récents ou en série et des rafales : ils peuvent viser un faux positif.</p>
+      <div class="toolbar">
+        <label class="check"><input id="riders-open-only" type="checkbox" checked>À traiter seulement</label>
+        <button type="button" class="btn sm" id="riders-export">Exporter le rapport (CSV)</button>
+      </div>
+      <div id="riders-bulk" class="bulk" hidden></div>
+      <div class="panel flush"><div id="riders-list"></div></div>
+    </div>
+
+    <div class="pane" id="pane-reports-routes" hidden>
+      <p class="muted small">Circuits publiés par les utilisateurs dans l'app. Un circuit signalé par des utilisateurs remonte en tête. « Ignorer » efface les signalements sans supprimer le circuit ; « Supprimer » retire le circuit pour tout le monde (journalisé).</p>
+      <div id="routes-cards" class="cards"></div>
+      <div class="toolbar">
+        <input id="routes-search" type="search" placeholder="Rechercher titre, auteur…" aria-label="Rechercher un circuit">
+        <select id="routes-region" aria-label="Région"></select>
+        <select id="routes-level" aria-label="Niveau"><option value="">Tous niveaux</option><option value="balade">Balade</option><option value="dynamique">Dynamique</option><option value="fifou">Fifou</option></select>
+        <label class="check"><input id="routes-flag-only" type="checkbox">Signalés seulement</label>
+        <button type="button" class="btn sm" id="routes-export">Exporter CSV</button>
+      </div>
+      <div class="panel flush"><div id="routes-list"></div></div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="pane" id="pane-messages-contact" hidden>
+      <div class="toolbar">
+        <label class="check"><input id="msg-open-only" type="checkbox" checked>Non traités seulement</label>
+      </div>
+      <div id="msg-bulk" class="bulk" hidden></div>
+      <div class="panel flush"><div id="messages-list"></div></div>
+    </div>
+
+    <div class="pane" id="pane-messages-mail" hidden>
+      <p class="muted small">Boîte de réception contact@ridenct.fr (Resend). Les réponses partent de la même adresse et restent dans le même fil.</p>
+      <div class="toolbar"><button class="btn" id="mail-refresh" type="button">Actualiser</button></div>
+      <div class="panel flush"><div id="mail-list"></div></div>
+      <div class="panel" id="mail-view" hidden></div>
+    </div>
+
+    <div class="pane" id="pane-messages-waitlist" hidden>
+      <div class="toolbar"><button class="btn" id="export-waitlist" type="button">Export CSV</button></div>
+      <div class="panel flush"><div class="table-wrap"><table id="waitlist-table"></table></div></div>
+    </div>
+
+    <!-- BANNISSEMENTS -->
+    <div class="pane" id="pane-bans-devices" hidden>
+      <p class="muted small">Un appareil banni ne peut plus créer de signalement ni voter : le serveur refuse ses envois. L'identifiant est celui affiché dans le popup d'un signalement. Si l'utilisateur réinstalle l'app ou efface ses données, son appareil change d'identifiant.</p>
+      <div class="panel" id="device-add-panel">
+        <form id="device-form" class="row">
+          <input id="device-id" placeholder="Identifiant de l'appareil (8 à 64 caractères)" minlength="8" maxlength="64" required style="min-width:280px">
+          <input id="device-reason" placeholder="Motif (facultatif)" maxlength="120">
+          <button class="btn primary" type="submit">Bannir</button>
+        </form>
+      </div>
+      <div class="panel flush"><div class="table-wrap"><table id="devices-table"></table></div></div>
+    </div>
+
+    <div class="pane" id="pane-bans-terms" hidden>
+      <div class="panel">
+        <form id="term-form" class="row">
+          <input id="term-input" placeholder="terme (a-z, 0-9)" required>
+          <select id="term-mode" aria-label="Mode"><option value="contains">contient</option><option value="exact">exact</option></select>
+          <button class="btn primary" type="submit">Ajouter</button>
+        </form>
+        <input id="term-filter" type="search" placeholder="Filtrer" class="mt">
+        <div id="terms-list" class="chips mt"></div>
+      </div>
+    </div>
+
+    <!-- UTILISATEURS -->
+    <div class="pane" id="pane-users" hidden>
+      <div class="toolbar">
+        <input id="user-search" type="search" placeholder="Pseudo ou e-mail">
+        <button class="btn" id="export-users" type="button">Export CSV</button>
+      </div>
+      <div id="user-chips" class="filters"></div>
+      <div id="users-bulk" class="bulk" hidden></div>
+      <div class="panel flush"><div class="table-wrap"><table id="users-table"></table></div></div>
+      <p id="users-count" class="muted small"></p>
+    </div>
+
+    <!-- CODES PROMO -->
+    <div class="pane" id="pane-promos" hidden>
+      <div class="panel" id="promo-add-panel">
+        <form id="promo-form" class="row">
+          <input id="promo-code" placeholder="CODE (4 à 20 lettres/chiffres)" maxlength="20" required style="text-transform:uppercase">
+          <select id="promo-plan" aria-label="Formule"><option value="monthly">Mensuel</option><option value="yearly">Annuel</option></select>
+          <label class="check">Durée (jours)<input id="promo-days" type="number" min="1" max="365" value="30" style="width:90px"></label>
+          <label class="check">Utilisations max<input id="promo-max" type="number" min="1" placeholder="illimité" style="width:110px"></label>
+          <label class="check">Valable jusqu'au<input id="promo-expires" type="date"></label>
+          <button class="btn primary" type="submit">Créer</button>
+        </form>
+        <p class="muted small">Le code offre un abonnement de la durée choisie à l'utilisateur qui le saisit dans l'app (une fois par compte). Il compte comme « offert ».</p>
+      </div>
+      <div class="panel flush"><div class="table-wrap"><table id="promos-table"></table></div></div>
+    </div>
+
+    <!-- COMMUNICATION -->
+    <div class="pane" id="pane-comms-announce" hidden>
+      <div class="panel" id="ann-panel">
+        <form id="ann-form">
+          <input id="ann-id" type="hidden">
+          <div class="row">
+            <input id="ann-title" placeholder="Titre (80 caractères max)" maxlength="80" required style="min-width:280px">
+            <select id="ann-level" aria-label="Niveau"><option value="info">Information</option><option value="warning">Avertissement</option></select>
+          </div>
+          <textarea id="ann-body" class="mt" placeholder="Message (400 caractères max)" maxlength="400" rows="3"></textarea>
+          <div class="row mt">
+            <label>Début (facultatif)<input id="ann-start" type="datetime-local"></label>
+            <label>Fin (facultatif)<input id="ann-end" type="datetime-local"></label>
+            <label class="check"><input id="ann-active" type="checkbox" checked>Active</label>
+          </div>
+          <div class="row mt"><button class="btn primary" type="submit" id="ann-save">Publier</button><button class="btn" type="button" id="ann-cancel" hidden>Annuler la modification</button></div>
+        </form>
+        <p class="muted small">L'app lit les annonces actives au démarrage (fonction app_status).</p>
+      </div>
+      <div class="panel flush"><div class="table-wrap"><table id="ann-table"></table></div></div>
+    </div>
+
+    <div class="pane" id="pane-comms-mailing" hidden>
+      <form class="panel" id="mailing-form">
+        <h2>Annonce par e-mail</h2>
+        <label>Destinataires<select id="mailing-group"><option value="waitlist">Liste d'attente</option><option value="users">Utilisateurs inscrits (comptes actifs)</option></select></label>
+        <label class="mt">Objet<input id="mailing-subject" maxlength="150" required placeholder="Objet de l'e-mail"></label>
+        <label class="mt">Message<textarea id="mailing-text" rows="6" maxlength="5000" required placeholder="Texte de l'annonce"></textarea></label>
+        <p class="muted small">Chaque destinataire reçoit un e-mail individuel (les adresses ne sont pas visibles entre elles). Limite : 100 destinataires par envoi (quota du plan gratuit Resend : 100 e-mails par jour, 3000 par mois). L'envoi est inscrit dans le journal.</p>
+        <button class="btn primary" type="submit" id="mailing-send">Envoyer</button>
+      </form>
+    </div>
+
+    <div class="pane" id="pane-comms-status" hidden>
+      <form class="panel" id="maint-form">
+        <h2>Mode maintenance</h2>
+        <label class="check"><input id="maint-on" type="checkbox">Activer : l'app affiche le message et bloque l'usage</label>
+        <label class="mt">Message affiché<input id="maint-msg" maxlength="300" placeholder="Maintenance en cours, retour vers 21 h."></label>
+        <p class="muted small">L'app doit lire app_status() au démarrage. L'état est partagé avec tous les utilisateurs.</p>
+        <button class="btn primary" type="submit" id="maint-save">Enregistrer</button>
+      </form>
+    </div>
+
+    <!-- MAINTENANCE -->
+    <div class="pane" id="pane-maintenance-purge" hidden>
+      <div id="maint-cards" class="cards"></div>
+      <div class="grid2">
+        <div class="panel"><h2>Purger maintenant</h2><div id="purge-list"></div><p id="purge-result" class="muted small"></p></div>
+        <div class="panel"><h2>Espace par table</h2><div class="table-wrap"><table id="storage-table"></table></div></div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-maintenance-auto" hidden>
+      <form class="panel" id="settings-form">
+        <h2>Purge automatique</h2>
+        <label class="check"><input id="set-auto" type="checkbox">Activer la purge chaque nuit (03:30 UTC)</label>
+        <div class="row mt">
+          <label>Signalements expirés depuis (jours)<input id="set-reports-days" type="number" min="0" max="365" value="0"></label>
+          <label>Journal anti-spam de plus de (jours)<input id="set-rate-days" type="number" min="0" max="365" value="1"></label>
+          <label>Limite de la base (Mo)<input id="set-limit" type="number" min="1" max="100000" value="500"></label>
+        </div>
+        <p id="cron-state" class="muted small"></p>
+        <button class="btn primary" type="submit" id="settings-save">Enregistrer</button>
+      </form>
+    </div>
+
+    <div class="pane" id="pane-maintenance-backup" hidden>
+      <div class="panel">
+        <h2>Sauvegarde</h2>
+        <p class="muted">Exporte utilisateurs (sans mot de passe), profils, abonnements, signalements, appareils bannis, messages, liste d'attente, termes bloqués et journal dans un fichier JSON. À faire avant une grosse purge.</p>
+        <button class="btn" id="backup-btn" type="button">Télécharger la sauvegarde</button>
+        <p id="backup-note" class="muted small" hidden>Réservé aux administrateurs complets.</p>
+      </div>
+      <div class="panel">
+        <h2>Sauvegardes stockées dans la base</h2>
+        <label class="check"><input id="auto-backup" type="checkbox">Sauvegarde automatique chaque nuit (03:45 UTC, 7 conservées)</label>
+        <p id="backup-cron-note" class="muted small"></p>
+        <p class="muted small">Contient les comptes, abonnements, signalements d'utilisateurs, messages, termes et appareils bannis, codes promo. Pas les signalements de la carte. Elle partage l'espace de ta base : pense aussi aux sauvegardes Supabase.</p>
+        <div class="row"><button class="btn" id="backup-take" type="button">Créer une sauvegarde maintenant</button></div>
+        <div class="table-wrap mt"><table id="backups-table"></table></div>
+      </div>
+    </div>
+
+    <!-- JOURNAL -->
+    <div class="pane" id="pane-vault" hidden>
+      <div class="panel">
+        <h2>Coffre des codes et clés</h2>
+        <p class="muted small">Réservé aux administrateurs, avec la 2FA obligatoire. Les valeurs sont chiffrées dans Supabase Vault : elles n'apparaissent ni dans la liste, ni dans les sauvegardes, ni dans le journal (seules les consultations sont notées). Une valeur affichée se masque seule après 30 secondes. Ne range ici ni la clé service_role de Supabase ni le mot de passe de la base si tu peux l'éviter : leur place est dans un gestionnaire de mots de passe. Le coffre ne t'aide pas si tu perds l'accès à Supabase ou à ce compte : garde aussi une copie dans un gestionnaire de mots de passe.</p>
+      </div>
+      <form class="panel" id="vault-form">
+        <input id="vault-id" type="hidden">
+        <div class="row">
+          <input id="vault-label" placeholder="Nom (ex. Clé SMTP Supabase)" maxlength="80" required style="min-width:240px">
+          <input id="vault-service" list="vault-services" placeholder="Service (ex. Resend)" maxlength="40" required>
+          <datalist id="vault-services"><option value="Resend"><option value="Supabase"><option value="IONOS"><option value="GitHub"><option value="Stripe"><option value="Apple"><option value="Google"><option value="Autre"></datalist>
+        </div>
+        <label class="mt">Valeur (code, clé, mot de passe)<input id="vault-secret" type="password" autocomplete="new-password" maxlength="4000" placeholder="À saisir une seule fois ; laisse vide pour ne pas la changer"></label>
+        <label class="mt">Note (facultatif : où l'utiliser, date d'expiration…)<input id="vault-note" maxlength="300"></label>
+        <div class="row mt"><button class="btn primary" type="submit" id="vault-save">Enregistrer</button><button class="btn" type="button" id="vault-cancel" hidden>Annuler la modification</button></div>
+      </form>
+      <div class="panel flush"><div id="vault-list"></div></div>
+    </div>
+
+    <div class="pane" id="pane-legal" hidden>
+      <p class="muted small">Textes publiés sur le site et dans l'app (lus depuis le serveur). Une version publiée ne se modifie plus : chaque changement crée une nouvelle version, ce qui garde une trace juridique.</p>
+      <div class="seg" id="legal-docs"></div>
+      <div class="legal-grid">
+        <div class="panel">
+          <div class="row2">
+            <label class="grow2">Titre<input id="legal-title" maxlength="120"></label>
+            <label>Date affichée<input id="legal-date" maxlength="60" placeholder="17 novembre 2026"></label>
+            <label>Version (automatique)<input id="legal-version" maxlength="20"></label>
+          </div>
+          <div id="legal-blocks"></div>
+          <div class="row mt">
+            <button type="button" class="btn sm" data-ladd="h2">+ Titre</button>
+            <button type="button" class="btn sm" data-ladd="h3">+ Sous-titre</button>
+            <button type="button" class="btn sm" data-ladd="p">+ Paragraphe</button>
+            <button type="button" class="btn sm" data-ladd="ul">+ Liste</button>
+          </div>
+          <p class="muted small">Mise en forme : <code>**gras**</code> · <code>[texte du lien](page.html)</code> · une ligne vide = nouveau paragraphe · un retour à la ligne = saut de ligne. Dans une liste : un élément par ligne.</p>
+          <label class="check" id="legal-reaccept-wrap" hidden><input id="legal-reaccept" type="checkbox"> Demander aux utilisateurs d'accepter à nouveau ces CGU (ils verront l'écran d'acceptation dans l'app à leur prochaine ouverture)</label>
+          <div class="row mt"><button type="button" class="btn" id="legal-preview-btn">Aperçu</button><button type="button" class="btn primary" id="legal-publish">Publier cette version</button></div>
+          <div id="legal-preview" class="legal-prev" hidden></div>
+        </div>
+        <div class="panel">
+          <h2>Historique</h2>
+          <div id="legal-history"></div>
+          <div id="legal-seed" class="mt" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-survey" hidden>
+      <p class="muted small">Réponses du questionnaire du site. Les chiffres sont comptés automatiquement d'après les réponses : une nouvelle question apparaît toute seule.</p>
+      <div class="toolbar">
+        <div class="seg" id="survey-view"><button type="button" class="btn sm active" data-view="stats">Résultats</button><button type="button" class="btn sm" data-view="list">Réponses <span id="survey-count" class="muted"></span></button></div>
+        <select id="survey-version" aria-label="Version du questionnaire"></select>
+        <button id="survey-export" type="button" class="btn">Exporter CSV</button>
+      </div>
+      <div id="survey-cards" class="cards"></div>
+      <div id="survey-stats" class="tiles2"></div>
+      <div id="survey-list" hidden></div>
+    </div>
+
+    <div class="pane" id="pane-audit" hidden>
+      <div class="toolbar">
+        <input id="audit-filter" type="search" placeholder="Filtrer (admin, cible, détails)">
+        <select id="audit-action" aria-label="Type d'action"><option value="">Toutes les actions</option></select>
+      </div>
+      <div class="panel flush"><div class="table-wrap"><table id="audit-table"></table></div></div>
+    </div>
+
+    <!-- RÉGLAGES -->
+    <div class="pane" id="pane-settings-security" hidden>
+      <div class="panel">
+        <h2>Double authentification (2FA)</h2>
+        <div id="mfa-status"></div>
+        <div id="mfa-enroll" class="mt" hidden>
+          <p class="muted">Scanne le QR code avec une application d'authentification (Google Authenticator, Authy, 2FAS…), puis saisis le code.</p>
+          <div class="row"><img id="mfa-qr" alt="QR code 2FA" width="160" height="160"><div><div class="muted small">Ou saisis cette clé :</div><code id="mfa-secret"></code></div></div>
+          <form id="mfa-verify-form" class="row mt"><input id="mfa-verify-code" inputmode="numeric" maxlength="6" placeholder="123456" required><button class="btn primary" type="submit">Valider</button></form>
+        </div>
+        <div class="row mt" id="mfa-actions"></div>
+      </div>
+      <div class="panel">
+        <h2>Exiger la 2FA</h2>
+        <label class="check"><input id="require-mfa" type="checkbox">Aucune action admin sans code 2FA validé (tous les administrateurs)</label>
+        <p class="muted small">Chaque administrateur doit avoir activé sa 2FA avant, sinon il sera bloqué. Secours : <code>update public.admin_settings set require_mfa = false;</code> dans le SQL Editor.</p>
+      </div>
+      <div class="panel"><h2>Session</h2><p class="muted">Déconnexion automatique après 15 minutes d'inactivité.</p></div>
+    </div>
+
+    <div class="pane" id="pane-settings-moderation" hidden>
+      <form class="panel" id="thr-form">
+        <h2>Seuil d'alerte des signalements d'utilisateurs</h2>
+        <label>Un utilisateur est mis en avant à partir de (signalements)<input id="thr-value" type="number" min="1" max="100" value="3" style="width:120px"></label>
+        <p class="muted small">Au seuil, un avertissement est affiché au compte signalé dans l'app. Aucune sanction automatique : bannissement de l'abonnement ou du compte manuel, depuis la fiche utilisateur.</p>
+        <button class="btn primary" type="submit" id="thr-save">Enregistrer</button>
+      </form>
+      <form class="panel" id="cgu-form">
+        <h2>Conditions générales d'utilisation</h2>
+        <label>Version en vigueur<input id="cgu-version" maxlength="20" style="width:160px" placeholder="ex. 2026-11"></label>
+        <p class="muted small" id="cgu-info">L'app lit cgu_required() et enregistre l'acceptation avec accept_cgu(version). Changer la version demande une nouvelle acceptation à tous les comptes.</p>
+        <button class="btn primary" type="submit" id="cgu-save">Enregistrer</button>
+      </form>
+      <div class="panel">
+        <h2>Notifications du navigateur</h2>
+        <p class="muted">Une notification s'affiche quand un nouveau message, signalement ou utilisateur signalé arrive, tant que cet onglet reste ouvert (vérification toutes les minutes).</p>
+        <div class="row"><button class="btn" id="notif-btn" type="button">Activer les notifications</button><span id="notif-state" class="muted small"></span></div>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-settings-admins" hidden>
+      <div class="panel" id="admin-add-panel">
+        <form id="admin-form" class="row">
+          <input id="admin-email" type="email" placeholder="E-mail d'un compte RideNCT existant" required>
+          <select id="admin-role" aria-label="Rôle"><option value="admin">Admin complet</option><option value="support">Support (lecture seule)</option></select>
+          <button class="btn primary" type="submit">Déclarer</button>
+        </form>
+        <p class="muted small">Le compte doit déjà être inscrit dans l'app ou sur le site. Redéclarer un compte change son rôle.</p>
+      </div>
+      <div class="panel flush"><div class="table-wrap"><table id="admins-table"></table></div></div>
+    </div>
+  </main>
+
+  <!-- Fiche utilisateur -->
+  <div id="drawer" class="drawer-wrap" hidden>
+    <div class="drawer-bg" id="drawer-bg"></div>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-label="Fiche utilisateur">
+      <header class="drawer-head">
+        <div><h2 id="drawer-title"></h2><div id="drawer-sub" class="muted small"></div></div>
+        <button id="drawer-close" class="btn ghost" type="button" aria-label="Fermer"><svg class="ic"><use href="#ic-x"/></svg></button>
+      </header>
+      <div id="drawer-body"></div>
+    </aside>
+  </div>
+
+  <!-- Recherche rapide -->
+  <div id="palette" class="palette-wrap" hidden>
+    <div class="palette-bg" id="palette-bg"></div>
+    <div class="palette" role="dialog" aria-modal="true" aria-label="Recherche rapide">
+      <input id="palette-input" placeholder="Page, utilisateur, e-mail…" autocomplete="off" spellcheck="false">
+      <div id="palette-list" class="palette-list"></div>
+      <div class="palette-foot">↑ ↓ choisir · Entrée ouvrir · Échap fermer</div>
+    </div>
+  </div>
+</div>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <h3 id="modal-title"></h3>
+    <p id="modal-text"></p>
+    <div id="modal-fields" class="fields"></div>
+    <div class="row end">
+      <button class="btn" id="modal-cancel" type="button">Annuler</button>
+      <button class="btn" id="modal-ok" type="button">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="legal_seed.js"></script>
+<script src="app.js"></script>
+<script>
+(function () {
+  var btn = document.getElementById("install-app"), ev = null;
+  var standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (standalone || !btn) return;
+  function show() { btn.hidden = false; }
+  addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); ev = e; show(); if (location.hash === "#install") btn.focus(); });
+  addEventListener("appinstalled", function () { btn.hidden = true; });
+  if (ios) show();
+  btn.addEventListener("click", function () {
+    if (ev) { ev.prompt(); ev.userChoice.finally(function () { ev = null; btn.hidden = true; }); return; }
+    var t = document.getElementById("banner-text"), b = document.getElementById("banner");
+    if (t && b) { t.textContent = ios ? "Sur iPhone : touche Partager, puis « Sur l'écran d'accueil »." : "Ouvre le menu du navigateur, puis « Installer l'application »."; b.hidden = false; }
+  });
+})();
+</script>
+<script>if ("serviceWorker" in navigator && location.protocol !== "file:") addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });</script>
+</body>
+</html>

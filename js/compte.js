@@ -65,7 +65,7 @@
   function errText(e) { return ERR[e.code] || (e.status === 0 ? ERR.network : e.status === 429 ? ERR.over_request_rate_limit : 'Une erreur est survenue. Réessaie dans un instant.'); }
 
   // ---------- interface ----------
-  var view = 'login', recovery = false, busy = false, sub = null, lastTab = null, uname = null, ban = null, link = null;
+  var view = 'login', recovery = false, busy = false, sub = null, lastTab = null, uname = null, ban = null, link = null, adm = false;
   var root;
   function msg(text, kind) { var m = $('cp-msg'); if (!m) return; m.textContent = text || ''; m.className = 'form-msg' + (kind ? ' ' + kind : ''); }
   var UN = /^[A-Za-z0-9_.-]{3,20}$/;
@@ -212,6 +212,7 @@
       + '<section class="cp-card"><h3>Mon abonnement</h3><div class="cp-sub-box ' + si.cls + '"><b>' + si.label + '</b><p>' + si.text + '</p></div>'
       + (act ? (sub.provider === 'manual' ? '' : (isWebSub() ? cancelBox() : manageBox())) : (sub && sub.status === 'past_due' ? manageBox() : payBox() + '<a class="cp-link" href="tarifs.html">Voir ce que débloque la version complète</a>')) + '</section>'
       + '<section class="cp-card"><h3>' + (act ? 'Ce que ton abonnement débloque' : 'Avec la version complète') + '</h3><ul class="cp-perks">' + perks + '</ul></section>'
+      + (adm ? '<section class="cp-card"><h3>Administration</h3><div class="cp-row"><div><b>Application de gestion RideNCT</b><small>Réservée aux administrateurs. Installable sur téléphone et ordinateur.</small></div><a class="btn btn-primary" href="admin/index.html#install">Télécharger l\'app admin</a></div></section>' : '')
       + '<div class="cp-tiles">' + tiles + '</div>'
       + '<section class="cp-card"><h3>Paramètres</h3>'
       + '<div class="cp-row"><div><b>Nom d\'utilisateur</b><small>' + (uname ? '@' + esc(uname) : 'Pas encore choisi') + '</small></div><div id="cp-un"><button type="button" class="btn btn-ghost" data-act="editname">' + (uname ? 'Modifier' : 'Choisir') + '</button></div></div>'
@@ -245,6 +246,7 @@
     catch (e) { sub = 'error'; }
     try { ban = await authed('/rest/v1/rpc/my_status', { method: 'POST', body: {} }); } catch (e) { ban = null; }
     try { link = await authed('/rest/v1/rpc/my_link', { method: 'POST', body: {} }); } catch (e) { link = null; }
+    try { adm = (await authed('/rest/v1/rpc/is_admin', { method: 'POST', body: {} })) === true; } catch (e) { adm = false; }
   }
 
   // ---------- actions ----------
