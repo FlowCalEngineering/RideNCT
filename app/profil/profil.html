@@ -1,0 +1,68 @@
+        <section id="view-profile" class="module-view">
+            <h1 class="module-header">Profil</h1>
+            
+            <div class="card" id="btn-edit-profile" style="display: flex; align-items: flex-start; gap: 15px; cursor: pointer;">
+                <div class="av-big" id="profile-av-wrap"><div id="profile-avatar" style="width: 70px; height: 70px; background: var(--accent-color); color: var(--on-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; flex-shrink: 0;">?</div><span id="profile-av-badge"></span></div>
+                <div style="flex: 1; min-width: 0;">
+                    <h2 style="font-size: 1.3rem; margin-bottom: 2px;" id="profile-name">Pilote Inconnu</h2>
+                    <div id="profile-acct" style="margin-bottom: 6px;"></div>
+                    <div id="profile-main-badge" style="display: none; color: var(--accent-color); font-size: 0.85rem; font-weight: 800; margin-bottom: 6px;"></div>
+                    <div id="profile-social" style="color: var(--accent-color); font-size: 0.85rem; font-weight: 800; margin-bottom: 6px; display: none;"></div>
+                    <div id="profile-bio" style="color: var(--text-main); font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px; display: none; opacity: 0.9;"></div>
+                    <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Modifier <svg class="vi" viewBox="0 0 24 24" style="width:13px;height:13px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+                </div>
+            </div>
+            
+            <div class="card" id="pf-trophy" style="margin-top: 15px; cursor: pointer;"></div>
+
+            <div class="mz pf-go" style="margin-top: 9px;">
+                <button type="button" class="mz-row" data-pfgo="pf-records" ><span class="mz-ic c5"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path></svg></span><div><b>Records</b></div></button>
+                <button type="button" class="mz-row" data-pfgo="pf-bornes" ><span class="mz-ic c1"><svg viewBox="0 0 24 24"><path d="M5 22V3M5 4h13l-3 4 3 4H5"></path></svg></span><div><b>Bornes</b></div></button>
+            </div>
+
+            <button type="button" class="mz-row" id="pf-back" style="margin-top: 15px;"><span class="mz-ic"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"></path></svg></span><div><b>Profil</b><small>Retour</small></div></button>
+
+            <div class="pf-pane active" id="pf-garage">
+            <div class="card" style="margin-top: 15px;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Mon Garage</div>
+                
+                <div id="moto-list-container" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                </div>
+                
+                <button class="btn" id="btn-add-moto" style="background: var(--active-bg); text-align: left; width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Ajouter une moto</span>
+                    <span style="font-size: 1.2rem;">+</span>
+                </button>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 15px;">
+                <div class="card" style="flex: 1; text-align: center;">
+                    <div id="stat-rides" style="font-size: 1.5rem; font-weight: 900; color: var(--text-main);">0</div>
+                    <div style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; margin-top: 5px; font-weight: 800;">Balades</div>
+                </div>
+                <div class="card" style="flex: 1; text-align: center;">
+                    <div id="stat-distance" style="font-size: 1.5rem; font-weight: 900; color: var(--text-main);">0</div>
+                    <div style="color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; margin-top: 5px; font-weight: 800;">Km Parcourus</div>
+                </div>
+            </div>
+
+                <div class="card" style="margin-top: 15px;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">Sauvegarde</div>
+                    <div class="pf-hint">Un seul fichier avec tout : profil, motos, trajets, circuits, sécurité, réglages et carnet d'entretien avec photos. Les cartes hors ligne ne sont pas incluses.</div>
+                    <div class="pf-btns">
+                        <button type="button" class="btn btn-primary" id="pf-export">Exporter</button>
+                        <button type="button" class="btn" id="pf-import" style="background: var(--active-bg);">Importer</button>
+                    </div>
+                    <input type="file" id="pf-file" accept=".json,application/json" hidden>
+                </div>
+            </div>
+
+            <div class="pf-pane" id="pf-records"></div>
+            <div class="pf-pane" id="pf-bornes"></div>
+            <div class="profile-top-nav" id="pf-tabs">
+                <button type="button" class="profile-tab-btn active" data-pf="pf-garage" title="Garage" aria-label="Garage"><svg viewBox="0 0 24 24"><g transform="translate(1.5 2.5) rotate(-16 5 16)"><circle cx="5" cy="16" r="3.4" style="fill:none;stroke:currentColor;stroke-width:1.6"></circle><circle cx="19" cy="16" r="3.4" style="fill:none;stroke:currentColor;stroke-width:1.6"></circle><path style="fill:currentColor;stroke:none" d="M2.5 9.2l3.2.8c1.5.4 3.2 1.4 5 1 1.4-.3 2.3-1.5 3.8-1.5l1.3-2.2c.9.5 1.4 1.4 1.4 2.6l-1.6.8-1.6 4-4 1.2-2.7-1 .4-2.3-3.3-.9z"></path><path style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round" d="M5 16l6-1.6M16.2 7.5L19 16M15 5.8l2.2-.6M17.2 9.6h3.8"></path></g></svg></button>
+                <button type="button" class="profile-tab-btn" data-pf="pf-records" title="Records" aria-label="Records"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"></path></svg></button>
+                <button type="button" class="profile-tab-btn" data-pf="pf-bornes" title="Bornes" aria-label="Bornes"><svg viewBox="0 0 24 24"><path d="M5 22V3M5 4h13l-3 4 3 4H5"></path></svg><i class="pf-dot" id="pf-new" hidden></i></button>
+            </div>
+        </section>
+        

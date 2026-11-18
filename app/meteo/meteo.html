@@ -1,0 +1,28 @@
+        <section id="view-weather" class="module-view" style="justify-content: flex-start; padding-bottom: 40px;">
+            <h1 class="module-header">Météo</h1>
+            
+            <!-- Mosaïque Météo -->
+            <div class="mz">
+                <div class="mz-t now r2">
+                    <div class="l top">Maintenant</div>
+                    <div class="big" id="weather-temp" style="font-size: 3.4rem;">--°</div>
+                    <b id="weather-desc" style="margin-top: 4px;">Recherche...</b>
+                    <div id="weather-icon"><svg viewBox="0 0 24 24" style="width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></div>
+                </div>
+                <div class="mz-t"><div class="l top">Vent</div><div class="big" id="weather-wind">--</div></div>
+                <div class="mz-t"><div class="l top">Pluie</div><div class="big" id="weather-rain" style="color: #1d7ae8;">--</div></div>
+            </div>
+
+            <div class="mz-lab" style="margin-top: 16px; margin-bottom: 8px;">Prochaines 24h</div>
+
+            <!-- Timeline horizontale -->
+            <div id="weather-hourly-container" style="display: flex; gap: 9px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; width: 100%; max-width: 100%; flex-shrink: 0;">
+                <!-- Les tuiles horaires seront injectées ici -->
+            </div>
+
+            <!-- Bouton Actualiser -->
+            <div style="margin-top: 20px; margin-bottom: 20px; text-align: center; flex-shrink: 0;">
+                <button id="btn-refresh-weather" class="btn" style="background: rgba(var(--tint),0.07); color: var(--text-muted); font-size: 0.8rem; padding: 15px; width: 100%;">Actualiser les données</button>
+            </div>
+        </section>
+        

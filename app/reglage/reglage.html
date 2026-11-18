@@ -1,0 +1,130 @@
+        <section id="view-settings" class="module-view set-home">
+            <h1 class="module-header" id="set-h1">Réglages</h1>
+
+            <div id="set-pagebar" class="at-pagebar">
+                <button type="button" id="set-back" class="at-back" aria-label="Retour aux réglages"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <div class="at-pagetitle"><div id="set-pagetitle-t">Réglages</div></div>
+            </div>
+
+            <!-- ACCUEIL -->
+            <div id="set-sub-home" class="set-sub-view active">
+                <div class="at-home-grid">
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-appearance"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2c0-.6-.2-1-.5-1.4a2 2 0 0 1 1.5-3.3H17a5 5 0 0 0 5-5C22 6 17.5 2 12 2z"/></svg></span><span class="t">Apparence</span><span class="s" id="set-s-appearance"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-display"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 14l4-4"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/></svg></span><span class="t">Compteur et écran</span><span class="s" id="set-s-display"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-offline"><span class="ic"><svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span><span class="t">Cartes hors ligne</span><span class="s">Précision, zones, itinéraires, téléchargement en roulant</span></button>
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-mic"><span class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></span><span class="t">Micro intercom</span><span class="s">Anti-bruit, filtre vent et moteur, volume, choix du micro</span></button>
+                    <button type="button" class="at-home-tile wide" data-sgo="set-sub-route"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z"/></svg></span><span class="t">Mode route</span><span class="s" id="set-s-route"></span></button>
+                    <button type="button" class="at-home-tile wide" data-sgo="set-sub-account"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></span><span class="t">Compte</span><span class="s" id="set-s-account"></span></button>
+                    <button type="button" class="at-home-tile wide" data-open-perms><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="t">Autorisations</span><span class="s">GPS, micro, notifications, appel d'urgence…</span></button>
+                    <button type="button" class="at-home-tile wide" data-open-legal><span class="ic"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="t">Informations légales</span><span class="s">CGU, CGV, mentions légales, confidentialité</span></button>
+                </div>
+            </div>
+
+            <!-- APPARENCE -->
+            <div id="set-sub-appearance" class="set-sub-view" data-title="Apparence">
+                <div class="card">
+                    <div class="setting-title">Style de l'application</div>
+                    <div class="style-tabs" id="style-tabs" role="tablist"></div>
+                    <div class="style-grid" id="style-grid"></div>
+                    <div class="setting-hint" id="style-hint"></div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Barre de navigation</div>
+                    <div class="nv-lbl">Emplacement</div>
+                    <div class="nv-choice" id="nv-choice">
+                        <button type="button" data-nav="bottom"><span class="nv-pre nv-bot"><i></i></span><b>Flottante</b><small>Barre en bas, style Racing</small></button>
+                        <button type="button" data-nav="side"><span class="nv-pre nv-sid"><i></i></span><b>Latérale</b><small>Depuis le bord droit</small></button>
+                    </div>
+                    <div class="nv-lbl">Style</div>
+                    <div class="nv-choice" id="nv-style">
+                        <button type="button" data-style="classic"><span class="nv-pre nv-cls"><i></i></span><b>Classique</b><small>Icônes et libellés</small></button>
+                        <button type="button" data-style="slim"><span class="nv-pre nv-fin"><i></i></span><b>Fine</b><small>Sobre, icônes seules</small></button>
+                    </div>
+                    <div class="setting-hint">Choisis où se trouve la navigation entre les onglets et son apparence.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Style du compteur</div>
+                    <div class="nv-choice sp-choice" id="sp-style">
+                        <button type="button" data-sp="barre"><span class="nv-pre"><svg viewBox="0 0 80 50"><text x="40" y="26" text-anchor="middle" font-size="24" font-weight="900" font-style="italic" fill="currentColor">112</text><g transform="skewX(-20)" fill="#ff6a1a"><rect x="30" y="34" width="5" height="6"/><rect x="37" y="34" width="5" height="6"/><rect x="44" y="34" width="5" height="6"/><rect x="51" y="34" width="5" height="6" opacity=".3"/><rect x="58" y="34" width="5" height="6" opacity=".3"/></g></svg></span><b>Barre</b><small>Chiffre et barre de régime</small></button>
+                        <button type="button" data-sp="cadran"><span class="nv-pre"><svg viewBox="0 0 80 50"><circle cx="40" cy="26" r="19" fill="none" stroke="#ff6a1a" stroke-width="5" stroke-dasharray="3 2" opacity=".95"/><text x="40" y="31" text-anchor="middle" font-size="14" font-weight="900" font-style="italic" fill="currentColor">112</text></svg></span><b>Cadran</b><small>Arc segmenté autour du chiffre</small></button>
+                        <button type="button" data-sp="asym"><span class="nv-pre"><svg viewBox="0 0 80 50"><text x="6" y="32" font-size="26" font-weight="900" font-style="italic" fill="currentColor">112</text><g fill="currentColor" opacity=".35" transform="skewX(-10)"><rect x="60" y="8" width="16" height="10"/><rect x="60" y="21" width="16" height="10"/><rect x="60" y="34" width="16" height="10"/></g></svg></span><b>Asymétrique</b><small>Gros chiffre, stats à droite</small></button>
+                        <button type="button" data-sp="plein"><span class="nv-pre"><svg viewBox="0 0 80 50"><text x="40" y="34" text-anchor="middle" font-size="34" font-weight="900" font-style="italic" fill="currentColor">112</text></svg></span><b>Plein cadre</b><small>Chiffre géant, fond rayé</small></button>
+                    </div>
+                    <div class="setting-hint">Apparence du widget Compteur dans l'onglet Route.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Thème de l'application et de la carte</div>
+                    <button class="btn setting-btn" id="btn-toggle-theme">Sombre (Carte de nuit)</button>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Couleur d'accentuation (interface)</div>
+                    <div class="swatch-row" id="accent-swatch-row"></div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Couleur du tracé de navigation</div>
+                    <div class="swatch-row" id="route-color-row"></div>
+                </div>
+            </div>
+
+            <!-- COMPTEUR ET ÉCRAN -->
+            <div id="set-sub-display" class="set-sub-view" data-title="Compteur et écran">
+                <div class="card">
+                    <div class="setting-title">Unité de vitesse</div>
+                    <button class="btn setting-btn" id="btn-toggle-unit">Kilomètres (km/h)</button>
+                    <div class="setting-hint">Compteur, navigation et récapitulatif de trajet. L'Atelier et le Roadbook restent en kilomètres.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Écran</div>
+                    <button class="btn setting-btn" id="btn-toggle-wake">Allumé pendant la balade</button>
+                    <div class="setting-hint">Empêche la mise en veille de l'écran pendant que tu roules.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Signaux du canal vocal</div>
+                    <button class="btn setting-btn" id="btn-toggle-cue">Son et vibration</button>
+                    <div class="setting-hint">Un petit bip et une vibration quand un motard rejoint ou quitte ton canal.</div>
+                    <div class="setting-title">Rappels d'échéances</div>
+                    <button class="btn setting-btn" id="btn-toggle-remind">Activés</button>
+                    <div class="setting-hint">Notification sur le téléphone avant l'échéance du contrôle technique, de l'assurance, du permis et des entretiens datés (30, 7, 1 jour avant et le jour même).</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Mesures du téléphone</div>
+                    <button class="btn setting-btn" id="btn-toggle-sensors">Enregistrées pendant la balade</button>
+                    <div class="setting-hint">Accélération et rotation du téléphone, 10 fois par seconde en plus du GPS, pour les analyses (inclinaison, freinages). Elles restent sur ton téléphone.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Économie d'énergie</div>
+                    <button class="btn setting-btn" id="btn-toggle-eco">Désactivée</button>
+                    <div class="setting-hint">Pendant la balade : écran noir et épuré (vitesse et distance), cartes et widgets en pause. Pendant la balade, la petite feuille du compteur l'active ou la coupe d'un appui.</div>
+                </div>
+            </div>
+
+            <!-- COMPTE -->
+            <div id="set-sub-account" class="set-sub-view" data-title="Compte"><div id="set-account-host"></div><div id="set-blocked-host"></div></div>
+
+            <!-- MODE ROUTE -->
+            <div id="set-sub-route" class="set-sub-view" data-title="Mode route">
+                <div class="card">
+                    <div class="setting-title">Activation</div>
+                    <button class="btn setting-btn" id="btn-route-mode-set">Automatique (plein écran au démarrage)</button>
+                    <div class="setting-hint">L'onglet Route (ex-Compteur) affiche deux espaces : glisse vers le haut ou le bas dans chacun pour changer de widget (compteur, carte, météo, musique, intercom), glisse la poignée centrale pour les redimensionner. Automatique : « Démarrer » ouvre cet écran en plein écran (barre de navigation masquée, le bouton du bas, à droite de la poignée, la ré-affiche). Manuel : la barre de navigation reste visible.</div>
+                </div>
+                <div class="card">
+                    <div class="setting-title">Commandes vocales</div>
+                    <button class="btn setting-btn" id="btn-route-voice-set">Désactivées</button>
+                    <div class="setting-title" style="margin-top:14px;">Mot d'activation</div>
+                    <button class="btn setting-btn" id="btn-route-wake-set">Activé</button>
+                    <button class="btn setting-btn" id="btn-route-word-set" style="margin-top:8px;">« Ride »</button>
+                    <div class="setting-hint">Dis le mot puis la commande (« Ride, suivant »). Dit seul, le mot ouvre 7 secondes pour la commande suivante. Évite les déclenchements par erreur (casque, intercom, vent).</div>
+                    <div class="setting-title" style="margin-top:14px;">Confirmation</div>
+                    <button class="btn setting-btn" id="btn-route-fb-set">Bip de confirmation</button>
+                    <div class="setting-hint">Une pastille micro s'affiche toujours sur l'écran Route (à l'écoute, commande comprise, pas compris). Tu peux y ajouter un bip ou une voix qui répète la commande.</div>
+                    <div class="setting-hint"><b>Commandes :</b> « suivant », « précédent », « pause », « coupe / active le micro », « volume plus / moins » · « compteur », « carte », « météo », « intercom », « musique », « plein écran » · « démarre / arrête la balade » · « recentre », « zoom avant / arrière » · « signale un accident / gravillons / un animal / un danger » · « économie d'énergie » (plein écran) · « rejoins / quitte le groupe », « active / coupe le mode rencontre », « qui est dans le groupe », « invite Paul » · invitation reçue : « oui » / « non », « accepte / refuse l'invitation (de Paul) », « mes invitations » · « mets le volume à 50 », « c'est quoi ce titre », « mets en aléatoire » · « va-t-il pleuvoir », « quel vent » · « je roule à combien », « distance parcourue », « niveau de batterie », « limite de vitesse », « que dois-je faire », « où suis-je » · « direction Lyon », « emmène-moi à… », « café / resto / essence le plus proche » (aussi parking, pharmacie, hôpital, hôtel, garage, toilettes, distributeur), « j'ai faim », « arrête la navigation », « à quelle heure on arrive », « quel temps il fait ». Dis-le comme tu veux : « passe cette chanson », « c'est trop fort », « on y va », « j'ai faim ». « Enregistre ma position comme maison » (ou travail), puis « rentre à la maison ». Les destinations déjà utilisées sont retrouvées en premier. Si le vent ou le micro abîme la phrase (« ène à : 12 rue… »), l'appli retrouve quand même l'adresse, la corrige au besoin (mot parasite, numéro dit en lettres) et affiche ce qu'elle a compris ; « autre adresse » permet de la redire sans répéter « emmène-moi ». Si la phrase n'est pas comprise, l'appli propose la commande la plus proche (« oui » pour la lancer). Après une proposition : « oui », « non », « le deuxième », « un autre ». La compréhension se fait sur le téléphone, sans serveur ; seule la recherche des lieux utilise le réseau (ou tes cartes hors ligne). Dépend de la reconnaissance vocale de l'appareil.</div>
+                </div>
+                </div>
+
+            <!-- CARTES HORS LIGNE -->
+            <div id="set-sub-offline" class="set-sub-view" data-title="Cartes hors ligne"><div id="set-offline-host"></div></div>
+
+            <!-- MICRO INTERCOM -->
+            <div id="set-sub-mic" class="set-sub-view" data-title="Micro intercom"><div id="set-mic-host"></div></div>
+        </section>

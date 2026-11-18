@@ -1,0 +1,149 @@
+            #view-music { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+            /* Sous-menus en pastille d'icônes en bas (sur le côté en paysage), comme la carte */
+            #view-music .music-nav { display: flex; align-self: center; gap: 4px; margin: auto 0 0; padding: 6px; flex-shrink: 0; background-color: var(--surface-color); border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 95%; position: sticky; bottom: 8px; z-index: 5; overflow-x: auto; scrollbar-width: none; }
+            #view-music .music-tab-btn { flex: 0 0 auto; background: transparent; color: var(--text-muted); border: none; padding: 10px 20px; border-radius: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; }
+            #view-music .music-tab-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s ease, stroke-width 0.2s ease; pointer-events: none; }
+            #view-music .music-tab-btn.active { background-color: var(--active-bg); color: var(--accent-color); }
+            #view-music .music-tab-btn.active svg { stroke-width: 2; transform: scale(1.1); }
+            @media (orientation: landscape) {
+                #view-music.active { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: start; }
+                #view-music.active > *:not(.music-nav) { grid-column: 1; }
+                #view-music .music-nav { grid-column: 2; grid-row: 1 / span 30; position: sticky; top: 50%; bottom: auto; transform: translateY(-50%); flex-direction: column; align-self: start; margin: 0 0 0 6px; border-radius: 40px; max-width: none; max-height: 95vh; overflow-y: auto; overflow-x: hidden; }
+                #view-music .music-tab-btn { padding: 12px 14px; }
+            }
+
+            #view-music .music-sub-view { display: none; flex-direction: column; animation: fadeIn 0.2s ease-out; flex-shrink: 0; padding-bottom: 30px; }
+            #view-music .music-sub-view.active { display: flex; }
+
+            /* Lecteur Audio Principal */
+            .player-artwork { width: clamp(120px, 20vh, 180px); height: clamp(120px, 20vh, 180px); background: rgba(var(--tint),0.05); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 4rem; margin: 0 auto 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid rgba(var(--tint),0.05); background-size: cover; background-position: center; }
+            .player-track-title { font-size: 1.3rem; font-weight: 900; color: var(--text-main); text-align: center; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 15px; }
+            .player-track-artist { font-size: 0.9rem; font-weight: 700; color: var(--accent-color); text-align: center; margin-bottom: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 15px; }
+
+            .player-progress-container { width: 100%; display: flex; align-items: center; gap: 10px; padding: 0 6px; margin-bottom: 22px; }
+            .player-time { font-size: 0.7rem; font-weight: 800; color: var(--text-muted); width: 40px; text-align: center; font-variant-numeric: tabular-nums; }
+            .player-progress-bar { flex: 1; height: 8px; background: rgba(128,128,128,0.25); border-radius: 4px; cursor: pointer; position: relative; touch-action: none; }
+            .player-progress-bar::before { content: ''; position: absolute; inset: -14px 0; }
+            .player-progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--accent-color); border-radius: 4px; pointer-events: none; }
+            .player-progress-fill::after { content: ''; position: absolute; right: -7px; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; background: var(--accent-color); box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+
+            .player-controls { display: flex; align-items: center; justify-content: center; gap: clamp(8px, 3vw, 18px); }
+            .btn-ctrl { background: var(--surface-color); color: var(--text-main); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); flex-shrink: 0; }
+            .btn-ctrl:active { transform: scale(0.9); }
+            .btn-ctrl.main { width: 75px; height: 75px; background: var(--accent-color); color: var(--on-accent); }
+            .btn-ctrl.main svg { width: 32px; height: 32px; fill: currentColor; }
+            .btn-ctrl.sec { width: 55px; height: 55px; }
+            .btn-ctrl.sec svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+            .btn-ctrl.tiny { width: 44px; height: 44px; box-shadow: none; background: transparent; color: var(--text-muted); position: relative; }
+            .btn-ctrl.tiny svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+            .btn-ctrl.tiny.on { color: var(--accent-color); }
+            .btn-ctrl.tiny.on::after { content: ''; position: absolute; bottom: 3px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: var(--accent-color); }
+            .btn-ctrl.tiny .rep1 { position: absolute; font-size: 0.55rem; font-weight: 900; top: 11px; left: 50%; transform: translateX(-50%); }
+
+            .mu-volume { display: flex; align-items: center; gap: 12px; margin-top: 20px; padding: 0 8px; color: var(--text-muted); }
+            .mu-volume svg { width: 20px; height: 20px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+            .mu-volume input[type=range] { flex: 1; height: 30px; accent-color: var(--accent-color); touch-action: pan-y; }
+            .mu-vbtn { width: 44px; height: 44px; border-radius: 50%; border: none; background: rgba(128,128,128,0.18); color: var(--text-main); font-size: 1.3rem; font-weight: 900; cursor: pointer; flex-shrink: 0; }
+            .mu-vbar { flex: 1; height: 8px; background: rgba(128,128,128,0.25); border-radius: 4px; overflow: hidden; }
+            .mu-vbar > div { height: 100%; width: 0; background: var(--accent-color); border-radius: 4px; transition: width 0.2s; }
+
+            /* Liste de lecture locale */
+            .mu-actions { display: flex; gap: 10px; margin-top: 10px; }
+            .mu-actions .btn { background: rgba(128,128,128,0.15); font-size: 0.8rem; border-radius: 14px; padding: 16px; }
+            .mu-count { font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 16px 4px 0; }
+            .local-playlist { margin-top: 10px; background: rgba(128,128,128,0.08); border-radius: 16px; padding: 6px; border: 1px solid rgba(128,128,128,0.15); }
+            .playlist-item { padding: 10px 10px 10px 12px; border-bottom: 1px solid rgba(128,128,128,0.12); display: flex; align-items: center; gap: 12px; cursor: pointer; border-radius: 12px; min-height: 58px; }
+            .playlist-item:last-child { border-bottom: none; }
+            .playlist-item.active { background: rgba(10,132,255,0.15); }
+            .playlist-item.active .pi-title { color: #0a84ff; }
+            .pi-num { width: 22px; text-align: center; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+            .pi-body { flex: 1; min-width: 0; }
+            .pi-title { font-size: 0.88rem; font-weight: 800; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .pi-sub { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+            .pi-del { width: 40px; height: 40px; border: none; background: transparent; color: var(--text-muted); font-size: 1rem; cursor: pointer; flex-shrink: 0; border-radius: 50%; }
+            .pi-eq { display: inline-flex; gap: 2px; align-items: flex-end; height: 14px; }
+            .pi-eq i { width: 3px; background: #0a84ff; border-radius: 1px; animation: mu-eq 0.9s ease-in-out infinite; }
+            .pi-eq i:nth-child(2) { animation-delay: -0.3s; } .pi-eq i:nth-child(3) { animation-delay: -0.6s; }
+            .pi-eq.paused i { animation-play-state: paused; }
+            @keyframes mu-eq { 0%, 100% { height: 3px; } 50% { height: 14px; } }
+
+            /* Cartes d'intégration */
+            .mu-card { padding: 20px 16px; flex-shrink: 0; }
+            .mu-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+            .mu-logo { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+            .mu-logo svg { width: 26px; height: 26px; fill: currentColor; }
+            .mu-logo.spotify { background: rgba(30,215,96,0.15); color: #1DB954; }
+            .mu-logo.system { background: rgba(var(--tint),0.1); color: var(--text-main); }
+            .mu-card-title { font-size: 1.05rem; font-weight: 900; color: var(--text-main); }
+            .mu-card-sub { font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin-top: 2px; }
+            .mu-steps { font-size: 0.82rem; line-height: 1.55; color: var(--text-muted); font-weight: 600; padding-left: 20px; margin-bottom: 14px; }
+            .mu-steps li { margin-bottom: 6px; } .mu-steps b { color: var(--text-main); }
+            .mu-code { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.15); border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; }
+            .mu-code code { flex: 1; font-size: 0.72rem; font-weight: 700; color: var(--text-main); word-break: break-all; user-select: text; -webkit-user-select: text; font-family: ui-monospace, Menlo, monospace; }
+            .mu-code button { border: none; background: var(--accent-color); color: var(--on-accent); font-weight: 800; font-size: 0.7rem; border-radius: 9px; padding: 8px 12px; cursor: pointer; flex-shrink: 0; }
+            .mu-input { width: 100%; padding: 15px; background: rgba(128,128,128,0.15); border: 1px solid rgba(128,128,128,0.2); border-radius: 14px; color: var(--text-main); font-size: 1rem; outline: none; margin-bottom: 12px; user-select: text; -webkit-user-select: text; font-family: inherit; }
+            .mu-link { background: none; border: none; color: #0a84ff; font-size: 0.78rem; font-weight: 800; cursor: pointer; padding: 10px 0 0; display: block; width: 100%; text-align: center; }
+            .mu-hint { background: rgba(255,159,10,0.14); border: 1px solid rgba(255,159,10,0.35); color: var(--text-main); border-radius: 14px; padding: 12px 14px; font-size: 0.8rem; font-weight: 700; line-height: 1.4; margin-top: 14px; }
+            .mu-warn { background: rgba(255,69,58,0.12); border: 1px solid rgba(255,69,58,0.3); color: var(--text-main); border-radius: 14px; padding: 12px 14px; font-size: 0.8rem; font-weight: 700; line-height: 1.4; margin-bottom: 14px; }
+            .mu-row { display: flex; gap: 10px; }
+            .mu-primary { width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 0.9rem; font-weight: 900; cursor: pointer; background: var(--accent-color); color: var(--on-accent); }
+            .mu-secondary { width: 100%; padding: 14px; margin-top: 10px; border: none; border-radius: 16px; font-size: 0.85rem; font-weight: 800; cursor: pointer; background: rgba(128,128,128,0.18); color: var(--text-main); }
+            .mu-logo.drive { background: rgba(66,133,244,0.15); color: #4285F4; }
+            .gd-folder { background: rgba(128,128,128,0.15); border-radius: 12px; padding: 12px 14px; font-size: 0.85rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; word-break: break-word; }
+            .mu-fl { display:flex; align-items:center; gap:10px; padding: 12px 6px; border-bottom: 1px solid rgba(128,128,128,0.15); cursor:pointer; color: var(--text-main); font-size:0.88rem; font-weight:700; }
+            .mu-crumb { font-size:0.72rem; color: var(--text-muted); font-weight:800; margin-bottom:6px; word-break:break-word; }
+            .sp-now { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+            .sp-cover { width: 92px; height: 92px; border-radius: 16px; background: rgba(128,128,128,0.18) center/cover; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+            .sp-meta { min-width: 0; flex: 1; }
+            .mu-pad { display: flex; align-items: center; justify-content: center; gap: clamp(14px, 5vw, 26px); margin: 4px 0 18px; }
+
+            /* Fenêtres */
+            .mu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 20px; }
+            .mu-overlay.show { opacity: 1; }
+            .mu-sheet { background: var(--surface-color); border-radius: 24px; width: 100%; max-width: 380px; padding: 22px; border: 1px solid rgba(128,128,128,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.92); transition: transform 0.2s cubic-bezier(0.2,0.8,0.2,1); max-height: 88vh; display: flex; flex-direction: column; }
+            .mu-overlay.show .mu-sheet { transform: scale(1); }
+            .mu-sheet h3 { color: var(--text-main); font-size: 1.15rem; font-weight: 900; margin: 0 0 14px; }
+            .mu-sheet-body { overflow-y: auto; flex: 1; scrollbar-width: none; }
+            .mu-sheet .btn { padding: 15px; font-size: 0.85rem; border-radius: 16px; margin-top: 14px; }
+            .mu-field-label { display: block; color: var(--text-muted); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 12px 0 6px; }
+            #mu-toast { position: fixed; left: 50%; bottom: 110px; transform: translate(-50%, 20px); background: var(--surface-color); color: var(--text-main); border: 1px solid rgba(128,128,128,0.25); border-radius: 16px; padding: 12px 18px; font-size: 0.85rem; font-weight: 800; z-index: 10030; opacity: 0; transition: 0.25s; box-shadow: 0 10px 30px rgba(0,0,0,0.45); max-width: 86vw; text-align: center; pointer-events: none; }
+            #mu-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+            /* Boutons d'intégration externes */
+            .integration-btn { display: flex; align-items: center; gap: 15px; width: 100%; padding: 18px; border-radius: 16px; border: none; font-size: 0.9rem; font-weight: 800; cursor: pointer; margin-bottom: 12px; transition: 0.2s; }
+            .integration-btn svg { width: 24px; height: 24px; flex-shrink: 0; }
+            .btn-spotify { background: rgba(30, 215, 96, 0.15); color: #1DB954; border: 1px solid rgba(30, 215, 96, 0.3); }
+            .btn-drive { background: rgba(66, 133, 244, 0.15); color: #4285F4; border: 1px solid rgba(66, 133, 244, 0.3); }
+            .integration-btn.compact { padding: 14px; margin-bottom: 0; flex: 1; justify-content: center; font-size: 0.8rem; gap: 8px; }
+            .integration-btn.compact svg { width: 20px; height: 20px; }
+
+/* ===== Musique en mosaïque : lecteur compact + gros boutons, puis 4 tuiles ===== */
+#sub-music-local > .card { display: grid; grid-template-columns: 76px 1fr; column-gap: 14px; align-items: center; padding: 16px !important; }
+#sub-music-local .player-artwork { width: 76px; height: 76px; margin: 0; grid-row: 1 / span 2; border-radius: 16px; }
+#sub-music-local .player-artwork svg { width: 34px !important; height: 34px !important; }
+#sub-music-local .player-track-title { text-align: left; font-size: 1.15rem; margin: 0; align-self: end; }
+#sub-music-local .player-track-artist { text-align: left; margin: 2px 0 0; align-self: start; }
+#sub-music-local > .card > .player-progress-container, #sub-music-local > .card > .player-controls, #sub-music-local > .card > .mu-volume { grid-column: 1 / -1; }
+#sub-music-local .player-progress-container { margin: 18px 0 18px; padding: 0; }
+#sub-music-local .player-controls { gap: clamp(8px, 3vw, 22px); justify-content: center; max-width: 100%; }
+#sub-music-local .btn-ctrl.main { width: clamp(76px, 26vw, 104px); height: clamp(68px, 22vw, 88px); border-radius: 24px; flex: none; }
+#sub-music-local .btn-ctrl.main svg { width: 46px; height: 46px; }
+#sub-music-local .btn-ctrl.sec { width: clamp(46px, 15vw, 72px); height: clamp(46px, 15vw, 72px); flex: none; }
+#sub-music-local .btn-ctrl.tiny { width: 36px; height: 36px; flex: none; }
+#sub-music-local .btn-ctrl.sec svg { width: 30px; height: 30px; }
+#sub-music-local #btn-local-shuffle { display: none; }
+.mu-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 12px; }
+.mu-tile { position: relative; text-align: left; background: var(--surface-color); color: var(--text-main); border: 0; border-radius: 20px; padding: 14px; min-height: 108px; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; cursor: pointer; }
+.mu-tile .ic { position: absolute; top: 12px; left: 12px; width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.mu-tile .ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mu-tile .ic.c1 { background: rgba(48,209,88,.18); color: #30d158; }
+.mu-tile .ic.c2 { background: rgba(175,130,255,.2); color: #b79bff; }
+.mu-tile .ic.c3 { background: rgba(255,106,26,.2); color: #ff8a3d; }
+.mu-tile .ic.c4 { background: rgba(10,132,255,.2); color: #5aaaff; }
+.mu-tile b { font-size: 1rem; font-weight: 900; }
+.mu-tile small { font-size: .74rem; font-weight: 700; color: var(--text-muted); }
+.mu-tile.on small { color: var(--rc, var(--accent-color)); }
+.mu-tile:active { transform: scale(.97); }
+#view-music .music-nav { display: none !important; }
+.mu-back { align-self: flex-start; display: flex; align-items: center; gap: 6px; background: var(--surface-color); color: var(--text-main); border: 0; border-radius: 12px; padding: 10px 14px 10px 8px; font-weight: 800; font-size: .85rem; cursor: pointer; flex-shrink: 0; }
+.mu-back svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }

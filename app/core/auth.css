@@ -1,0 +1,55 @@
+/* Écran d'accès (connexion / création de compte) + carte Compte des Réglages */
+html.auth-pending body > *:not(#auth-gate):not(#cgu-gate):not(#lg-view):not(.ad-overlay):not(.ad-toast) { visibility: hidden !important; }
+.auth-gate { position: fixed; inset: 0; z-index: 9990; background: var(--bg-color); color: var(--text-main); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: calc(env(safe-area-inset-top, 0px) + 40px) 24px calc(env(safe-area-inset-bottom, 0px) + 24px); display: flex; justify-content: center; }
+.au-in { width: 100%; max-width: 420px; margin: auto; display: flex; flex-direction: column; animation: auIn .45s cubic-bezier(.2,.9,.3,1) both; }
+@keyframes auIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.au-logo { width: 84px; height: 84px; border-radius: 22px; margin: 0 auto 14px; display: block; object-fit: contain; }
+.au-h1 { margin: 0; text-align: center; font-size: 1.65rem; letter-spacing: -.3px; }
+.au-sub { text-align: center; color: var(--text-muted); font-size: .92rem; margin: 6px 0 22px; }
+.au-note { background: var(--surface-color); border-radius: 14px; padding: 12px 14px; font-size: .85rem; font-weight: 600; text-align: center; margin: -6px 0 16px; box-shadow: inset 0 0 0 1.5px rgba(var(--tint), .12); }
+.au-tabs { display: flex; background: var(--surface-color); border-radius: 40px; padding: 4px; margin-bottom: 18px; }
+.au-tabs button { flex: 1; border: 0; background: transparent; color: var(--text-muted); font-weight: 700; font-size: .9rem; font-family: inherit; padding: 11px; border-radius: 40px; cursor: pointer; transition: background .25s, color .25s; }
+.au-tabs button.on { background: var(--accent-color); color: var(--on-accent); }
+.au-f { display: block; background: var(--surface-color); border-radius: 16px; padding: 10px 16px; margin-bottom: 10px; box-shadow: inset 0 0 0 1.5px transparent; transition: box-shadow .2s; }
+.au-f:focus-within { box-shadow: inset 0 0 0 1.5px rgba(var(--tint), .35); }
+.au-f[hidden] { display: none; }
+.au-f small { display: flex; justify-content: space-between; font-size: .68rem; letter-spacing: .6px; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; }
+.au-f small em { font-style: normal; letter-spacing: 0; }
+.au-f small em.ok { color: #30d158; } .au-f small em.ko { color: var(--danger-color); }
+.au-f input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--text-main); font-weight: 500; font-size: 16px; font-family: inherit; padding: 2px 0; }
+.au-f input::placeholder { color: var(--text-muted); opacity: .55; font-size: .85rem; }
+.au-pw { display: flex; align-items: center; gap: 8px; }
+.au-eye { border: 0; background: transparent; color: var(--text-muted); padding: 4px; display: flex; cursor: pointer; }
+.au-eye svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.au-go { width: 100%; margin-top: 8px; border: 0; border-radius: 40px; padding: 16px; background: var(--accent-color); color: var(--on-accent); font-weight: 800; font-size: .95rem; font-family: inherit; letter-spacing: .5px; text-transform: uppercase; cursor: pointer; transition: transform .15s, opacity .2s; }
+.au-go:active { transform: scale(.98); } .au-go.busy { opacity: .6; }
+.au-lnk { align-self: center; border: 0; background: transparent; color: var(--text-muted); font-weight: 600; font-size: .82rem; font-family: inherit; padding: 14px 10px 4px; cursor: pointer; }
+.au-lnk[hidden] { display: none; }
+.au-leg { margin-top: 22px; text-align: center; color: var(--text-muted); font-size: .72rem; line-height: 1.5; }
+/* Réglages › Compte */
+.au-me { display: flex; align-items: center; gap: 12px; margin: 4px 0 14px; }
+.au-av { width: 46px; height: 46px; border-radius: 50%; background: var(--active-bg); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; flex: none; }
+.au-me b { display: block; font-size: 1rem; } .au-me span { font-size: .78rem; color: var(--text-muted); word-break: break-all; }
+.au-row { margin-top: 8px; }
+.au-del { color: var(--danger-color); }
+@media (prefers-reduced-motion: reduce) { .au-in { animation: none; } }
+
+/* État du compte (Réglages › Compte) et pastille (Profil) */
+.au-state { border-radius: 16px; padding: 13px 14px; margin: 0 0 12px; } .au-state b { display: flex; align-items: center; gap: 7px; font-size: .95rem; } .au-state small { display: block; margin-top: 3px; font-size: .78rem; opacity: .85; line-height: 1.35; }
+.au-state i, .au-pill i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.au-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 20px; font-size: .72rem; font-weight: 800; }
+.au-a { background: rgba(48,209,88,.14); color: #30d158; } .au-b { background: rgba(255,69,58,.14); color: var(--danger-color, #ff453a); } .au-i { background: rgba(255,255,255,.08); color: var(--text-muted); }
+
+/* Pastille d'état sur la photo de profil (accueil + profil) */
+.av-badge { position: absolute; right: -3px; bottom: -3px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2.5px var(--ring, var(--bg-color)); pointer-events: none; }
+.av-badge svg { width: 11px; height: 11px; fill: none; stroke: #fff; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.av-badge.au-a { background: #30d158; color: #fff; } .av-badge.au-b { background: var(--danger-color, #ff453a); color: #fff; } .av-badge.au-i { background: #8e8e93; color: #fff; }
+.av-big { position: relative; width: 70px; height: 70px; flex-shrink: 0; --ring: var(--surface-color); } .av-big #profile-avatar { width: 100%; height: 100%; }
+.av-big .av-badge { width: 26px; height: 26px; right: -4px; bottom: -4px; box-shadow: 0 0 0 3px var(--ring); } .av-big .av-badge svg { width: 14px; height: 14px; }
+
+/* Thèmes clairs : verts et rouges plus foncés pour rester lisibles (état du compte, hors pastille sur la photo) */
+:root[data-mode="light"] .au-pill.au-a, :root[data-mode="light"] .au-state.au-a { background: rgba(26,127,55,.14); color: #1a7f37; }
+:root[data-mode="light"] .au-pill.au-b, :root[data-mode="light"] .au-state.au-b { background: rgba(207,34,46,.12); color: #cf222e; }
+:root[data-mode="light"] .au-pill.au-i, :root[data-mode="light"] .au-state.au-i { background: rgba(0,0,0,.07); color: #57606a; }
+
+.au-legal { margin-top: 12px; } .au-legal a { color: var(--accent-color); text-decoration: underline; }
