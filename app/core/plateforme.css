@@ -17,3 +17,11 @@
 html[data-platform="pwa"], html[data-platform="pwa"] body { background-color: var(--bg-color, #1c1c1e); }
 html[data-platform="pwa"] body { position: fixed; top: 0; left: 0; right: 0; width: 100%; height: var(--pwa-h, 100%); min-height: 0; }
 html[data-platform="pwa"] { height: var(--pwa-h, 100%); overflow: visible; overscroll-behavior: none; }
+
+/* iPhone dans Safari : écran d'installation plein écran */
+.pf-gate { position: fixed; inset: 0; z-index: 99999; background: #1c1c1e; color: #fff; display: flex; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; --rc: #ff6a1a; }
+.pf-gi { width: 100%; max-width: 420px; text-align: center; }
+.pf-gi img { border-radius: 22px; margin-bottom: 14px; }
+.pf-gi h1 { margin: 0 0 8px; font-style: italic; text-transform: uppercase; font-weight: 900; font-size: 1.5rem; line-height: 1.1; }
+.pf-gi h1 b { color: var(--rc); }
+.pf-gi .pf-st { text-align: left; justify-content: flex-start; }

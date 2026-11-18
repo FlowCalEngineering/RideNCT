@@ -15,6 +15,24 @@ const AppPlatform = (() => {
     P.kind = native ? 'native' : standalone ? 'pwa' : 'web';
     try { document.documentElement.setAttribute('data-platform', P.kind); } catch (e) {}
 
+
+    // ---- iPhone dans Safari : l'appli ne s'utilise qu'installée sur l'écran d'accueil → écran d'installation obligatoire ----
+    // (?noinstall dans l'adresse = contournement pour le développement)
+    P.gate = P.web && P.ios && !/[?&]noinstall/.test(location.search);
+    if (P.gate) {
+        const build = () => {
+            if (document.getElementById('pf-gate')) return;
+            const g = document.createElement('div'); g.id = 'pf-gate'; g.className = 'pf-gate';
+            g.innerHTML = '<div class="pf-gi"><img src="core/pwa/icon-192.png" alt="RideNCT" width="96" height="96"><h1>Installe <b>RideNCT</b> sur ton iPhone</h1>' +
+                '<p class="pf-p">Pour utiliser l\'appli, ajoute-la à ton écran d\'accueil. Ça prend 10 secondes.</p>' +
+                '<div class="pf-st"><i>1</i><span>Touche <b>Partager</b> <svg viewBox="0 0 24 24"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg> en bas de Safari</span></div>' +
+                '<div class="pf-st"><i>2</i><span>Choisis <b>Sur l\'écran d\'accueil</b></span></div>' +
+                '<div class="pf-st"><i>3</i><span>Touche <b>Ajouter</b>, puis ouvre <b>RideNCT</b> depuis ton écran d\'accueil</span></div></div>';
+            document.body.appendChild(g);
+        };
+        if (document.body) build(); else document.addEventListener('DOMContentLoaded', build);
+    }
+
     // ---- Service worker (appli web seulement, en HTTPS) ----
     if (!native && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
         window.addEventListener('load', () => { try { navigator.serviceWorker.register('sw.js').catch(() => {}); } catch (e) {} });
@@ -27,7 +45,7 @@ const AppPlatform = (() => {
     const seen = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
     const save = (o) => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} };
     const canAsk = () => {
-        if (!P.web || !(P.ios || P.android)) return false;
+        if (!P.web || !(P.ios || P.android) || P.gate) return false;
         if (P.android && !deferred) return false;           // Android : seulement si le navigateur propose l'installation
         const s = seen(); if (s.never) return false;
         if (s.later && Date.now() - s.later < 14 * 864e5) return false;
