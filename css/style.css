@@ -880,3 +880,14 @@ main { counter-reset: sec; }
 .cmp .sh{display:none}
 @media(max-width:700px){.cmp .lg{display:none}.cmp .sh{display:inline}.cmp tbody th{font-size:.7rem}}
 @media(max-width:700px){.cmp tbody th{hyphens:auto}.cmp td.cmp-t,.cmp tr.cmp-price td{hyphens:none}}
+@media(max-width:700px){
+.compare:not(.cmp){min-width:0;table-layout:fixed;width:100%}
+.compare:not(.cmp) th,.compare:not(.cmp) td{padding:10px 6px;font-size:.78rem;overflow-wrap:break-word}
+.compare:not(.cmp) thead th{font-size:.64rem;letter-spacing:.03em;padding:10px 4px;text-align:center}
+.compare:not(.cmp) thead th:first-child{text-align:left;padding-left:10px}
+.compare:not(.cmp) th:first-child{width:44%;padding-left:10px}
+.compare:not(.cmp) td{text-align:center;line-height:1.25}
+.compare:not(.cmp) tr.grp th{font-size:.66rem;padding-left:10px}
+.compare:not(.cmp) .reco{display:block;font-size:.55rem;margin-bottom:2px}
+.compare:not(.cmp) tbody th small{display:block;font-size:.66rem;line-height:1.3;color:var(--muted);font-weight:400}
+}
