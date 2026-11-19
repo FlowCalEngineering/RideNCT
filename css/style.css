@@ -852,3 +852,16 @@ main { counter-reset: sec; }
 .pwa-bar small{font-size:.78rem;color:var(--muted)}
 .pwa-bar .btn{flex:none;padding:7px 14px;font-size:.82rem}
 .pwa-bar button{flex:none;width:28px;height:28px;border:0;border-radius:50%;background:transparent;color:var(--muted);font-size:1.3rem;line-height:1;cursor:pointer}
+
+.cmp th small{display:block;color:var(--muted);font-weight:400;font-size:.74rem;margin-top:2px}
+.cmp td,.cmp thead th:not(:first-child){text-align:center}
+.cmp td.cmp-y span{color:#4ade80;font-weight:800;font-size:1.1rem}
+.cmp td.cmp-n span,.cmp td.cmp-u span{color:#6b6b72;font-size:1.1rem}
+.cmp td small{display:block;color:var(--muted);font-weight:400;font-size:.74rem}
+.cmp tr.cmp-price td,.cmp tr.cmp-price th{font-weight:700}
+.cmp-cta{margin-top:22px;border:2px solid var(--teal);border-radius:var(--radius);padding:24px 28px;background:linear-gradient(135deg,rgba(242,106,39,.16),rgba(242,106,39,.04));display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cmp-cta h3{margin:0 0 6px;font-size:clamp(1.2rem,2.6vw,1.6rem);text-transform:uppercase;font-style:italic;line-height:1.15}
+.cmp-cta h3 span{color:var(--teal)}
+.cmp-cta p{margin:0;color:var(--muted);max-width:620px}
+.cmp-pp{text-align:right}.cmp-pp b{display:block;font-size:2.2rem;line-height:1}.cmp-pp span{color:var(--muted);font-size:.82rem}
+@media(max-width:700px){.cmp-pp{text-align:left}}
