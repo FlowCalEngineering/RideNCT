@@ -865,3 +865,18 @@ main { counter-reset: sec; }
 .cmp-cta p{margin:0;color:var(--muted);max-width:620px}
 .cmp-pp{text-align:right}.cmp-pp b{display:block;font-size:2.2rem;line-height:1}.cmp-pp span{color:var(--muted);font-size:.82rem}
 @media(max-width:700px){.cmp-pp{text-align:left}}
+@media(max-width:700px){
+.cmp{min-width:0;table-layout:fixed;width:100%}
+.cmp th,.cmp td{padding:9px 4px;font-size:.72rem;letter-spacing:0;overflow-wrap:break-word}
+.cmp thead th{font-size:.6rem;letter-spacing:.02em;padding:10px 3px;vertical-align:bottom}
+.cmp thead th small{display:none}
+.cmp th:first-child{width:31%;text-align:left;padding-left:10px}
+.cmp tbody th{font-weight:600;line-height:1.25}
+.cmp td small{font-size:.6rem;line-height:1.25}
+.cmp tr.cmp-price td{font-size:.7rem}
+.cmp td.cmp-y span,.cmp td.cmp-n span,.cmp td.cmp-u span{font-size:1rem}
+.cmp-cta{padding:20px 18px}.cmp-pp b{font-size:1.9rem}
+}
+.cmp .sh{display:none}
+@media(max-width:700px){.cmp .lg{display:none}.cmp .sh{display:inline}.cmp tbody th{font-size:.7rem}}
+@media(max-width:700px){.cmp tbody th{hyphens:auto}.cmp td.cmp-t,.cmp tr.cmp-price td{hyphens:none}}
