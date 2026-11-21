@@ -891,3 +891,14 @@ main { counter-reset: sec; }
 .compare:not(.cmp) .reco{display:block;font-size:.55rem;margin-bottom:2px}
 .compare:not(.cmp) tbody th small{display:block;font-size:.66rem;line-height:1.3;color:var(--muted);font-weight:400}
 }
+
+/* Page Installer */
+.inst{max-width:720px}
+.inst-det{font-size:.95rem;color:var(--muted,#9a9ca3);margin:0 0 16px}
+.inst-y{color:#30d158;font-weight:800}.inst-n{color:#ff9f0a;font-weight:800}
+.inst-box{background:var(--bg-2,#1b1d21);border:1px solid var(--line,#2a2d33);border-radius:16px;padding:20px;margin:0 0 16px}
+.inst-box h2{margin:0 0 8px;font-size:1.25rem}
+.inst-ok{color:var(--muted,#9a9ca3);margin:0 0 12px}
+.inst-steps{margin:0 0 16px;padding-left:22px;display:flex;flex-direction:column;gap:10px;line-height:1.45}
+.inst-steps svg{width:18px;height:18px;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.inst-ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;line-height:1.45}
