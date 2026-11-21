@@ -5,7 +5,7 @@
   var android = /Android/.test(ua);
   var inapp = /FBAN|FBAV|Instagram|Line\/|MicroMessenger|TikTok|Snapchat|Twitter|GSA\/|; wv\)/.test(ua);
   var fxios = /FxiOS/.test(ua);
-  var installed = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  var installed = (window.matchMedia && matchMedia('(display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui)').matches) || navigator.standalone === true;
   // Appli pas encore publique : la page n'est visible que pour un compte connecté (session créée par la page Mon compte)
   var logged = false;
   try { var ss = JSON.parse(localStorage.getItem('ridenct_session_v1') || 'null'); logged = !!(ss && ss.access_token && ss.user); } catch (e) { }
