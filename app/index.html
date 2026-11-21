@@ -1095,11 +1095,17 @@
             
             <div id="sub-comm-amis" class="comm-sub-view">
                 <div class="card fr-card">
-                    <div class="comm-label"><span>Mon code ami</span></div>
+                    <div class="fr-t">Mon code ami</div>
                     <div class="fr-code" id="fr-code">— — — —  — — — —</div>
                     <div class="fr-act"><button type="button" class="btn at-ghost" id="fr-copy">Copier</button><button type="button" class="btn at-ghost" id="fr-share">Partager</button><button type="button" class="btn at-ghost" id="fr-regen">Changer</button></div>
-                    <div class="fr-hint">Donne ce code à un motard pour qu'il t'ajoute, sans vous croiser. Il n'est visible de personne d'autre.</div>
-                    <div class="fr-add"><input id="fr-code-in" class="fr-in" inputmode="numeric" maxlength="9" autocomplete="off" placeholder="Code ami (8 chiffres)"><button type="button" class="btn btn-primary" id="fr-add">Ajouter</button></div>
+                    <div class="fr-vis"><div class="fr-vis-t"><b>Visible dans les demandes d'ami</b><small id="fr-open-s">Chargement…</small></div><button type="button" id="fr-open" class="radar-switch" aria-label="Autoriser les demandes d'ami par code"></button></div>
+                </div>
+                <div class="card fr-card">
+                    <div class="fr-t">Ajouter un ami</div>
+                    <div class="fr-hint" style="margin-top:0">Demande son code à 8 chiffres : pas besoin de vous croiser ni d'activer le radar.</div>
+                    <div class="fr-field"><input id="fr-code-in" class="fr-in" inputmode="numeric" maxlength="9" autocomplete="off" placeholder="0000 0000"><button type="button" class="fr-paste" id="fr-paste">Coller</button></div>
+                    <button type="button" class="btn btn-primary fr-send" id="fr-add" disabled>Envoyer la demande</button>
+                    <div class="fr-msg" id="fr-msg" hidden></div>
                 </div>
                 <div class="card">
                     <div class="comm-label"><span>Mes Amis</span><span id="friends-count">0</span></div>
