@@ -150,6 +150,31 @@
     }
   });
 
+  // Détection de l'appareil : mobile = seul le bouton de son système ; ordinateur = message au clic
+  (function () {
+    var ua = navigator.userAgent || "";
+    var ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+    var android = /Android/i.test(ua);
+    var btns = document.querySelectorAll("[data-store]");
+    if (ios || android) {
+      btns.forEach(function (a) {
+        var is = a.getAttribute("data-store") === "ios";
+        if (is !== ios) a.hidden = true; else a.classList.remove("btn-ghost"), a.classList.add("btn-primary");
+      });
+      return;
+    }
+    var toast;
+    btns.forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (!toast) { toast = document.createElement("div"); toast.className = "store-toast"; toast.setAttribute("role", "alert"); document.body.appendChild(toast); }
+        toast.textContent = "Veuillez utiliser votre smartphone (Android ou iPhone) pour installer RideNCT.";
+        toast.classList.add("show");
+        clearTimeout(toast._t); toast._t = setTimeout(function () { toast.classList.remove("show"); }, 4500);
+      });
+    });
+  })();
+
   if (!cfg.androidUrl && !cfg.iosUrl) document.querySelectorAll(".plan-alt").forEach(function (n) { n.hidden = true; });
   // Avant la sortie : pas d'abonnement ni de création de compte
   if (!cfg.payOpen) document.querySelectorAll("[data-pay]").forEach(function (n) {
