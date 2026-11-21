@@ -19,6 +19,16 @@
   else if (ios) show('inst-ios');
   else if (android) show('inst-android');
   else show('inst-desktop');
+  // onglets iPhone / Android : le visiteur peut consulter l'autre mode d'emploi
+  var tabs = $('inst-tabs');
+  function pick(t) {
+    ['ios', 'android'].forEach(function (k) { var e = $('inst-' + k); if (e) e.hidden = k !== t; });
+    if (tabs) [].forEach.call(tabs.querySelectorAll('button'), function (b) { b.classList.toggle('on', b.getAttribute('data-t') === t); });
+  }
+  if (tabs && !installed && !inapp && !fxios) {
+    tabs.hidden = false; pick(ios ? 'ios' : 'android');
+    tabs.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) pick(b.getAttribute('data-t')); });
+  }
   if (ios && /CriOS|EdgiOS/.test(ua)) { var t = $('inst-ios-ok'); if (t) t.textContent = 'Ton navigateur est compatible (iOS 16.4 ou plus récent). Safari reste le plus simple.'; }
   ['inst-copy', 'inst-copy2'].forEach(function (id) {
     var btn = $(id); if (!btn) return;
