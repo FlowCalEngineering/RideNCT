@@ -163,15 +163,17 @@
       });
       return;
     }
-    var toast;
+    // Ordinateur : pas de boutons, un message à la place
+    var done = [];
     btns.forEach(function (a) {
-      a.addEventListener("click", function (e) {
-        e.preventDefault();
-        if (!toast) { toast = document.createElement("div"); toast.className = "store-toast"; toast.setAttribute("role", "alert"); document.body.appendChild(toast); }
-        toast.textContent = "Veuillez utiliser votre smartphone (Android ou iPhone) pour installer RideNCT.";
-        toast.classList.add("show");
-        clearTimeout(toast._t); toast._t = setTimeout(function () { toast.classList.remove("show"); }, 4500);
-      });
+      var row = a.parentNode;
+      if (done.indexOf(row) < 0) {
+        done.push(row);
+        var m = document.createElement("p"); m.className = "store-note"; m.setAttribute("role", "note");
+        m.textContent = "Veuillez utiliser votre smartphone (Android ou iPhone) pour installer RideNCT.";
+        row.insertBefore(m, a);
+      }
+      a.hidden = true;
     });
   })();
 
