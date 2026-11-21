@@ -1094,12 +1094,20 @@
 
             
             <div id="sub-comm-amis" class="comm-sub-view">
+                <div class="card fr-card">
+                    <div class="comm-label"><span>Mon code ami</span></div>
+                    <div class="fr-code" id="fr-code">— — — —  — — — —</div>
+                    <div class="fr-act"><button type="button" class="btn at-ghost" id="fr-copy">Copier</button><button type="button" class="btn at-ghost" id="fr-share">Partager</button><button type="button" class="btn at-ghost" id="fr-regen">Changer</button></div>
+                    <div class="fr-hint">Donne ce code à un motard pour qu'il t'ajoute, sans vous croiser. Il n'est visible de personne d'autre.</div>
+                    <div class="fr-add"><input id="fr-code-in" class="fr-in" inputmode="numeric" maxlength="9" autocomplete="off" placeholder="Code ami (8 chiffres)"><button type="button" class="btn btn-primary" id="fr-add">Ajouter</button></div>
+                </div>
                 <div class="card">
                     <div class="comm-label"><span>Mes Amis</span><span id="friends-count">0</span></div>
                     <div id="friends-list" style="display: flex; flex-direction: column; gap: 10px;">
                         <div class="comm-empty">Bientôt disponible : ajoute tes potes pour voir s'ils roulent !</div>
                     </div>
                 </div>
+                <div class="card" id="fr-blocked" hidden></div>
             </div>
 
             
@@ -1367,6 +1375,7 @@
     <script src="groupe/amis/amis.js"></script>
     <script src="groupe/croise/croise.js"></script>
     <script src="groupe/radar/radar.js"></script>
+    <script src="groupe/amis/amis-serveur.js"></script>
     <script src="groupe/radar/radar-blips.js"></script>
     <script src="groupe/radar/signalement.js"></script>
     <script src="profil/profil.js"></script>
