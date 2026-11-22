@@ -159,7 +159,8 @@
     if (ios || android) {
       btns.forEach(function (a) {
         var is = a.getAttribute("data-store") === "ios";
-        if (is !== ios) a.hidden = true; else a.classList.remove("btn-ghost"), a.classList.add("btn-primary");
+        if (is !== ios) { a.classList.remove("btn-primary"); a.classList.add("btn-ghost", "btn-off"); a.setAttribute("aria-disabled", "true"); a.setAttribute("tabindex", "-1"); a.addEventListener("click", function (e) { e.preventDefault(); }); }
+        else { a.classList.remove("btn-ghost"); a.classList.add("btn-primary"); }
       });
       return;
     }
