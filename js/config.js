@@ -1,8 +1,10 @@
 // Réglages du site RideNCT : modifie ces valeurs à un seul endroit.
 // Lancement : le site passe tout seul en mode « ouvert » à cette date (23/11/2026 à 00h00, heure de Paris).
-var RN_LAUNCH = Date.now() >= Date.parse("2026-11-22T23:00:00Z");
+var RN_LAUNCH_AT = "2026-11-22T23:00:00Z";
+var RN_LAUNCH = Date.now() >= Date.parse(RN_LAUNCH_AT);
 window.RIDENCT = {
   launched: RN_LAUNCH,
+  launchAt: RN_LAUNCH_AT,
   email: "contact@ridenct.fr",          // adresse de contact 
   formEndpoint: "",                      // URL d'un service de formulaire (Formspree, Getform...). Vide = ouvre le mail de l'utilisateur.
   androidUrl: RN_LAUNCH ? "installer.html" : "",                        // lien de l'APK ou de la fiche Play Store, quand il existera

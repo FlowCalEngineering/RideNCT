@@ -266,6 +266,25 @@
       f.parentNode.replaceChild(a, f);
     });
   }
+  // Compte à rebours de l'accueil jusqu'à l'ouverture
+  (function () {
+    var box = document.getElementById("cd");
+    if (!box || cfg.launched || !cfg.launchAt) return;
+    var end = Date.parse(cfg.launchAt), t;
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    function tick() {
+      var d = end - Date.now();
+      if (d <= 0) { clearInterval(t); location.reload(); return; }
+      var s = Math.floor(d / 1000);
+      document.getElementById("cd-d").textContent = pad(Math.floor(s / 86400));
+      document.getElementById("cd-h").textContent = pad(Math.floor(s % 86400 / 3600));
+      document.getElementById("cd-m").textContent = pad(Math.floor(s % 3600 / 60));
+      document.getElementById("cd-s").textContent = pad(s % 60);
+      box.hidden = false;
+    }
+    tick(); t = setInterval(tick, 1000);
+  })();
+
   // Liste d'attente (Supabase) + compteur réel
   var SB = (cfg.supabaseUrl || "").replace(/\/+$/, ""), KEY = cfg.supabaseKey || "";
   var rpc = function (name, body) {
