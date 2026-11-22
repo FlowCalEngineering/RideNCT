@@ -31,7 +31,11 @@
     ['ios', 'android'].forEach(function (k) { var e = $('inst-' + k); if (e) e.hidden = k !== t; });
     if (tabs) [].forEach.call(tabs.querySelectorAll('button'), function (b) { b.classList.toggle('on', b.getAttribute('data-t') === t); });
   }
-  if (tabs && !installed && !inapp && !fxios) {
+  // L'appareil est détecté automatiquement : pas d'onglets, seul le mode d'emploi de ton système s'affiche.
+  var compat = $('inst-compat');
+  if (compat) { if (!ios && !android) compat.remove(); else [].forEach.call(compat.querySelectorAll('li[data-os]'), function (li) { var o = li.getAttribute('data-os'); if (o !== 'all' && o !== (ios ? 'ios' : 'android')) li.remove(); }); }
+  if (tabs) tabs.remove();
+  if (false && tabs && !installed && !inapp && !fxios) {
     tabs.hidden = false; pick(ios ? 'ios' : 'android');
     tabs.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) pick(b.getAttribute('data-t')); });
   }
