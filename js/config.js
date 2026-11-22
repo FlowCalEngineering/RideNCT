@@ -4,7 +4,7 @@ window.RIDENCT = {
   formEndpoint: "",                      // URL d'un service de formulaire (Formspree, Getform...). Vide = ouvre le mail de l'utilisateur.
   androidUrl: "",                        // lien de l'APK ou de la fiche Play Store, quand il existera
   iosUrl: "",                            // lien App Store / TestFlight, quand il existera
-  payUrlYear: "",   // lien d'achat RevenueCat de la formule annuelle (24,99 €/an). Vide = bouton annuel masqué.
+  payUrlYear: "https://pay.rev.cat/sandbox/qhvghyobvidmomju/",   // lien d'achat RevenueCat de la formule annuelle (24,99 €/an). Vide = bouton annuel masqué.
   payUrl: "https://pay.rev.cat/sandbox/rmcdybhzhyjszeyo/",   // lien d'achat RevenueCat (web). Vide = abonnement web masqué. Remplacer par le lien de PRODUCTION à la mise en vente.
   payTest: true,                         // true = paiement en mode test (aucun vrai débit). Mettre false avec le lien de production.
   payOpen: false,                        // false = abonnement masqué sur le site (avant la sortie). true = boutons « S'abonner » visibles.
