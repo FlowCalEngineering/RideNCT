@@ -34,7 +34,7 @@
     '<a class="brand" href="./"><img src="assets/img/icon-192.png" alt="" width="36" height="36">RideNCT</a>' +
     '<ul class="nav-links" id="nav-links">' + nav + moreHtml +
     '<li><a class="nav-user" href="compte.html" aria-label="Mon compte"' + (page === "account" ? ' aria-current="page"' : "") + ">" + userIco + "<span>Mon compte</span></a></li>" +
-    '<li><a class="btn btn-primary btn-small cta-pulse" href="contact.html" title="Android : bientôt"><span class="dot-live" aria-hidden="true"></span>Accès prioritaire <span class="arr" aria-hidden="true">→</span></a></li></ul>' +
+    '<li><a class="btn btn-primary btn-small cta-pulse" href="' + (cfg.launched ? "installer.html" : "contact.html") + '"><span class="dot-live" aria-hidden="true"></span>' + (cfg.launched ? "Installer l'app" : "Accès prioritaire") + ' <span class="arr" aria-hidden="true">→</span></a></li></ul>' +
     '<button class="menu-btn" id="menu-btn" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>' +
     "</div></header>";
 
@@ -75,8 +75,8 @@
   if (["contact", "account", "planner", "features"].indexOf(page) < 0) {
     sticky = document.createElement("a");
     sticky.className = "sticky-cta";
-    sticky.href = cfg.androidUrl || "contact.html";
-    sticky.innerHTML = (cfg.androidUrl ? "Télécharger sur Android" : "Accès prioritaire") + ' <span aria-hidden="true">→</span>';
+    sticky.href = cfg.launched ? "installer.html" : (cfg.androidUrl || "contact.html");
+    sticky.innerHTML = (cfg.launched ? "Installer l'app" : cfg.androidUrl ? "Télécharger sur Android" : "Accès prioritaire") + ' <span aria-hidden="true">→</span>';
     document.body.appendChild(sticky);
   }
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -181,7 +181,7 @@
   if (!cfg.androidUrl && !cfg.iosUrl) document.querySelectorAll(".plan-alt").forEach(function (n) { n.hidden = true; });
   // Avant la sortie : pas d'abonnement ni de création de compte
   if (!cfg.payOpen) document.querySelectorAll("[data-pay]").forEach(function (n) {
-    var p = document.createElement("p"); p.className = "plan-soon"; p.textContent = "L'abonnement ouvrira avec la sortie de l'application.";
+    var p = document.createElement("p"); p.className = "plan-soon"; p.textContent = cfg.launched ? "L'abonnement sera bientôt disponible. La version gratuite est disponible dès maintenant." : "L'abonnement ouvrira avec la sortie de l'application.";
     n.parentNode.replaceChild(p, n);
   });
   if (!cfg.signupOpen) document.querySelectorAll("[data-signup]").forEach(function (n) { n.remove(); });
@@ -255,6 +255,17 @@
   var sujet = /[?&]sujet=testeur/.test(location.search);
   if (form && sujet && form.topic) form.topic.value = "Devenir testeur";
 
+  // Après le lancement : la liste d'attente laisse la place à la création de compte
+  if (cfg.launched) {
+    document.querySelectorAll("form.wl[data-wl]").forEach(function (f) {
+      var par = f.parentNode;
+      ["wl-msg", "wl-count", "wl-legal"].forEach(function (c) { var n = par.querySelector("." + c); if (n) n.remove(); });
+      par.querySelectorAll("p").forEach(function (p) { if (/On te prévient|prévenu/i.test(p.textContent)) p.textContent = "La version gratuite est disponible dès maintenant : crée ton compte puis installe l'application depuis ton navigateur."; });
+      var h = par.querySelector("h2"); if (h && /prévenu/i.test(h.textContent)) h.textContent = "Rejoins RideNCT";
+      var a = document.createElement("a"); a.className = "btn btn-primary"; a.href = "compte.html"; a.innerHTML = 'Créer mon compte gratuit <span class="arr" aria-hidden="true">→</span>';
+      f.parentNode.replaceChild(a, f);
+    });
+  }
   // Liste d'attente (Supabase) + compteur réel
   var SB = (cfg.supabaseUrl || "").replace(/\/+$/, ""), KEY = cfg.supabaseKey || "";
   var rpc = function (name, body) {
@@ -342,7 +353,7 @@
 
   // Invitation au questionnaire : à l'arrivée puis à 25 s, 2 fois au maximum par visite ; plus jamais après "Répondre". Ajouter ?sondage=1 à l'adresse pour la forcer.
   (function () {
-    if (!cfg.sondageUrl || ["legal", "privacy", "terms", "account", "planner", "notfound", "survey"].indexOf(page) >= 0) return;
+    if (cfg.launched || !cfg.sondageUrl || ["legal", "privacy", "terms", "account", "planner", "notfound", "survey"].indexOf(page) >= 0) return;
     var K = "rn_survey", st = null;
     try { st = JSON.parse(localStorage.getItem(K) || "null"); } catch (e) { }
     var force = /[?&]sondage=1/.test(location.search);

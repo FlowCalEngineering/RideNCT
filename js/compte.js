@@ -136,7 +136,7 @@
   }
   var MANAGE = { android: 'https://play.google.com/store/account/subscriptions', ios: 'https://apps.apple.com/account/subscriptions' };
   function storeBtns(g) {
-    var a = CFG.androidUrl, i = CFG.iosUrl, soon = ' <small>· bientôt</small>';
+    var a = CFG.androidUrl === 'installer.html' ? '' : CFG.androidUrl, i = CFG.iosUrl === 'installer.html' ? '' : CFG.iosUrl, soon = ' <small>· bientôt</small>';
     if (!a && !i && CFG.payUrl) return '';
     return '<div class="cp-stores"><a class="btn ' + (g ? 'btn-ghost' : 'btn-primary') + '" href="' + (a || 'contact.html') + '"' + (a ? ' target="_blank" rel="noopener"' : '') + '>S\'abonner sur Android' + (a ? '' : soon) + '</a>'
       + '<a class="btn btn-ghost" href="' + (i || 'contact.html') + '"' + (i ? ' target="_blank" rel="noopener"' : '') + '>S\'abonner sur iOS' + (i ? '' : soon) + '</a></div>';
@@ -194,7 +194,7 @@
   function payOn() { return !!CFG.payOpen || (Array.isArray(CFG.payTesters) && !!session && !!session.user && CFG.payTesters.indexOf(session.user.id) >= 0); }
   function payBox() {
     var u = session.user || {};
-    if (!payOn()) return '<p class="cp-manage">L\'abonnement ouvrira avec la sortie de l\'application.</p>';
+    if (!payOn()) return '<p class="cp-manage">L\'abonnement sera bientôt disponible. La version gratuite est disponible dès maintenant.</p>';
     if (!CFG.payUrl || !u.id) return storeBtns();
     var url = CFG.payUrl.replace(/\/?$/, '/') + encodeURIComponent(u.id) + (u.email ? '?email=' + encodeURIComponent(u.email) : '');
     return '<div class="cp-pay' + (/[?&]abo=1/.test(location.search) ? ' hi' : '') + '" id="cp-paybox">'
