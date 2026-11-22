@@ -170,7 +170,7 @@
   function withdrawBox() {
     if (!wd || !wd.eligible || !isWebSub()) return '';
     var until = new Date(wd.until).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-    return '<div class="cp-cancel cp-withdraw"><p class="cp-manage"><b>Droit de rétractation</b> : tu peux te rétracter sans motif jusqu\'au ' + until + ' (14 jours). Gratuit, immédiat ; tu ne paies que la part du service déjà utilisée, le reste est remboursé sous 14 jours. L\'accès à l\'abonnement s\'arrête immédiatement.</p>'
+    return '<div class="cp-cancel cp-withdraw"><p class="cp-manage"><b>Droit de rétractation</b> : tu peux te rétracter sans motif jusqu\'au ' + until + ' (14 jours). Gratuit et immédiat : tu es remboursé intégralement, sous 14 jours au plus. L\'accès à l\'abonnement s\'arrête immédiatement.</p>'
       + '<button type="button" class="btn btn-ghost" data-act="wdsub">Se rétracter</button>'
       + '<span id="cp-wdask" hidden><b>Confirmer la rétractation du contrat ?</b> <button type="button" class="btn btn-danger btn-small" data-act="wdyes">Confirmer ma rétractation</button> <button type="button" class="btn btn-ghost btn-small" data-act="wdno">Non</button></span><p class="form-msg" id="cp-wmsg" role="status"></p></div>';
   }
@@ -182,7 +182,7 @@
     catch (e) { last = e; }
     if (r && r.ok) {
       var a = $('cp-wdask'); if (a) a.hidden = true;
-      var t = 'Rétractation enregistrée le ' + new Date(r.at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + ' (réf. ' + r.ref + '). ' + (r.mail === 'sent' ? 'Un accusé de réception t\'a été envoyé par e-mail.' : 'Garde cet écran comme accusé de réception : l\'e-mail n\'a pas pu être envoyé, nous te l\'enverrons.') + ' Ton accès à l\'abonnement a pris fin ; le solde te sera remboursé sous 14 jours.';
+      var t = 'Rétractation enregistrée le ' + new Date(r.at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + ' (réf. ' + r.ref + '). ' + (r.mail === 'sent' ? 'Un accusé de réception t\'a été envoyé par e-mail.' : 'Garde cet écran comme accusé de réception : l\'e-mail n\'a pas pu être envoyé, nous te l\'enverrons.') + ' Ton accès à l\'abonnement a pris fin ; ton paiement te sera remboursé intégralement, sous quelques jours (14 jours au plus).';
       wmsg(t, 'ok');
       setTimeout(async function () { await loadSub(); render(); msg(t, 'ok'); }, 6000);
     } else {
@@ -198,7 +198,7 @@
     if (!CFG.payUrl || !u.id) return storeBtns();
     var url = CFG.payUrl.replace(/\/?$/, '/') + encodeURIComponent(u.id) + (u.email ? '?email=' + encodeURIComponent(u.email) : '');
     return '<div class="cp-pay' + (/[?&]abo=1/.test(location.search) ? ' hi' : '') + '" id="cp-paybox">'
-      + '<label class="cp-chk"><input type="checkbox" id="cp-paychk"><span>J\'ai lu les <a href="cgv.html" target="_blank" rel="noopener">conditions de vente</a>. Je demande l\'accès immédiat au service et je sais que, si j\'exerce mon droit de rétractation sous 14 jours, je paierai la part du service déjà utilisée. Je peux me rétracter en ligne pendant 14 jours depuis Mon compte (bouton « Se rétracter »).</span></label>'
+      + '<label class="cp-chk"><input type="checkbox" id="cp-paychk"><span>J\'ai lu les <a href="cgv.html" target="_blank" rel="noopener">conditions de vente</a>. Je demande l\'accès immédiat au service et je peux me rétracter sous 14 jours, directement en ligne depuis Mon compte (bouton « Se rétracter ») : je suis alors remboursé intégralement.</span></label>'
       + '<a class="btn btn-primary" id="cp-pay" href="' + esc(url) + '" aria-disabled="true">S\'abonner · 2,99 € / mois</a>'
       + (CFG.payUrlYear ? '<a class="btn btn-ghost" id="cp-pay2" href="' + esc(CFG.payUrlYear.replace(/\/?$/, '/') + encodeURIComponent(u.id) + (u.email ? '?email=' + encodeURIComponent(u.email) : '')) + '" aria-disabled="true">S\'abonner · 24,99 € / an</a>' : '')
       + '<p class="form-msg" id="cp-pmsg" role="status"></p><p class="cp-paynote">Paiement sécurisé par carte, résiliable à tout moment. Nous ne voyons jamais ton numéro de carte.' + (CFG.payTest ? ' <b>Mode test : aucun vrai débit (carte 4242 4242 4242 4242, date et code au choix).</b>' : '') + '</p>'
@@ -211,7 +211,7 @@
     if (s === 'active' && sub.provider === 'manual') return { cls: 'ok', label: 'Abonnement offert', text: end ? 'Accès complet offert jusqu\'au ' + end + '.' : 'Accès complet offert.' };
     if (s === 'active') return { cls: 'ok', label: 'Abonnement actif', text: end ? 'Renouvelé jusqu\'au ' + end + '.' : 'Toutes les fonctionnalités de RideNCT sont débloquées.' };
     if (s === 'past_due') return { cls: 'warn', label: 'Paiement en retard', text: 'Ton dernier paiement n\'a pas abouti. Mets à jour ton moyen de paiement pour garder l\'accès.' };
-    if (s === 'canceled' && wd && wd.requested_at && sub.current_period_end && new Date(sub.current_period_end).getTime() <= Date.now() + 60000) return { cls: 'none', label: 'Rétractation enregistrée', text: 'Enregistrée le ' + new Date(wd.requested_at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + '. Ton accès à l\'abonnement a pris fin ; le solde te sera remboursé sous 14 jours.' };
+    if (s === 'canceled' && wd && wd.requested_at && sub.current_period_end && new Date(sub.current_period_end).getTime() <= Date.now() + 60000) return { cls: 'none', label: 'Rétractation enregistrée', text: 'Enregistrée le ' + new Date(wd.requested_at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + '. Ton accès à l\'abonnement a pris fin ; ton paiement te sera remboursé intégralement sous 14 jours au plus.' };
     if (s === 'canceled') return { cls: 'none', label: 'Abonnement résilié', text: end ? 'Accès complet jusqu\'au ' + end + '.' : 'Ton abonnement est terminé.' };
     return { cls: 'none', label: 'Version gratuite', text: 'Ton compte est actif : tu utilises la version gratuite de RideNCT. ' + (payOn() ? 'Passe à la version complète depuis cette page ou depuis l\'application.' : 'La version complète arrivera avec la sortie de l\'application.') + '' };
   }
