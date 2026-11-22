@@ -167,9 +167,11 @@
       cmsg(last && last.status === 404 ? 'Aucun abonnement pris sur le site n\'a été trouvé. S\'il vient d\'un store, résilie-le depuis ton compte Google Play ou Apple.' : 'Résiliation impossible pour le moment. Réessaie dans un instant ou écris-nous via la page Contact : nous la ferons pour toi.', 'err');
     }
   }
+  // Paiement ouvert pour tous (payOpen) ou seulement pour des comptes de test (payTesters : identifiants de compte)
+  function payOn() { return !!CFG.payOpen || (Array.isArray(CFG.payTesters) && !!session && !!session.user && CFG.payTesters.indexOf(session.user.id) >= 0); }
   function payBox() {
     var u = session.user || {};
-    if (!CFG.payOpen) return '<p class="cp-manage">L\'abonnement ouvrira avec la sortie de l\'application.</p>';
+    if (!payOn()) return '<p class="cp-manage">L\'abonnement ouvrira avec la sortie de l\'application.</p>';
     if (!CFG.payUrl || !u.id) return storeBtns();
     var url = CFG.payUrl.replace(/\/?$/, '/') + encodeURIComponent(u.id) + (u.email ? '?email=' + encodeURIComponent(u.email) : '');
     return '<div class="cp-pay' + (/[?&]abo=1/.test(location.search) ? ' hi' : '') + '" id="cp-paybox">'
@@ -187,7 +189,7 @@
     if (s === 'active') return { cls: 'ok', label: 'Abonnement actif', text: end ? 'Renouvelé jusqu\'au ' + end + '.' : 'Toutes les fonctionnalités de RideNCT sont débloquées.' };
     if (s === 'past_due') return { cls: 'warn', label: 'Paiement en retard', text: 'Ton dernier paiement n\'a pas abouti. Mets à jour ton moyen de paiement pour garder l\'accès.' };
     if (s === 'canceled') return { cls: 'none', label: 'Abonnement résilié', text: end ? 'Accès complet jusqu\'au ' + end + '.' : 'Ton abonnement est terminé.' };
-    return { cls: 'none', label: 'Version gratuite', text: 'Ton compte est actif : tu utilises la version gratuite de RideNCT. ' + (CFG.payOpen ? 'Passe à la version complète depuis cette page ou depuis l\'application.' : 'La version complète arrivera avec la sortie de l\'application.') + '' };
+    return { cls: 'none', label: 'Version gratuite', text: 'Ton compte est actif : tu utilises la version gratuite de RideNCT. ' + (payOn() ? 'Passe à la version complète depuis cette page ou depuis l\'application.' : 'La version complète arrivera avec la sortie de l\'application.') + '' };
   }
   function ic(d) { return '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
   var PERKS = [['Radar amis', 'Vois tes amis sur la carte'], ['Carte en mode expert', 'Routes sinueuses calculées dans l\'app'], ['Intercom en groupe', 'Plus de 2 motards en même temps'], ['Partage d\'itinéraire', 'Envoie ton tracé au groupe'], ['Partage de musique', 'Avec ton groupe intercom'], ['Mode rencontre', 'Croise d\'autres motards'], ['Garage complet', 'Plusieurs motos au lieu d\'une']];
