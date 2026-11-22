@@ -178,7 +178,7 @@
     });
   })();
 
-  if (!cfg.androidUrl && !cfg.iosUrl) document.querySelectorAll(".plan-alt").forEach(function (n) { n.hidden = true; });
+  if (cfg.launched || (!cfg.androidUrl && !cfg.iosUrl)) document.querySelectorAll(".plan-alt").forEach(function (n) { n.hidden = true; });
   // Avant la sortie : pas d'abonnement ni de création de compte
   if (!cfg.payOpen) document.querySelectorAll("[data-pay]").forEach(function (n) {
     var p = document.createElement("p"); p.className = "plan-soon"; p.textContent = cfg.launched ? "L'abonnement sera bientôt disponible. La version gratuite est disponible dès maintenant." : "L'abonnement ouvrira avec la sortie de l'application.";
