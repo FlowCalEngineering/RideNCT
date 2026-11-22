@@ -246,7 +246,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Tu disposes de 14 jours à compter de la souscription pour te rétracter, sans donner de motif, en l'indiquant clairement via la page [Contact](https://ridenct.fr/contact.html). Comme l'accès au service est immédiat à ta demande, expressément formulée en cochant la case prévue avant le paiement, tu paies, en cas de rétractation, un montant proportionnel à la part du service déjà fournie jusqu'à ta demande ; le reste est remboursé, sur le moyen de paiement utilisé, au plus tard 14 jours après ta demande."
+    "x": "Tu disposes de 14 jours à compter de la souscription pour te rétracter, sans donner de motif, directement en ligne depuis la page [Mon compte](https://ridenct.fr/compte.html) (bouton « Se rétracter », puis « Confirmer ma rétractation », gratuit et disponible pendant tout le délai), ou en l'indiquant clairement via la page [Contact](https://ridenct.fr/contact.html). Un accusé de réception daté t'est affiché à l'écran et envoyé par e-mail ; l'accès à l'abonnement prend fin immédiatement. Comme l'accès au service est immédiat à ta demande, expressément formulée en cochant la case prévue avant le paiement, tu paies, en cas de rétractation, un montant proportionnel à la part du service déjà fournie jusqu'à ta demande ; le reste est remboursé, sur le moyen de paiement utilisé, au plus tard 14 jours après ta demande."
    },
    {
     "t": "p",
