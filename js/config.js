@@ -7,8 +7,9 @@ window.RIDENCT = {
   payUrlYear: "",   // lien d'achat RevenueCat de la formule annuelle (24,99 €/an). Vide = bouton annuel masqué.
   payUrl: "https://pay.rev.cat/sandbox/rmcdybhzhyjszeyo/",   // lien d'achat RevenueCat (web). Vide = abonnement web masqué. Remplacer par le lien de PRODUCTION à la mise en vente.
   payTest: true,                         // true = paiement en mode test (aucun vrai débit). Mettre false avec le lien de production.
+  launched: true,                        // true = appli publique : page d'installation ouverte à tous, boutons « Installer l'appli »
   payOpen: false,                        // false = abonnement masqué sur le site (avant la sortie). true = boutons « S'abonner » visibles.
-  signupOpen: false,                      // false = création de compte fermée sur le site (phase sondage). true = ouverte.
+  signupOpen: true,                       // false = création de compte fermée sur le site (phase sondage). true = ouverte.
   sondageUrl: "sondage.html",
   supabaseUrl: "https://jpawfdgfggtlqxpbrpnd.supabase.co",
   supabaseKey: "sb_publishable_9glJJ7YBqhQUhT42hQynDg_H_Rng3ac",   // clé publique : sans danger côté site

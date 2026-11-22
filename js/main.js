@@ -34,7 +34,7 @@
     '<a class="brand" href="./"><img src="assets/img/icon-192.png" alt="" width="36" height="36">RideNCT</a>' +
     '<ul class="nav-links" id="nav-links">' + nav + moreHtml +
     '<li><a class="nav-user" href="compte.html" aria-label="Mon compte"' + (page === "account" ? ' aria-current="page"' : "") + ">" + userIco + "<span>Mon compte</span></a></li>" +
-    '<li><a class="btn btn-primary btn-small cta-pulse" href="contact.html" title="Android : bientôt"><span class="dot-live" aria-hidden="true"></span>Accès prioritaire <span class="arr" aria-hidden="true">→</span></a></li></ul>' +
+    '<li><a class="btn btn-primary btn-small cta-pulse" href="installer.html" title="Installer RideNCT sur ton téléphone"><span class="dot-live" aria-hidden="true"></span>Installer l\'appli <span class="arr" aria-hidden="true">→</span></a></li></ul>' +
     '<button class="menu-btn" id="menu-btn" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>' +
     "</div></header>";
 
@@ -75,8 +75,8 @@
   if (["contact", "account", "planner", "features"].indexOf(page) < 0) {
     sticky = document.createElement("a");
     sticky.className = "sticky-cta";
-    sticky.href = cfg.androidUrl || "contact.html";
-    sticky.innerHTML = (cfg.androidUrl ? "Télécharger sur Android" : "Accès prioritaire") + ' <span aria-hidden="true">→</span>';
+    sticky.href = "installer.html";
+    sticky.innerHTML = "Installer l'appli" + ' <span aria-hidden="true">→</span>';
     document.body.appendChild(sticky);
   }
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -139,7 +139,12 @@
   }
 
   // Boutons de téléchargement : actifs seulement si un lien est renseigné
+  var storeSeen = [];
   document.querySelectorAll("[data-store]").forEach(function (a) {
+    if (cfg.launched) {
+      if (storeSeen.indexOf(a.parentNode) >= 0) { a.remove(); return; }
+      storeSeen.push(a.parentNode); a.href = "installer.html"; a.textContent = "Installer l'appli"; a.removeAttribute("data-store"); return;
+    }
     var url = a.getAttribute("data-store") === "ios" ? cfg.iosUrl : cfg.androidUrl;
     if (url) {
       a.href = url;
@@ -233,6 +238,7 @@
     return fetch(SB + "/rest/v1/rpc/" + name, { method: "POST", headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
   };
   document.querySelectorAll("[data-wl]").forEach(function (f) {
+    if (cfg.launched) { var wb = f.closest(".wl-box,.cta-band") || f.parentNode; var lg = wb.querySelector(".wl-legal"); if (lg) lg.remove(); f.remove(); return; }
     if (!f.previousElementSibling || !f.previousElementSibling.classList.contains("live")) {
       var lv = document.createElement("span"); lv.className = "live";
       lv.innerHTML = "<i></i>" + (cfg.androidUrl ? "Android · disponible" : "Android · bientôt");

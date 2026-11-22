@@ -10,7 +10,6 @@
   var logged = false;
   try { var ss = JSON.parse(localStorage.getItem('ridenct_session_v1') || 'null'); logged = !!(ss && ss.access_token && ss.user); } catch (e) { }
   var all = document.getElementById('inst-all'), lock = document.getElementById('inst-lock');
-  if (!logged) { if (all) all.remove(); return; }
   if (lock) lock.remove(); if (all) all.hidden = false;
   function $(id) { return document.getElementById(id); }
   function show(id) { var e = $(id); if (e) e.hidden = false; }
