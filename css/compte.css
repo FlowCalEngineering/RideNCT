@@ -152,9 +152,10 @@ body.cp-in .cp-layout::before { right: -200px; top: 220px; margin-top: 0; }
 .cp-pay label.cp-chk { display: flex; flex-direction: row; gap: 10px; align-items: flex-start; }
 .cp-pay label.cp-chk span { flex: 1; }
 .cp-pay .cp-stores { margin-top: 0; }
+.cp-withdraw { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line, rgba(255,255,255,.12)); }
 .cp-cancel { display: grid; gap: 12px; justify-items: start; margin-top: 4px; }
-#cp-cancelask { display: inline-flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-#cp-cancelask[hidden] { display: none; }
+#cp-cancelask, #cp-wdask { display: inline-flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#cp-cancelask[hidden], #cp-wdask[hidden] { display: none; }
 .cp-cancel [hidden] { display: none !important; }
 .cp-why { color: var(--muted); font-size: .92rem; line-height: 1.5; margin: 0 0 14px; }
 .cp-why b { color: var(--text); }

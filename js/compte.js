@@ -65,7 +65,7 @@
   function errText(e) { return ERR[e.code] || (e.status === 0 ? ERR.network : e.status === 429 ? ERR.over_request_rate_limit : 'Une erreur est survenue. Réessaie dans un instant.'); }
 
   // ---------- interface ----------
-  var view = 'login', recovery = false, busy = false, sub = null, lastTab = null, uname = null, ban = null, link = null, adm = false;
+  var view = 'login', recovery = false, busy = false, sub = null, wd = null, lastTab = null, uname = null, ban = null, link = null, adm = false;
   var root;
   function msg(text, kind) { var m = $('cp-msg'); if (!m) return; m.textContent = text || ''; m.className = 'form-msg' + (kind ? ' ' + kind : ''); }
   var UN = /^[A-Za-z0-9_.-]{3,20}$/;
@@ -167,6 +167,29 @@
       cmsg(last && last.status === 404 ? 'Aucun abonnement pris sur le site n\'a été trouvé. S\'il vient d\'un store, résilie-le depuis ton compte Google Play ou Apple.' : 'Résiliation impossible pour le moment. Réessaie dans un instant ou écris-nous via la page Contact : nous la ferons pour toi.', 'err');
     }
   }
+  function withdrawBox() {
+    if (!wd || !wd.eligible || !isWebSub()) return '';
+    var until = new Date(wd.until).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    return '<div class="cp-cancel cp-withdraw"><p class="cp-manage"><b>Droit de rétractation</b> : tu peux te rétracter sans motif jusqu\'au ' + until + ' (14 jours). Gratuit, immédiat ; tu ne paies que la part du service déjà utilisée, le reste est remboursé sous 14 jours. L\'accès à l\'abonnement s\'arrête immédiatement.</p>'
+      + '<button type="button" class="btn btn-ghost" data-act="wdsub">Se rétracter</button>'
+      + '<span id="cp-wdask" hidden><b>Confirmer la rétractation du contrat ?</b> <button type="button" class="btn btn-danger btn-small" data-act="wdyes">Confirmer ma rétractation</button> <button type="button" class="btn btn-ghost btn-small" data-act="wdno">Non</button></span><p class="form-msg" id="cp-wmsg" role="status"></p></div>';
+  }
+  function wmsg(t, k) { var m = $('cp-wmsg'); if (m) { m.textContent = t || ''; m.className = 'form-msg' + (k ? ' ' + k : ''); } }
+  async function doWithdraw() {
+    wmsg('Enregistrement de ta rétractation…', '');
+    var r = null, last = null;
+    try { r = await authed('/functions/v1/manage-subscription', { method: 'POST', body: { action: 'withdraw' } }); }
+    catch (e) { last = e; }
+    if (r && r.ok) {
+      var a = $('cp-wdask'); if (a) a.hidden = true;
+      var t = 'Rétractation enregistrée le ' + new Date(r.at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + ' (réf. ' + r.ref + '). ' + (r.mail === 'sent' ? 'Un accusé de réception t\'a été envoyé par e-mail.' : 'Garde cet écran comme accusé de réception : l\'e-mail n\'a pas pu être envoyé, nous te l\'enverrons.') + ' Ton accès à l\'abonnement a pris fin ; le solde te sera remboursé sous 14 jours.';
+      wmsg(t, 'ok');
+      setTimeout(async function () { await loadSub(); render(); msg(t, 'ok'); }, 6000);
+    } else {
+      var st = last && last.status;
+      wmsg(st === 403 ? 'Le délai de 14 jours est écoulé.' : st === 409 ? 'Ta rétractation est déjà enregistrée.' : 'Rétractation impossible pour le moment. Réessaie dans un instant ou écris-nous via la page Contact : ta demande sera prise en compte à la date de ton message.', 'err');
+    }
+  }
   // Paiement ouvert pour tous (payOpen) ou seulement pour des comptes de test (payTesters : identifiants de compte)
   function payOn() { return !!CFG.payOpen || (Array.isArray(CFG.payTesters) && !!session && !!session.user && CFG.payTesters.indexOf(session.user.id) >= 0); }
   function payBox() {
@@ -175,7 +198,7 @@
     if (!CFG.payUrl || !u.id) return storeBtns();
     var url = CFG.payUrl.replace(/\/?$/, '/') + encodeURIComponent(u.id) + (u.email ? '?email=' + encodeURIComponent(u.email) : '');
     return '<div class="cp-pay' + (/[?&]abo=1/.test(location.search) ? ' hi' : '') + '" id="cp-paybox">'
-      + '<label class="cp-chk"><input type="checkbox" id="cp-paychk"><span>J\'ai lu les <a href="cgv.html" target="_blank" rel="noopener">conditions de vente</a>. Je demande l\'accès immédiat au service et je sais que, si j\'exerce mon droit de rétractation sous 14 jours, je paierai la part du service déjà utilisée.</span></label>'
+      + '<label class="cp-chk"><input type="checkbox" id="cp-paychk"><span>J\'ai lu les <a href="cgv.html" target="_blank" rel="noopener">conditions de vente</a>. Je demande l\'accès immédiat au service et je sais que, si j\'exerce mon droit de rétractation sous 14 jours, je paierai la part du service déjà utilisée. Je peux me rétracter en ligne pendant 14 jours depuis Mon compte (bouton « Se rétracter »).</span></label>'
       + '<a class="btn btn-primary" id="cp-pay" href="' + esc(url) + '" aria-disabled="true">S\'abonner · 2,99 € / mois</a>'
       + (CFG.payUrlYear ? '<a class="btn btn-ghost" id="cp-pay2" href="' + esc(CFG.payUrlYear.replace(/\/?$/, '/') + encodeURIComponent(u.id) + (u.email ? '?email=' + encodeURIComponent(u.email) : '')) + '" aria-disabled="true">S\'abonner · 24,99 € / an</a>' : '')
       + '<p class="form-msg" id="cp-pmsg" role="status"></p><p class="cp-paynote">Paiement sécurisé par carte, résiliable à tout moment. Nous ne voyons jamais ton numéro de carte.' + (CFG.payTest ? ' <b>Mode test : aucun vrai débit (carte 4242 4242 4242 4242, date et code au choix).</b>' : '') + '</p>'
@@ -188,6 +211,7 @@
     if (s === 'active' && sub.provider === 'manual') return { cls: 'ok', label: 'Abonnement offert', text: end ? 'Accès complet offert jusqu\'au ' + end + '.' : 'Accès complet offert.' };
     if (s === 'active') return { cls: 'ok', label: 'Abonnement actif', text: end ? 'Renouvelé jusqu\'au ' + end + '.' : 'Toutes les fonctionnalités de RideNCT sont débloquées.' };
     if (s === 'past_due') return { cls: 'warn', label: 'Paiement en retard', text: 'Ton dernier paiement n\'a pas abouti. Mets à jour ton moyen de paiement pour garder l\'accès.' };
+    if (s === 'canceled' && wd && wd.requested_at && sub.current_period_end && new Date(sub.current_period_end).getTime() <= Date.now() + 60000) return { cls: 'none', label: 'Rétractation enregistrée', text: 'Enregistrée le ' + new Date(wd.requested_at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) + '. Ton accès à l\'abonnement a pris fin ; le solde te sera remboursé sous 14 jours.' };
     if (s === 'canceled') return { cls: 'none', label: 'Abonnement résilié', text: end ? 'Accès complet jusqu\'au ' + end + '.' : 'Ton abonnement est terminé.' };
     return { cls: 'none', label: 'Version gratuite', text: 'Ton compte est actif : tu utilises la version gratuite de RideNCT. ' + (payOn() ? 'Passe à la version complète depuis cette page ou depuis l\'application.' : 'La version complète arrivera avec la sortie de l\'application.') + '' };
   }
@@ -212,7 +236,7 @@
       + '<div class="cp-main">'
       + (ban && ban.banned ? '<section class="cp-card cp-ban" role="alert"><h3>Compte sous restriction</h3><p>' + (ban.reason ? 'Motif : ' + esc(ban.reason) + '. ' : '') + 'Si tu penses à une erreur, <a href="contact.html">écris-nous</a>.</p></section>' : '')
       + '<section class="cp-card"><h3>Mon abonnement</h3><div class="cp-sub-box ' + si.cls + '"><b>' + si.label + '</b><p>' + si.text + '</p></div>'
-      + (act ? (sub.provider === 'manual' ? '' : (isWebSub() ? cancelBox() : manageBox())) : (sub && sub.status === 'past_due' ? manageBox() : payBox() + '<a class="cp-link" href="tarifs.html">Voir ce que débloque la version complète</a>')) + '</section>'
+      + (act ? (sub.provider === 'manual' ? '' : (isWebSub() ? cancelBox() : manageBox())) : (sub && sub.status === 'past_due' ? manageBox() : payBox() + '<a class="cp-link" href="tarifs.html">Voir ce que débloque la version complète</a>')) + withdrawBox() + '</section>'
       + '<section class="cp-card"><h3>' + (act ? 'Ce que ton abonnement débloque' : 'Avec la version complète') + '</h3><ul class="cp-perks">' + perks + '</ul></section>'
       + (adm ? '<section class="cp-card"><h3>Administration</h3><div class="cp-row"><div><b>Application de gestion RideNCT</b><small>Réservée aux administrateurs. Installable sur téléphone et ordinateur.</small></div><a class="btn btn-primary" href="gestion-20cf989f218e/index.html#install">Télécharger l\'app admin</a></div></section>' : '')
       + '<div class="cp-tiles">' + tiles + '</div>'
@@ -246,6 +270,7 @@
     await loadName();
     try { var r = await authed('/rest/v1/subscriptions?select=status,plan,current_period_end,provider&limit=1'); sub = r && r[0] ? r[0] : null; }
     catch (e) { sub = 'error'; }
+    try { wd = await authed('/rest/v1/rpc/my_withdrawal', { method: 'POST', body: {} }); } catch (e) { wd = null; }
     try { ban = await authed('/rest/v1/rpc/my_status', { method: 'POST', body: {} }); } catch (e) { ban = null; }
     try { link = await authed('/rest/v1/rpc/my_link', { method: 'POST', body: {} }); } catch (e) { link = null; }
     try { adm = (await authed('/rest/v1/rpc/is_admin', { method: 'POST', body: {} })) === true; } catch (e) { adm = false; }
@@ -349,6 +374,9 @@
       else if (a.dataset.act === 'cancelsub') { a.hidden = true; $('cp-cancelask').hidden = false; }
       else if (a.dataset.act === 'cancelno') { $('cp-cancelask').hidden = true; var cb = document.querySelector('[data-act="cancelsub"]'); if (cb) cb.hidden = false; }
       else if (a.dataset.act === 'cancelyes') withBusy(a, doCancel);
+      else if (a.dataset.act === 'wdsub') { a.hidden = true; $('cp-wdask').hidden = false; }
+      else if (a.dataset.act === 'wdno') { $('cp-wdask').hidden = true; var wb = document.querySelector('[data-act="wdsub"]'); if (wb) wb.hidden = false; }
+      else if (a.dataset.act === 'wdyes') withBusy(a, doWithdraw);
       else if (a.dataset.act === 'export') doExport();
       else if (a.dataset.act === 'showpass') { $('cp-pass').hidden = !$('cp-pass').hidden; }
     });
