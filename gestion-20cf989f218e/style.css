@@ -386,3 +386,9 @@ textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border
   td:first-child:not(.chk),td.chk+td{font-size:16px;font-weight:600}
 }
 @media (max-width:860px){.drawer-wrap{z-index:85}}
+@media (max-width:860px){
+  html,body{overscroll-behavior-y:none;height:auto;min-height:100%}
+  body{padding-bottom:0}
+  .app{min-height:100vh;min-height:100dvh}
+  .main{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+}
