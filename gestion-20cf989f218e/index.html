@@ -192,6 +192,18 @@
       <div class="panel flush"><div class="table-wrap"><table id="waitlist-table"></table></div></div>
     </div>
 
+    <div class="pane" id="pane-messages-withdrawals" hidden>
+      <p class="muted small">Droit de rétractation de 14 jours : le remboursement intégral doit être fait dans ce délai. Le remboursement automatique est tenté d'abord ; sinon la demande reste « à rembourser ».</p>
+      <div class="toolbar fchips" id="wd-filters"><button type="button" class="fchip active" data-f="todo">À rembourser <b id="wd-cnt-todo">0</b></button><button type="button" class="fchip" data-f="done">Remboursées <b id="wd-cnt-done">0</b></button><button type="button" class="fchip" data-f="all">Toutes</button></div>
+      <div class="panel flush"><div class="table-wrap"><table id="wd-table"></table></div></div>
+    </div>
+
+    <div class="pane" id="pane-messages-maillog" hidden>
+      <p class="muted small">E-mails automatiques envoyés par RideNCT (confirmation, rétractation, rappels de renouvellement…).</p>
+      <div class="toolbar"><label class="check"><input id="ml-problems" type="checkbox">Problèmes seulement</label><button class="btn" id="ml-refresh" type="button">Actualiser</button></div>
+      <div class="panel flush"><div class="table-wrap"><table id="ml-table"></table></div></div>
+    </div>
+
     <!-- BANNISSEMENTS -->
     <div class="pane" id="pane-bans-devices" hidden>
       <p class="muted small">Un appareil banni ne peut plus créer de signalement ni voter : le serveur refuse ses envois. L'identifiant est celui affiché dans le popup d'un signalement. Si l'utilisateur réinstalle l'app ou efface ses données, son appareil change d'identifiant.</p>
@@ -307,6 +319,7 @@
           <label>Limite de la base (Mo)<input id="set-limit" type="number" min="1" max="100000" value="500"></label>
         </div>
         <p id="cron-state" class="muted small"></p>
+        <p id="cron-all" class="muted small"></p>
         <button class="btn primary" type="submit" id="settings-save">Enregistrer</button>
       </form>
     </div>
