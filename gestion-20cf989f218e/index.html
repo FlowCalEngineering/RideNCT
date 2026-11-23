@@ -75,9 +75,10 @@
   <main class="main">
     <div class="topbar">
       <button id="menu-toggle" class="btn menu-toggle" type="button" aria-label="Menu"><svg class="ic"><use href="#ic-menu"/></svg></button>
+      <button id="back-btn" class="btn back-btn" type="button" aria-label="Retour"><svg class="ic" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
       <header class="page-head">
-        <div><h1 id="page-title"></h1><p id="page-desc" class="muted"></p></div>
-        <div class="head-right"><span id="updated" class="muted small"></span><button class="btn primary" id="install-app" type="button" hidden>Installer l'app</button><button class="btn" id="refresh" type="button">Actualiser</button></div>
+        <div><h1 id="page-title"></h1><p id="page-desc" class="muted"></p><div class="bar-t"><b id="bar-title"></b><small id="bar-sub"></small></div></div>
+        <div class="head-right"><span id="updated" class="muted small"></span><button class="btn primary" id="install-app" type="button" hidden>Installer l'app</button><button class="btn" id="refresh" type="button" aria-label="Actualiser"><svg class="ic rf" viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.3-5.7M20 4v5h-5"/></svg><span class="lbl">Actualiser</span></button></div>
       </header>
     </div>
     <nav id="tabs" class="tabs" hidden aria-label="Sections"></nav>

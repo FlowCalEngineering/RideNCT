@@ -310,3 +310,79 @@ textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border
   .side{z-index:70}
   .banner{margin-bottom:8px}
 }
+
+/* ---------- mobile v2 : barre du haut, cartes, gros boutons, volets du bas, zone sûre iPhone ---------- */
+.back-btn,.bar-t{display:none}
+@media (max-width:860px){
+  /* zone sûre : encoche / barre d'état de l'iPhone */
+  .topbar{position:sticky;top:0;z-index:50;background:var(--bg);margin:0 -14px 6px;padding:calc(env(safe-area-inset-top) + 8px) 14px 8px;border-bottom:1px solid var(--line)}
+  .side{padding-top:calc(env(safe-area-inset-top) + 14px)}
+  .toast,.banner{scroll-margin-top:calc(env(safe-area-inset-top) + 70px)}
+  /* barre du haut : retour, titre, actualiser (icône) */
+  .topbar{display:flex;align-items:center;gap:10px}
+  .page-head{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+  .page-head>div:first-child{flex:1;min-width:0}
+  #page-title,#page-desc{display:none}
+  .bar-t{display:block}
+  .bar-t b{display:block;font-size:19px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar-t small{display:block;color:var(--muted);font-size:12px;margin-top:1px}
+  .back-btn{display:grid;place-items:center;width:46px;height:46px;padding:0;border-radius:14px;flex:none}
+  body.on-home .back-btn{display:none}
+  .back-btn .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  #refresh{width:46px;height:46px;padding:0;border-radius:14px;display:grid;place-items:center;flex:none}
+  #refresh .lbl{display:none}
+  #refresh .rf{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  #install-app{height:46px;border-radius:14px}
+  .tabs{display:none!important}
+  /* boutons et champs adaptés au doigt */
+  .btn,button.btn,a.btn{min-height:46px;padding:10px 16px;border-radius:13px;font-size:15px}
+  .btn.sm{min-height:46px;padding:10px 14px;font-size:14px}
+  input:not([type=checkbox]):not([type=radio]),select,textarea{min-height:48px;border-radius:13px;font-size:16px;padding:10px 14px}
+  input[type=checkbox],input[type=radio]{width:24px;height:24px}
+  .toolbar{gap:10px}.toolbar input[type=search],.toolbar input{min-width:0;flex:1 1 100%}
+  .toolbar .btn{flex:1 1 auto}
+  .check{min-height:44px;display:flex;align-items:center;gap:10px}
+  .filters{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px 12px;padding:0 14px 2px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}
+  .fchip{height:42px;padding:0 16px;flex:none;font-size:14px}
+  .bulk{border-radius:14px;padding:10px 12px}
+  .bulk .btn{flex:1}
+  /* messages : actions en grille de gros boutons */
+  .msg{grid-template-columns:30px minmax(0,1fr);background:var(--panel);border:1px solid var(--line);border-radius:18px;margin-bottom:10px;padding:14px}
+  .msg:first-child{border-top:1px solid var(--line)}
+  .msg>div .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .msg>div .row .btn{width:100%;text-align:center;display:flex;align-items:center;justify-content:center}
+  .msg>div .row .btn:last-child:nth-child(odd){grid-column:span 2}
+  /* tableaux -> cartes */
+  .table-wrap{overflow:visible}
+  table,tbody{display:block}
+  thead{display:none}
+  tbody tr{display:block;position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:10px}
+  tbody tr:active{background:var(--panel2)}
+  td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;padding:5px 0;white-space:normal;text-align:right;min-width:0;font-size:14px}
+  td.wrap{min-width:0}
+  td::before{content:attr(data-label);color:var(--muted);font-size:12px;text-align:left;flex:none}
+  td[data-label=""]::before{display:none}
+  td.chk{position:absolute;top:10px;right:10px;width:auto;padding:0;justify-content:flex-end}
+  td.chk::before{display:none}
+  td.chk input{width:26px;height:26px}
+  td.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:8px}
+  td.actions::before{display:none}
+  td.actions .btn{margin:0;width:100%}
+  /* fiche utilisateur et confirmations : volets du bas */
+  .drawer{top:auto;left:0;right:0;bottom:0;width:100%;max-height:90vh;border:0;border-top:1px solid var(--line);border-radius:26px 26px 0 0;padding:12px 16px calc(20px + env(safe-area-inset-bottom))}
+  .drawer::before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:#3a3f47;margin:0 auto 12px}
+  .drawer .acts{display:grid;grid-template-columns:1fr;gap:9px}
+  .drawer .acts .btn{width:100%;min-height:54px;border-radius:16px;font-size:15px;justify-content:flex-start;text-align:left;padding:0 18px}
+  .modal{align-items:flex-end;padding:0}
+  .modal-card{width:100%;border-radius:26px 26px 0 0;border:0;border-top:1px solid var(--line);padding:16px 16px calc(18px + env(safe-area-inset-bottom));max-height:92vh;overflow-y:auto}
+  .modal-card::before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:#3a3f47;margin:0 auto 14px}
+  .modal-card .row.end{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .modal-card .row.end .btn{min-height:54px;border-radius:16px;font-size:16px}
+  .pop{max-width:calc(100vw - 24px)}
+}
+@media (max-width:860px){
+  input[type=checkbox],input[type=radio]{min-height:0}
+  tbody tr:has(td.chk){padding-right:52px}
+  td:first-child:not(.chk),td.chk+td{font-size:16px;font-weight:600}
+}
+@media (max-width:860px){.drawer-wrap{z-index:85}}
