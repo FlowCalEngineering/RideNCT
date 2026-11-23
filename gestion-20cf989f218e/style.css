@@ -392,3 +392,8 @@ textarea{width:100%;background:var(--panel2);border:1px solid var(--line);border
   .app{min-height:100vh;min-height:100dvh}
   .main{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
 }
+
+/* rétractations / e-mails */
+#wd-table td .small,#ml-table td .small{display:block;margin-top:2px}
+#wd-filters{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:860px){#wd-filters .fchip{padding:10px 14px;font-size:14px}#wd-table td.actions{display:block}#wd-table td.actions .btn{display:block;width:100%;min-height:46px}}

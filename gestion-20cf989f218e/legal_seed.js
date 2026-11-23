@@ -2,8 +2,8 @@
 window.LEGAL_SEED = {
  "cgu": {
   "title": "Conditions d'utilisation",
-  "date": "18 novembre 2026",
-  "version": "2026-11-18.2",
+  "date": "21 novembre 2026",
+  "version": "2026-11-21",
   "blocks": [
    {
     "t": "h2",
@@ -99,7 +99,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "ul",
-    "x": "**Radar global et radar amis :** l'Utilisateur choisit d'être visible par les motards situés à environ 300 mètres, ou seulement par ses amis. Il peut désactiver sa visibilité à tout moment dans les réglages.\n**Croisement de profils :** lors d'un croisement, des éléments de profil (bio, liens vers des réseaux sociaux, garage) peuvent être partagés selon les paramètres de confidentialité choisis. L'Utilisateur est seul responsable des informations et des liens qu'il décide d'afficher."
+    "x": "**Radar global et radar amis :** l'Utilisateur choisit d'être visible par les motards situés à environ 300 mètres, ou seulement par ses amis. Il peut désactiver sa visibilité à tout moment dans les réglages.\n**Amis par code :** chaque Utilisateur dispose d'un code personnel à 8 chiffres qu'il peut communiquer à qui il veut. Saisir le code d'un autre Utilisateur envoie une demande d'ami, que celui-ci accepte ou refuse. L'Utilisateur peut retirer un ami ou bloquer un autre Utilisateur à tout moment. Un Utilisateur bloqué ne peut plus le retrouver, lui envoyer de demande ni voir son profil. Après le retrait d'un ami, une nouvelle demande entre les deux n'est possible qu'au bout de 7 jours. Pour protéger la communauté, les saisies de codes inexistants sont comptées et, en cas d'essais répétés, la fonction est bloquée temporairement. Il est interdit de deviner des codes ou d'utiliser cette fonction pour harceler ou contacter quelqu'un qui ne le souhaite pas.\n**Profil partagé avec les amis :** l'Utilisateur peut partager son profil (bio, liens, garage, selon les éléments qu'il choisit d'afficher) avec ses amis, y compris lorsqu'ils ne se croisent pas. Il est transmis chiffré ; seuls les amis acceptés peuvent le lire, et retirer ou bloquer un ami lui en coupe l'accès. L'Utilisateur reste seul responsable des informations et des liens qu'il décide d'afficher.\n**Croisement de profils :** lors d'un croisement, des éléments de profil (bio, liens vers des réseaux sociaux, garage) peuvent être partagés selon les paramètres de confidentialité choisis. L'Utilisateur est seul responsable des informations et des liens qu'il décide d'afficher."
    },
    {
     "t": "h2",
@@ -246,7 +246,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "p",
-    "x": "Tu disposes de 14 jours à compter de la souscription pour te rétracter, sans donner de motif, directement en ligne depuis la page [Mon compte](https://ridenct.fr/compte.html) (bouton « Se rétracter », puis « Confirmer ma rétractation », gratuit et disponible pendant tout le délai), ou en l'indiquant clairement via la page [Contact](https://ridenct.fr/contact.html). Un accusé de réception daté t'est affiché à l'écran et envoyé par e-mail ; l'accès à l'abonnement prend fin immédiatement. L'accès au service est immédiat à ta demande, expressément formulée en cochant la case prévue avant le paiement. Si tu te rétractes dans ce délai, tu es remboursé de l'intégralité du prix payé, sur le moyen de paiement utilisé, au plus tard 14 jours après ta demande."
+    "x": "Tu disposes de 14 jours à compter de la souscription pour te rétracter, sans donner de motif, directement en ligne depuis la page [Mon compte](https://ridenct.fr/compte.html) du site (bouton « Se rétracter », puis « Confirmer ma rétractation », gratuit et disponible pendant tout le délai), ou en l'indiquant clairement via la page [Contact](https://ridenct.fr/contact.html). Un accusé de réception daté t'est affiché à l'écran et envoyé par e-mail ; l'accès à l'abonnement prend fin immédiatement. L'accès au service est immédiat à ta demande, expressément formulée en cochant la case prévue avant le paiement. Si tu te rétractes dans ce délai, tu es remboursé de l'intégralité du prix payé, sur le moyen de paiement utilisé, au plus tard 14 jours après ta demande."
    },
    {
     "t": "p",
@@ -375,8 +375,8 @@ window.LEGAL_SEED = {
  },
  "confidentialite": {
   "title": "Politique de confidentialité",
-  "date": "18 novembre 2026",
-  "version": "2026-11-18.2",
+  "date": "21 novembre 2026",
+  "version": "2026-11-21",
   "blocks": [
    {
     "t": "h2",
@@ -560,6 +560,30 @@ window.LEGAL_SEED = {
    },
    {
     "t": "h3",
+    "x": "Amis par code et profil partagé (application)"
+   },
+   {
+    "t": "p",
+    "x": "**Données :** un code d'ami personnel à 8 chiffres relié à ton compte ; la liste de tes amis, les demandes d'ami envoyées et reçues, les utilisateurs que tu as bloqués, et la date du dernier retrait d'un ami (qui sert au délai de 7 jours avant une nouvelle demande) ; le nombre de saisies de codes inexistants, pour limiter les essais répétés. Si tu partages ton profil avec tes amis : une clé de chiffrement propre à ton profil, et ton profil chiffré (bio, liens, garage, selon ce que tu choisis d'afficher)."
+   },
+   {
+    "t": "p",
+    "x": "**Pourquoi :** te permettre d'ajouter des amis sans les croiser, leur montrer ton profil et protéger les utilisateurs contre le harcèlement et la recherche abusive de codes. Base légale : exécution du service que tu utilises, et intérêt légitime (sécurité de la communauté) pour le blocage et la limitation des essais."
+   },
+   {
+    "t": "p",
+    "x": "**Comment :** la liste d'amis, les demandes, les blocages et la clé de ton profil sont enregistrés sur notre base (Supabase) et ne sont communiqués qu'aux amis acceptés concernés (la clé de ton profil n'est donnée qu'à eux). Ton profil lui-même n'est pas stocké dans notre base : il est chiffré dans l'application puis publié sur le serveur de messagerie MQTT (EMQX Cloud, voir la section Radar ci-dessus) sous forme de message conservé, que seuls tes amis peuvent déchiffrer. Quand tu retires ou bloques un ami, ta clé est renouvelée et ton profil republié : l'ancien ami ne peut plus le lire."
+   },
+   {
+    "t": "p",
+    "x": "**Durée :** ces données sont conservées tant que ton compte existe et que tu ne les supprimes pas ; la clé du profil est supprimée quand tu arrêtes de partager ton profil. Le compteur d'essais de codes est purgé automatiquement au bout d'un jour. Tout est supprimé avec le compte, et le message de profil devient illisible dès que la clé est supprimée."
+   },
+   {
+    "t": "p",
+    "x": "**Fonctions locales :** le mode poche (écran noir pendant un trajet, avec un son silencieux joué pour que le téléphone garde l'application active) et l'export de rappels d'entretien au format calendrier (.ics) fonctionnent uniquement sur ton téléphone : rien n'est envoyé à nos serveurs."
+   },
+   {
+    "t": "h3",
     "x": "Journal d'administration et sauvegardes"
    },
    {
@@ -616,7 +640,7 @@ window.LEGAL_SEED = {
    },
    {
     "t": "ul",
-    "x": "Supabase : base de données et connexion, hébergées dans l'Union européenne (Irlande).\n**GitHub (GitHub Pages)** : hébergement du site. GitHub, société américaine, reçoit l'adresse IP des visiteurs.\n**Services cartographiques** du planificateur, listés plus haut.\n**EMQX Cloud** (EMQ, serveur MQTT) et, en secours, le serveur MQTT public d'EMQX ; **Google** et **Cloudflare** (serveurs STUN) ; **Cloudflare** (relais TURN) et, en secours, **Metered** (relais Open Relay) : fonctions de proximité de l'application, voir plus haut.\n**Resend, Inc.** (États-Unis) : service d'envoi d'e-mails (confirmation de compte, mot de passe oublié). Il reçoit ton adresse e-mail pour t'envoyer ces messages.\n**Google (AdMob)** : publicité de la version gratuite de l'application, voir plus haut."
+    "x": "Supabase : base de données et connexion, hébergées dans l'Union européenne (Irlande).\n**GitHub (GitHub Pages)** : hébergement du site. GitHub, société américaine, reçoit l'adresse IP des visiteurs.\n**Services cartographiques** du planificateur, listés plus haut.\n**EMQX Cloud** (EMQ, serveur MQTT) et, en secours, le serveur MQTT public d'EMQX (messages de proximité et profil chiffré partagé avec tes amis) ; **Google** et **Cloudflare** (serveurs STUN) ; **Cloudflare** (relais TURN) et, en secours, **Metered** (relais Open Relay) : fonctions de proximité de l'application, voir plus haut.\n**Resend, Inc.** (États-Unis) : service d'envoi d'e-mails (confirmation de compte, mot de passe oublié). Il reçoit ton adresse e-mail pour t'envoyer ces messages.\n**Google (AdMob)** : publicité de la version gratuite de l'application, voir plus haut."
    },
    {
     "t": "p",

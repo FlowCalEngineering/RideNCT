@@ -284,7 +284,7 @@ const PAGES = {
   sec: { title: '', desc: '', tabs: [['users', ''], ['mod', ''], ['msg', ''], ['track', ''], ['sys', '']] },
   home: { title: 'Accueil', desc: 'Ce qui demande ton attention et l\'état général de RideNCT.', tabs: [['overview', 'Vue d\'ensemble'], ['stats', 'Statistiques'], ['health', 'Santé']] },
   reports: { title: 'Signalements', desc: 'Carte des repères, repères suspects et utilisateurs signalés par la communauté.', tabs: [['map', 'Carte'], ['review', 'À vérifier'], ['riders', 'Utilisateurs signalés'], ['routes', 'Circuits'], ['warnings', 'Avertissements']] },
-  messages: { title: 'Messages', desc: 'Messages du formulaire de contact et inscrits sur la liste d\'attente.', tabs: [['contact', 'Messages'], ['mail', 'Boîte contact@'], ['waitlist', 'Liste d\'attente']] },
+  messages: { title: 'Messages', desc: 'Messages du formulaire de contact et inscrits sur la liste d\'attente.', tabs: [['contact', 'Messages'], ['mail', 'Boîte contact@'], ['waitlist', 'Liste d\'attente'], ['withdrawals', 'Rétractations'], ['maillog', 'E-mails envoyés']] },
   bans: { title: 'Bannissements', desc: 'Appareils bannis et pseudos interdits.', tabs: [['devices', 'Appareils'], ['terms', 'Pseudos bloqués']] },
   users: { title: 'Utilisateurs', desc: 'Clique sur une ligne pour ouvrir la fiche : abonnement, bannissement, suppression.' },
   maintenance: { title: 'Maintenance', desc: 'Espace disque, purges et sauvegarde.', tabs: [['purge', 'Espace et purge'], ['auto', 'Purge automatique'], ['backup', 'Sauvegarde']] },
@@ -301,6 +301,7 @@ const LOADERS = {
   'home/overview': loadDashboard, 'home/stats': loadStats, 'home/health': loadHealth,
   'reports/map': loadMap, 'reports/review': loadReview, 'reports/riders': loadRiders, 'reports/routes': loadRoutes, 'reports/warnings': loadWarnings,
   'messages/contact': loadMessages, 'messages/mail': loadMail, 'messages/waitlist': loadMessages,
+  'messages/withdrawals': loadWithdrawals, 'messages/maillog': loadMailLog,
   'bans/devices': loadDevices, 'bans/terms': loadModeration,
   users: loadUsers,
   'maintenance/purge': loadMaintenance, 'maintenance/auto': loadAutoSettings, 'maintenance/backup': loadBackup,
@@ -327,6 +328,8 @@ const SECTIONS = {
     ['messages/contact', 'Messages du formulaire', '💬', 'Contact depuis le site', 'b', 'messages_open'],
     ['messages/mail', 'Boîte contact@', '📥', 'Lire et répondre', 'b'],
     ['messages/waitlist', 'Liste d\'attente', '📋', 'Inscrits avant le lancement', 'b'],
+    ['messages/withdrawals', 'Rétractations', '↩', 'Remboursements à effectuer sous 14 jours', 'o', 'withdrawals_pending'],
+    ['messages/maillog', 'E-mails envoyés', '✉', 'Journal des e-mails automatiques', 'b', 'mail_problems_7d'],
     ['legal', 'Textes légaux', '⚖', 'CGU, CGV, mentions légales, confidentialité', 'p'],
     ['survey', 'Questionnaire', '📝', 'Réponses du formulaire du site', 'b'],
     ['comms/announce', 'Annonces dans l\'app', '📣', 'Messages affichés aux utilisateurs', 'p'],
@@ -389,7 +392,7 @@ const LAUNCH = [
 function secBadge(k) {
   const s = state.stats || {};
   if (k === 'mod') return Number(s.suspicious || 0) + Number(s.user_reports_open || 0) + Number(s.routes_reported || 0);
-  if (k === 'msg') return Number(s.messages_open || 0);
+  if (k === 'msg') return Number(s.messages_open || 0) + Number(s.withdrawals_pending || 0) + Number(s.mail_problems_7d || 0);
   if (k === 'sys') { const limit = Number(s.db_limit_mb || 0) * 1048576; return limit && s.db_bytes / limit >= 0.8 ? '!' : 0; }
   return 0;
 }
@@ -691,6 +694,14 @@ async function askSubBan(label) {
 const card = (k, v, tone = '', go = '', uf = '') =>
   `<div class="card${go ? ' link' : ''}"${go ? ` data-go="${go}"${uf ? ` data-uf="${uf}"` : ''} tabindex="0" role="link"` : ''}><div class="k">${esc(k)}</div><div class="v ${tone}">${esc(v)}</div></div>`;
 const kv = (k, v) => `<div class="kv"><span>${esc(k)}</span><span>${esc(v)}</span></div>`;
+function provLabel(p) {
+  p = String(p || '');
+  if (!p) return '—';
+  if (p === 'manual') return 'Manuel';
+  const test = /sandbox|test/i.test(p);
+  let n = /rc_billing|web/i.test(p) ? 'Web' : /stripe/i.test(p) ? 'Stripe' : /app_?store|apple/i.test(p) ? 'App Store' : /play/i.test(p) ? 'Google Play' : p;
+  return test ? n + ' · test' : n;
+}
 const STATUS_FR = { none: 'aucun', active: 'actif', past_due: 'impayé', canceled: 'résilié' };
 
 function setBadge(id, n) { const b = $(id); b.textContent = n; b.hidden = !(n > 0); }
@@ -701,6 +712,8 @@ function renderTodo(s) {
   if (s.user_reports_open > 0) items.push([`${fmtInt(s.user_reports_open)} utilisateur(s) signalé(s) à examiner`, 'reports/riders']);
   if (s.routes_reported > 0) items.push([`${fmtInt(s.routes_reported)} circuit(s) signalé(s) à examiner`, 'reports/routes']);
   if (s.messages_open > 0) items.push([`${fmtInt(s.messages_open)} message(s) non traité(s)`, 'messages/contact']);
+  if (s.withdrawals_pending > 0) items.push([`${fmtInt(s.withdrawals_pending)} rétractation(s) à rembourser`, 'messages/withdrawals']);
+  if (s.mail_problems_7d > 0) items.push([`${fmtInt(s.mail_problems_7d)} e-mail(s) non envoyé(s) sur 7 jours`, 'messages/maillog']);
   const limit = Number(s.db_limit_mb || 0) * 1048576;
   if (limit && s.db_bytes / limit >= 0.8) items.push([`Base à ${Math.round((s.db_bytes / limit) * 100)} % de la limite (${fmtBytes(s.db_bytes)} sur ${fmtInt(s.db_limit_mb)} Mo)`, 'maintenance/purge']);
   if (s.reports_expired >= 50) items.push([`${fmtInt(s.reports_expired)} signalements expirés à purger`, 'maintenance/purge']);
@@ -711,7 +724,7 @@ function renderTodo(s) {
 }
 function updateTitle() {
   const s = state.stats || {};
-  const n = Number(s.suspicious || 0) + Number(s.messages_open || 0) + Number(s.user_reports_open || 0);
+  const n = Number(s.suspicious || 0) + Number(s.messages_open || 0) + Number(s.user_reports_open || 0) + Number(s.withdrawals_pending || 0);
   document.title = (n ? '(' + n + ') ' : '') + 'RideNCT admin · ' + PAGES[state.route.page].title;
 }
 function applyStats(s) {
@@ -719,7 +732,7 @@ function applyStats(s) {
   state.stats = s;
   updateTitle();
   setBadge('badge-reports', Number(s.suspicious) + Number(s.user_reports_open || 0) + Number(s.routes_reported || 0));
-  setBadge('badge-messages', Number(s.messages_open));
+  setBadge('badge-messages', Number(s.messages_open) + Number(s.withdrawals_pending || 0) + Number(s.mail_problems_7d || 0));
   const limit = Number(s.db_limit_mb || 0) * 1048576;
   $('badge-maint').hidden = !(limit && s.db_bytes / limit >= 0.8);
   renderTodo(s);
@@ -761,6 +774,7 @@ async function loadDashboard() {
     card('Comptes bannis', fmtInt(s.banned), s.banned > 0 ? 'red' : '', 'users', 'banned') +
     card('Appareils bannis', fmtInt(s.banned_devices), s.banned_devices > 0 ? 'red' : '', 'bans/devices') +
     card('Liste d\'attente', fmtInt(s.waitlist), '', 'messages/waitlist') +
+    card('Rétractations à rembourser', fmtInt(s.withdrawals_pending), s.withdrawals_pending > 0 ? 'orange' : '', 'messages/withdrawals') +
     card('Taille base' + (limit ? ' (' + Math.round((s.db_bytes / limit) * 100) + ' %)' : ''), fmtBytes(s.db_bytes), '', 'maintenance/purge');
   const st = Object.entries(s.subs_by_status || {});
   const pl = Object.entries(s.subs_by_plan || {});
@@ -845,7 +859,11 @@ async function loadStats() {
     card('Payants annuels', fmtInt(s.paid_yearly)) +
     card('Offerts', fmtInt(s.subs_gifted)) +
     card('Revenu mensuel est.', fmtEur(mrr), 'teal') +
-    card('Revenu annuel est.', fmtEur(mrr * 12));
+    card('Revenu annuel est.', fmtEur(mrr * 12)) +
+    card('Liens d\'amitié', fmtInt(s.friend_links)) +
+    card('Demandes d\'ami en attente', fmtInt(s.friend_requests)) +
+    card('Amis bloqués', fmtInt(s.friend_blocks)) +
+    card('Codes ami ouverts', fmtInt(s.friend_codes_open));
   const rows = series || [];
   if (!rows.length) { ['chart-signups', 'chart-logins', 'chart-reports'].forEach((i) => { $(i).innerHTML = '<div class="muted">Aucune donnée.</div>'; }); return; }
   barChart('chart-signups', rows, 'signups', 'teal');
@@ -980,11 +998,22 @@ function renderDrawer() {
   $('drawer-body').innerHTML =
     `<div class="badges">${badges.join('')}</div>` +
     '<div>' + kv('E-mail', u.email || '—') + kv('Inscrit le', fmtDay(u.created_at)) + kv('Dernière connexion', fmtDate(u.last_sign_in_at)) +
-    (Number(u.reports_received) > 0 ? kv('Signalements reçus', fmtInt(u.reports_received)) : '') + kv('Formule', u.sub_plan || '—') + kv('Fin de période', u.sub_end ? fmtDay(u.sub_end) : '—') + kv('CGU acceptées', u.cgu_version ? 'version ' + u.cgu_version : 'aucune') + (u.sub_banned ? kv('Abonnement banni', u.sub_ban_reason || 'oui') : '') + (banned ? kv('Banni', fmtUntil(u.banned_until)) + (u.ban_reason ? kv('Motif', u.ban_reason) : '') : '') + '</div>' +
+    (Number(u.reports_received) > 0 ? kv('Signalements reçus', fmtInt(u.reports_received)) : '') + kv('Formule', u.sub_plan || '—') + kv('Paiement', provLabel(u.sub_provider)) + kv('Fin de période', u.sub_end ? fmtDay(u.sub_end) : '—') + kv('CGU acceptées', u.cgu_version ? 'version ' + u.cgu_version : 'aucune') + (u.sub_banned ? kv('Abonnement banni', u.sub_ban_reason || 'oui') : '') + (banned ? kv('Banni', fmtUntil(u.banned_until)) + (u.ban_reason ? kv('Motif', u.ban_reason) : '') : '') + '</div>' +
     (u.adm ? '<p class="muted small">Compte administrateur : retire d\'abord ses droits (Réglages › Administrateurs) pour le bannir ou le supprimer.</p>' : '') +
     `<h4>Actions</h4><div class="acts">${acts}</div>` +
     (u.adm ? '' : '<h4>Signalements reçus</h4><div id="drawer-reports"><span class="muted">Chargement…</span></div><h4>Circuits publiés</h4><div id="drawer-routes"><span class="muted">Chargement…</span></div>') +
+    '<h4>E-mails envoyés</h4><div class="hist" id="drawer-mails"><span class="muted">Chargement…</span></div>' +
     '<h4>Historique</h4><div class="hist" id="drawer-hist"><span class="muted">Chargement…</span></div>';
+}
+async function loadUserMails(u) {
+  const seq = state.drawerSeq;
+  try {
+    const rows = (await rpc('admin_list_mail_log', { p_user: u.user_id, p_problems: false, p_limit: 8 }, true)) || [];
+    if (seq !== state.drawerSeq || !$('drawer-mails')) return;
+    $('drawer-mails').innerHTML = rows.length
+      ? rows.map((m) => `<div><span>${esc(MAIL_KIND_FR[m.kind] || m.kind)} · <span class="badge ${m.status === 'sent' ? 'ok' : 'ko'}">${esc(MAIL_STATUS_FR[m.status] || m.status)}</span></span><span>${fmtDate(m.created_at)}</span></div>`).join('')
+      : '<span class="muted">Aucun e-mail automatique.</span>';
+  } catch (e) { if ($('drawer-mails')) $('drawer-mails').innerHTML = '<span class="muted">Indisponible.</span>'; }
 }
 async function loadUserHistory(u) {
   const seq = ++state.drawerSeq;
@@ -1007,6 +1036,7 @@ async function refreshUser(id, email) {
     state.drawerUser = u;
     renderDrawer();
     loadUserHistory(u);
+    loadUserMails(u);
     loadUserReports(u);
     loadUserRoutes(u);
   } catch (e) { /* ignoré */ }
@@ -1854,6 +1884,11 @@ async function loadAutoSettings() {
   $('cron-state').textContent = !cfg.cron_available ? 'pg_cron indisponible : la purge automatique ne tournera pas.'
     : cfg.cron_scheduled ? 'Tâche planifiée chaque nuit à 03:30 UTC' + (cfg.auto_purge ? ', active.' : ', désactivée (case non cochée).')
     : 'pg_cron présent mais la tâche n\'est pas planifiée : rejoue admin_setup.sql.';
+  try {
+    const h = await rpc('admin_health', null, true);
+    const c = ((h && h.checks) || []).find((x) => x.id === 'cron');
+    $('cron-all').textContent = c ? 'Toutes les tâches : ' + c.detail : '';
+  } catch (e) { $('cron-all').textContent = ''; }
 }
 async function loadBackup() {
   const W = canWrite();
@@ -1932,6 +1967,53 @@ $('export-waitlist').addEventListener('click', () => {
   downloadCSV('liste-attente-ridenct.csv', ['email', 'source', 'date'], state.waitlist.map((w) => [w.email, w.source, w.created_at]));
 });
 
+/* ---------- rétractations ---------- */
+const MAIL_KIND_FR = { withdraw_owner: 'Rétractation (copie admin)', withdraw_ack: 'Rétractation (accusé client)', cancel_ack: 'Résiliation (accusé)', contract: 'Confirmation de contrat', renewal: 'Rappel de renouvellement', renewal_reminder: 'Rappel de renouvellement', confirm: 'Confirmation d\'inscription', welcome: 'Bienvenue' };
+const MAIL_STATUS_FR = { sent: 'envoyé', failed: 'échec', error: 'échec', skipped: 'ignoré', bounced: 'rejeté', complained: 'spam' };
+state.wd = []; state.wdFilter = store.get('wd.f') || 'todo';
+function wdDays(w) { return Math.ceil((new Date(w.deadline) - Date.now()) / 86400000); }
+function renderWithdrawals() {
+  const W = canWrite(), f = state.wdFilter;
+  const todo = state.wd.filter((w) => w.refund_status !== 'rembourse');
+  const done = state.wd.filter((w) => w.refund_status === 'rembourse');
+  document.querySelectorAll('#wd-filters .fchip').forEach((b) => { b.classList.toggle('active', b.dataset.f === f); });
+  $('wd-cnt-todo').textContent = todo.length; $('wd-cnt-done').textContent = done.length;
+  const list = f === 'todo' ? todo : f === 'done' ? done : state.wd;
+  $('wd-table').innerHTML = list.length
+    ? '<thead><tr><th>Demandée le</th><th>Utilisateur</th><th>Formule</th><th>Paiement</th><th>Délai</th><th>État</th><th>E-mail</th><th></th></tr></thead><tbody>' +
+      list.map((w) => {
+        const d = wdDays(w), isDone = w.refund_status === 'rembourse';
+        const delay = isDone ? '—' : `<span class="badge ${d <= 3 ? 'ko' : 'wa'}">${d > 0 ? 'reste ' + d + ' j' : 'dépassé'}</span>`;
+        const nm = esc(w.username || w.email || 'compte supprimé');
+        const btn = !W ? '' : isDone
+          ? `<button type="button" class="btn sm" data-act="wd-reopen" data-id="${esc(w.id)}" data-name="${nm}">Rouvrir</button>`
+          : `<button type="button" class="btn sm primary" data-act="wd-done" data-id="${esc(w.id)}" data-name="${nm}">Marquer remboursé</button>`;
+        return `<tr><td data-label="Demandée le">${fmtDay(w.requested_at)}</td><td data-label="Utilisateur">${nm}${w.username && w.email ? ` <span class="muted small">${esc(w.email)}</span>` : ''}</td><td data-label="Formule">${esc(w.plan === 'annual' ? 'Annuel' : 'Mensuel')} · ${esc(String(w.amount).replace('.', ','))} €</td><td data-label="Paiement">${esc(provLabel(w.provider))}</td><td data-label="Délai">${delay}</td><td data-label="État"><span class="badge ${isDone ? 'ok' : 'wa'}">${isDone ? 'remboursé' : 'à rembourser'}</span>${w.refund_note ? `<div class="muted small">${esc(w.refund_note)}</div>` : ''}</td><td data-label="E-mail">${esc(MAIL_STATUS_FR[w.email_status] || w.email_status || '—')}</td><td class="actions">${btn}</td></tr>`;
+      }).join('') + '</tbody>'
+    : '<tbody><tr><td class="empty">' + (f === 'todo' ? 'Aucun remboursement à effectuer.' : 'Aucune demande.') + '</td></tr></tbody>';
+}
+async function loadWithdrawals() {
+  state.wd = (await rpc('admin_list_withdrawals')) || [];
+  renderWithdrawals();
+}
+$('wd-filters').addEventListener('click', (e) => {
+  const b = e.target.closest('.fchip'); if (!b) return;
+  state.wdFilter = b.dataset.f; store.set('wd.f', state.wdFilter); renderWithdrawals();
+});
+
+/* ---------- e-mails envoyés ---------- */
+state.mlProblems = store.get('ml.p') === '1';
+async function loadMailLog() {
+  $('ml-problems').checked = state.mlProblems;
+  const rows = (await rpc('admin_list_mail_log', { p_user: null, p_problems: state.mlProblems, p_limit: 300 })) || [];
+  $('ml-table').innerHTML = rows.length
+    ? '<thead><tr><th>Date</th><th>Type</th><th>Destinataire</th><th>État</th><th>Détail</th></tr></thead><tbody>' +
+      rows.map((m) => `<tr><td data-label="Date">${fmtDate(m.created_at)}</td><td data-label="Type">${esc(MAIL_KIND_FR[m.kind] || m.kind)}</td><td data-label="Destinataire">${esc(m.username || m.to_email || '—')}${m.username && m.to_email ? ` <span class="muted small">${esc(m.to_email)}</span>` : ''}</td><td data-label="État"><span class="badge ${m.status === 'sent' ? 'ok' : m.status === 'skipped' ? 'wa' : 'ko'}">${esc(MAIL_STATUS_FR[m.status] || m.status)}</span></td><td data-label="Détail" class="muted small">${esc(m.detail || '')}</td></tr>`).join('') + '</tbody>'
+    : '<tbody><tr><td class="empty">' + (state.mlProblems ? 'Aucun problème d\'envoi.' : 'Aucun e-mail envoyé.') + '</td></tr></tbody>';
+}
+$('ml-problems').addEventListener('change', () => { state.mlProblems = $('ml-problems').checked; store.set('ml.p', state.mlProblems ? '1' : '0'); loadMailLog().catch(showError); });
+$('ml-refresh').addEventListener('click', () => { clearError(); loadMailLog().catch(showError); });
+
 /* ---------- pseudos bloqués ---------- */
 async function loadModeration() {
   state.terms = (await rpc('admin_list_terms')) || [];
@@ -1959,6 +2041,7 @@ $('term-form').addEventListener('submit', async (e) => {
 
 /* ---------- journal ---------- */
 const ACTION_FR = {
+  'rétractation_remboursée': 'Rétractation remboursée', 'rétractation_rouverte': 'Rétractation rouverte',
   'texte_légal_publié': 'Texte légal publié',
   'circuit_supprimé': 'Circuit supprimé', 'signalements_circuit_effacés': 'Signalements de circuit effacés',
   'réponse_questionnaire_supprimée': 'Réponse questionnaire supprimée',
@@ -2542,6 +2625,18 @@ document.addEventListener('click', async (e) => {
       case 'handled':
         await rpc('admin_set_message_handled', { p_id: d.id, p_handled: d.on === '1' });
         await loadMessages();
+        break;
+      case 'wd-done': {
+        const v = await formDialog({ title: 'Remboursement effectué pour ' + d.name + ' ?', text: 'À valider seulement une fois le remboursement intégral fait dans RevenueCat / chez le prestataire.', ok: 'Marquer remboursé', fields: [{ id: 'note', label: 'Note (facultatif, 300 caractères)', type: 'text' }] });
+        if (!v) return;
+        await rpc('admin_set_withdrawal_refunded', { p_id: d.id, p_refunded: true, p_note: v.note || null });
+        await loadWithdrawals(); quietStats();
+        break;
+      }
+      case 'wd-reopen':
+        if (!(await confirmDialog({ title: 'Rouvrir la rétractation de ' + d.name + ' ?', text: 'Elle repasse « à rembourser ».', ok: 'Rouvrir' }))) return;
+        await rpc('admin_set_withdrawal_refunded', { p_id: d.id, p_refunded: false, p_note: null });
+        await loadWithdrawals(); quietStats();
         break;
       case 'delwait':
         if (!(await confirmDialog({ title: 'Retirer cet e-mail de la liste ?', text: 'Suppression définitive.', ok: 'Retirer' }))) return;
