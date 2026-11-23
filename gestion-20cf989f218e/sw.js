@@ -1,6 +1,6 @@
 /* Service worker RideNCT admin : coquille de l'app en cache, réseau d'abord.
    Aucune requête externe (Supabase, CDN) n'est interceptée ni mise en cache. */
-const V = 'ridenct-admin-v1';
+const V = 'ridenct-admin-v2';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'legal_seed.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

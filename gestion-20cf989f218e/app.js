@@ -442,6 +442,10 @@ function render() {
   renderTabs();
   renderHub();
   renderLauncher();
+  document.body.classList.toggle('on-home', key === 'home/overview');
+  const itm = SECTIONS[secKey] && SECTIONS[secKey].items.find((i) => i[0] === key);
+  $('bar-title').textContent = state.route.page === 'sec' ? SECTIONS[secKey].title : itm ? itm[1] : P.title;
+  $('bar-sub').textContent = state.route.page === 'sec' ? '' : secKey === 'home' ? '' : SECTIONS[secKey].title;
   if (key !== 'reports/map') cancelZone();
   $('side').classList.remove('open');
   window.scrollTo(0, 0);
@@ -462,6 +466,19 @@ async function loadRoute() {
   }
 }
 $('refresh').addEventListener('click', loadRoute);
+$('back-btn').addEventListener('click', () => {
+  const k = state.route.page === 'sec' ? 'home' : sectionOf(routeKey());
+  if (k === 'home') navigate('home/overview'); else navigate('sec/' + k);
+});
+/* mobile : chaque tableau devient une liste de cartes ; on recopie l'en-tête de colonne dans chaque cellule */
+function labelTables(root) {
+  (root || document).querySelectorAll('table').forEach((t) => {
+    const heads = [...t.querySelectorAll('thead th')].map((th) => th.textContent.replace(/[▲▼↑↓]/g, '').trim());
+    if (!heads.length) return;
+    t.querySelectorAll('tbody tr').forEach((tr) => { [...tr.children].forEach((td, i) => { if (!td.hasAttribute('data-label')) td.setAttribute('data-label', heads[i] || ''); }); });
+  });
+}
+new MutationObserver(() => { if (matchMedia('(max-width:860px)').matches) labelTables(document.querySelector('.main')); }).observe(document.querySelector('.main'), { childList: true, subtree: true });
 $('nav').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-sec]');
   if (!b) return;
