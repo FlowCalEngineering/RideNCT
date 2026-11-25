@@ -60,7 +60,7 @@ const ModuleTTS = {
         if (!this.usable()) return false;
         if (this.have != null) return this.have;
         try { const r = await this.call('stored'); this.have = (r.list || []).indexOf(this.VOICE) >= 0; } catch (e) { this.have = false; }
-        if (!this.have) { this.log('modèle absent'); try { AppPrefs.set('voiceNeural', 'off'); } catch (e) { } }
+        if (!this.have) this.log('modèle absent');
         return this.have;
     },
     // clips fréquents préparés une fois pour toutes (distances, phrases fixes)
