@@ -48,12 +48,30 @@ const ModuleTTS = {
     call(op, extra, prog) { return new Promise((res, rej) => { const w = this.worker(); if (!w) return rej(new Error(this.err || 'worker')); const id = ++this.seq; this.pend.set(id, { res, rej, prog }); this.idle(); w.postMessage(Object.assign({ id, op, voice: this.VOICE }, extra || {})); }); },
 
     // ----- installation (Réglages) -----
-    async install(prog) {
+    install(prog) { if (this._ins) return this._ins; const p = this._ins = this._install(prog); const f = () => { this._ins = null; }; p.then(f, f); return p; },
+    async _install(prog) {
         if (typeof Worker === 'undefined') throw new Error('non pris en charge');
         this.state = 'idle'; this.err = '';
         await this.call('download', {}, prog);
         this.have = true; try { AppPrefs.set('voiceNeural', 'on'); } catch (e) { }
         this.log('modèle installé'); this.warm();
+    },
+    // téléchargement automatique du modèle (une fois), hors balade, jamais sur réseau mobile déclaré ; réessaie si ça échoue
+    ui() {
+        try {
+            const st = document.getElementById('neural-st'), b = document.getElementById('btn-toggle-neural'), r = b && b.closest('.set-row'), o = this.on(), dl = this.dl != null, miss = o && this.have === false;
+            if (st) { st.textContent = dl ? '⬇ Téléchargement de la voix… ' + this.dl + ' %' : miss ? '⬇ Voix à télécharger (~80 Mo, en wifi) : appuie sur l\'interrupteur' : o ? '● Activée · hors ligne, la musique reprend après' : '○ Désactivée · voix de base de l\'iPhone'; st.classList.toggle('ok', o && !miss && !dl); }
+            if (r) { r.classList.toggle('is-on', o && !miss); const v = r.querySelector('.v'); if (v && dl) v.textContent = 'Téléchargement… ' + this.dl + ' %'; }
+        } catch (e) { }
+    },
+    auto(n) {
+        n = n || 0;
+        if (this._auto || !this.usable() || this.have !== false || n > 3) return;
+        const later = (ms) => setTimeout(() => this.auto(n + 1), ms);
+        try { const S = ModuleGPS.state; if (S.isTracking) return later(60000); } catch (e) { }
+        try { const c = navigator.connection; if (c && (c.saveData || c.type === 'cellular')) return; } catch (e) { }
+        this._auto = true; this.dl = 0; this.ui(); this.log('téléchargement automatique');
+        this.install((p) => { this.dl = p; this.ui(); }).then(() => { this.dl = null; this._auto = false; this.ui(); }).catch((e) => { this.dl = null; this._auto = false; this.log('téléchargement échoué : ' + (e && e.message)); this.ui(); later(120000 * (n + 1)); });
     },
     // le modèle est-il bien là ? (jamais de téléchargement implicite sur le réseau mobile)
     async ensure() {
@@ -169,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); }
 
 // préparation dès le lancement : moteur démarré, distances et phrases fixes prêtes avant le départ ; manœuvres de l'itinéraire préparées dès qu'il est calculé
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => { try { if (ModuleTTS.usable()) ModuleTTS.ensure().then(ok => { if (ok) ModuleTTS.warm(); }); } catch (e) { } }, 2500);
+    setTimeout(() => { try { if (ModuleTTS.usable()) ModuleTTS.ensure().then(ok => { if (ok) ModuleTTS.warm(); else ModuleTTS.auto(); }); } catch (e) { } }, 2500);
     let last = null;
     setInterval(() => { try { const S = ModuleGPS.state; if (!ModuleTTS.usable() || !S.routeSteps || !S.routeSteps.length) return; const k = S.routeSteps.length + ':' + (S.currentStepIndex || 0); if (k !== last) { last = k; ModuleTTS.plan(ModuleGPS); } } catch (e) { } }, 2000);
 });
