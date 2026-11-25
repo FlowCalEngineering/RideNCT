@@ -7,6 +7,11 @@
     const MARGIN = 8, SNAP = 28;
     let sub, editing = false, drag = null, swallow = 0, bar = null, saved = null, was = false;
 
+    const SKEY = 'ridenct_mv_style_v1';
+    const sload = () => { try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch (e) { return {}; } };
+    const ssave = (o) => { try { localStorage.setItem(SKEY, JSON.stringify(o)); } catch (e) {} };
+    const wsStyle = () => sload().ws || (innerWidth > innerHeight ? 'block' : 'bar');
+    const tsStyle = () => sload().ts || 'b';
     const orient = () => (innerWidth > innerHeight ? 'l' : 'p');
     const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
     const save = (o) => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} };
@@ -17,8 +22,14 @@
     function setOff(el, x, y) { el.style.setProperty('--mv-x', Math.round(x) + 'px'); el.style.setProperty('--mv-y', Math.round(y) + 'px'); }
     function getOff(el) { return [parseFloat(el.style.getPropertyValue('--mv-x')) || 0, parseFloat(el.style.getPropertyValue('--mv-y')) || 0]; }
 
+    function applyStyles() {
+        const w = document.getElementById('map-weather'), t = document.getElementById('nav-trip-bar');
+        if (w) w.setAttribute('data-ws', wsStyle());
+        if (t) t.setAttribute('data-ts', tsStyle());
+    }
     function apply() {
         if (!sub) return;
+        applyStyles();
         const st = (load()[orient()]) || {}, b = box();
         IDS.forEach((id) => {
             const el = document.getElementById(id); if (!el) return;
@@ -66,8 +77,8 @@
         ['route-bottom-sheet', 'btn-toggle-sheet'].forEach((id) => { const e = document.getElementById(id); if (!e || e.offsetParent === null) return; const r = e.getBoundingClientRect(), b = box(); if (r.width > b.width * 0.6 && r.top > b.top + b.height * 0.4) bt = Math.min(bt, r.top); });
         bar.style.bottom = Math.max(12, Math.round(box().bottom - bt + 10)) + 'px';
     }
-    function exit() { editing = false; drag = null; if (saved) endPreview(); if (sub && sub.classList.contains('mv-edit')) sub.classList.remove('mv-edit'); if (bar) { bar.remove(); bar = null; } }
-    function reset() { const o = load(); delete o[orient()]; save(o); apply(); }
+    function exit() { closeStyle(); editing = false; drag = null; if (saved) endPreview(); if (sub && sub.classList.contains('mv-edit')) sub.classList.remove('mv-edit'); if (bar) { bar.remove(); bar = null; } }
+    function reset() { const o = load(); delete o[orient()]; save(o); ssave({}); try { AppPrefs.set('guideStyle', 'a'); } catch (_) {} const h = $('nav-instruction-hud'); if (h && saved) h.setAttribute('data-gs', 'a'); apply(); closeStyle(); }
 
 
     /* Aperçu « comme en balade » (données fictives) pour régler la disposition avant le départ */
@@ -76,12 +87,14 @@
         if (!sub || navigating() || saved) return;
         const hud = $('nav-instruction-hud'), nx = $('nav-next'), trip = $('nav-trip-bar'); if (!hud || !trip) return;
         saved = { hud: hud.style.display, nx: nx && nx.style.display, noRoute: trip.classList.contains('no-route'), w: ['mw-temp', 'mw-wind', 'mw-ntemp'].map((id) => $(id) && $(id).textContent), t: ['nt-eta', 'nt-time', 'nt-dist'].map((id) => $(id) && $(id).textContent),
-            dist: $('nav-distance').textContent, label: $('nav-label').textContent, street: $('nav-street').textContent, ic: $('nav-turn-icon').innerHTML, nic: $('nav-next-icon') && $('nav-next-icon').innerHTML, nd: $('nav-next-dist') && $('nav-next-dist').textContent, gs: hud.getAttribute('data-gs') };
+            list: $('nav-list') && $('nav-list').innerHTML, prog: $('nav-prog') && $('nav-prog').firstElementChild && $('nav-prog').firstElementChild.style.width, dist: $('nav-distance').textContent, label: $('nav-label').textContent, street: $('nav-street').textContent, ic: $('nav-turn-icon').innerHTML, nic: $('nav-next-icon') && $('nav-next-icon').innerHTML, nd: $('nav-next-dist') && $('nav-next-dist').textContent, gs: hud.getAttribute('data-gs') };
         const G = (typeof GuideIcons !== 'undefined') ? GuideIcons : null, mk = (m) => ({ maneuver: { type: 'turn', modifier: m } }), g = (m) => (G ? G.pick(mk(m), null, null).g : '');
         try { hud.setAttribute('data-gs', (typeof AppPrefs !== 'undefined' && AppPrefs.get('guideStyle')) || 'a'); } catch (_) {}
         $('nav-distance').textContent = '400 M'; $('nav-label').textContent = 'Tournez à droite'; $('nav-street').textContent = 'D 774 · Rue des Tests';
         $('nav-turn-icon').innerHTML = g('right');
         if (nx) { nx.style.display = 'flex'; if ($('nav-next-icon')) $('nav-next-icon').innerHTML = g('left'); if ($('nav-next-dist')) $('nav-next-dist').textContent = '75 M'; }
+        if ($('nav-list')) $('nav-list').innerHTML = [['left', 'Tournez à gauche', '75 M'], ['right', 'Tournez à droite', '300 M']].map(([m, t, d]) => '<div class="nl-row"><span class="nl-ic"><svg viewBox="0 0 24 24">' + g(m) + '</svg></span><span class="nl-t">' + t + '</span><span class="nl-d">' + d + '</span></div>').join('');
+        if ($('nav-prog') && $('nav-prog').firstElementChild) $('nav-prog').firstElementChild.style.width = '40%';
         hud.style.display = 'flex'; trip.classList.remove('no-route');
         [['nt-eta', '14:32'], ['nt-time', '42 min'], ['nt-dist', '38']].forEach(([id, v]) => { if ($(id)) $(id).textContent = v; });
         [['mw-temp', '18°'], ['mw-wind', '12 km/h'], ['mw-ntemp', '16°']].forEach(([id, v]) => { if ($(id)) $(id).textContent = v; });
@@ -96,15 +109,43 @@
         hud.style.display = v.hud; if (nx) nx.style.display = v.nx; if (v.noRoute) trip.classList.add('no-route');
         ['nt-eta', 'nt-time', 'nt-dist'].forEach((id, i) => { if ($(id) && v.t[i] != null) $(id).textContent = v.t[i]; });
         ['mw-temp', 'mw-wind', 'mw-ntemp'].forEach((id, i) => { if ($(id) && v.w[i] != null) $(id).textContent = v.w[i]; });
+        if ($('nav-list') && v.list != null) $('nav-list').innerHTML = v.list; if ($('nav-prog') && $('nav-prog').firstElementChild && v.prog != null) $('nav-prog').firstElementChild.style.width = v.prog;
         $('nav-distance').textContent = v.dist; $('nav-label').textContent = v.label; $('nav-street').textContent = v.street; $('nav-turn-icon').innerHTML = v.ic;
         if ($('nav-next-icon') && v.nic != null) $('nav-next-icon').innerHTML = v.nic; if ($('nav-next-dist') && v.nd != null) $('nav-next-dist').textContent = v.nd;
         if (v.gs == null) hud.removeAttribute('data-gs'); else hud.setAttribute('data-gs', v.gs);
         was = false;
     }
 
+    /* Choix du style de l'élément touché (mode disposition) */
+    const OPTS = {
+        g: { title: 'Bandeau de guidage', opts: [['a', 'Bandeau'], ['c', 'Liste'], ['d', 'Moto']],
+             get: () => { try { return AppPrefs.get('guideStyle') || 'a'; } catch (_) { return 'a'; } },
+             set: (v) => { try { AppPrefs.set('guideStyle', v); } catch (_) {} const h = $('nav-instruction-hud'); if (h) h.setAttribute('data-gs', v); } },
+        w: { title: 'Météo', opts: [['block', 'Bloc'], ['bar', 'Barre fine']], get: wsStyle, set: (v) => { const o = sload(); o.ws = v; ssave(o); applyStyles(); } },
+        t: { title: 'Vitesse · durée · km', opts: [['b', 'Barre'], ['c', 'Colonne'], ['v', 'Vitesse']], get: tsStyle, set: (v) => { const o = sload(); o.ts = v; ssave(o); applyStyles(); } }
+    };
+    let selEl = null;
+    function closeStyle() { const c = $('mv-style'); if (c) c.remove(); if (selEl) { selEl.classList.remove('mv-sel'); selEl = null; } }
+    function openStyle(kind, el) {
+        closeStyle(); const O = OPTS[kind]; if (!O || !sub || !bar) return;
+        selEl = el; el.classList.add('mv-sel');
+        const c = document.createElement('div'); c.id = 'mv-style';
+        const draw = () => { c.innerHTML = '<b>' + O.title + '</b><div class="seg">' + O.opts.map(([k, l]) => '<button type="button" data-v="' + k + '"' + (O.get() === k ? ' class="on"' : '') + '>' + l + '</button>').join('') + '</div>'; };
+        draw();
+        c.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; O.set(b.dataset.v); draw(); setTimeout(() => { apply(); }, 0); });
+        sub.appendChild(c);
+        // le sélecteur se place à côté de l'élément (au-dessus s'il est en bas, sinon en dessous), jamais dessus
+        const b = box(), r = el.getBoundingClientRect(), w = c.offsetWidth;
+        c.style.transform = 'none';
+        c.style.left = Math.max(8, Math.min(b.width - w - 8, r.left - b.left + r.width / 2 - w / 2)) + 'px';
+        if (r.top + r.height / 2 > b.top + b.height / 2) c.style.bottom = Math.round(b.bottom - r.top + 10) + 'px';
+        else c.style.top = Math.round(r.bottom - b.top + 10) + 'px';
+    }
+    const kindOf = (el) => (el.id === 'map-weather' ? 'w' : el.id === 'nav-trip-bar' ? 't' : el.classList.contains('nav-hud') ? 'g' : null);
+
     function startDrag(el, e) {
         const [ox, oy] = getOff(el);
-        drag = { el, pid: e.pointerId, sx: e.clientX, sy: e.clientY, ox, oy };
+        drag = { el, tap: true, pid: e.pointerId, sx: e.clientX, sy: e.clientY, ox, oy };
         try { el.setPointerCapture(e.pointerId); } catch (_) {}
         el.classList.add('mv-drag');
     }
@@ -117,24 +158,34 @@
         addEventListener('resize', () => { apply(); });
 
         document.addEventListener('pointerdown', (e) => {
-            const el = mvEl(e.target); if (!el || !editing) return;
-            e.preventDefault(); startDrag(el, e);
+            if (!editing) return;
+            const el = mvEl(e.target), hud = e.target.closest && e.target.closest('#nav-instruction-hud');
+            if (!el && !hud) { if (!e.target.closest('#mv-style, #mv-bar')) closeStyle(); return; }
+            e.preventDefault(); startDrag(el || hud, e);
+            if (hud && !el) drag.fixed = true;      // bannière : fixe, on ne fait que l'ouvrir au toucher
         }, true);
 
         document.addEventListener('pointermove', (e) => {
-            if (drag && e.pointerId === drag.pid) { setOff(drag.el, drag.ox + e.clientX - drag.sx, drag.oy + e.clientY - drag.sy); e.preventDefault(); }
+            if (drag && e.pointerId === drag.pid) {
+                if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) > 8) drag.tap = false;
+                if (!drag.fixed) setOff(drag.el, drag.ox + e.clientX - drag.sx, drag.oy + e.clientY - drag.sy);
+                e.preventDefault();
+            }
         }, { capture: true, passive: false });
 
         const up = (e) => {
             if (drag && (!e.pointerId || e.pointerId === drag.pid)) {
-                const el = drag.el; drag = null; el.classList.remove('mv-drag'); settle(el); persist(el); swallow = Date.now() + 350;
+                const d = drag, el = d.el; drag = null; el.classList.remove('mv-drag'); swallow = Date.now() + 350;
+                if (!d.fixed) { settle(el); persist(el); }
+                const k = kindOf(el);
+                if (d.tap && k) openStyle(k, el); else if (!d.tap) closeStyle();
             }
         };
         document.addEventListener('pointerup', up, true);
         document.addEventListener('pointercancel', up, true);
 
         document.addEventListener('click', (e) => {
-            if (!mvEl(e.target)) return;
+            if (!mvEl(e.target) && !(editing && e.target.closest('#nav-instruction-hud'))) return;
             if (editing || Date.now() < swallow) { e.preventDefault(); e.stopImmediatePropagation(); }
         }, true);
         document.addEventListener('contextmenu', (e) => { if (mvEl(e.target) && editing) e.preventDefault(); }, true);
