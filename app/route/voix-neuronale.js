@@ -107,7 +107,7 @@ const ModuleTTS = {
         const a = this.au = new Audio(); a.setAttribute('playsinline', ''); a.preload = 'auto';
         // iPhone : un lecteur audio doit avoir été lancé une fois par un geste de l'utilisateur
         const sil = (() => { const n = 800, u = new Uint8Array(44 + n), dv = new DataView(u.buffer), w = (o, t) => { for (let i = 0; i < t.length; i++) u[o + i] = t.charCodeAt(i); }; w(0, 'RIFF'); dv.setUint32(4, 36 + n, true); w(8, 'WAVEfmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true); dv.setUint32(24, 8000, true); dv.setUint32(28, 8000, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); w(36, 'data'); dv.setUint32(40, n, true); u.fill(128, 44); return URL.createObjectURL(new Blob([u], { type: 'audio/wav' })); })();
-        const unlock = () => { document.removeEventListener('touchend', unlock, true); document.removeEventListener('click', unlock, true); try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; a.src = sil; a.volume = 0.01; const p = a.play(); if (p && p.then) p.then(() => { a.pause(); a.volume = 1; }).catch(() => { }); } catch (e) { } };
+        const unlock = () => { if (!this.on()) return; document.removeEventListener('touchend', unlock, true); document.removeEventListener('click', unlock, true); try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; a.src = sil; a.volume = 0.01; const p = a.play(); if (p && p.then) p.then(() => { a.pause(); a.volume = 1; }).catch(() => { }); } catch (e) { } };
         document.addEventListener('touchend', unlock, true); document.addEventListener('click', unlock, true);
         return a;
     },
@@ -130,5 +130,25 @@ const ModuleTTS = {
             set('transient'); next();
         });
     },
-    stop() { try { if (this._stop) this._stop(); } catch (e) { } }
+    stop() { try { if (this._stop) this._stop(); } catch (e) { } },
+
+    // ----- diagnostic (Réglages › Tester la voix) -----
+    diag() {
+        let at = 'absente'; try { if (navigator.audioSession) at = navigator.audioSession.type; } catch (e) { }
+        const l = ((typeof ModuleGPS !== 'undefined' && ModuleGPS._vlog) || []).filter(x => / (voix-n|dit|fin|erreur|attente) /.test(x)).slice(-10);
+        return ['état : ' + this.state + (this.err ? ' (' + this.err + ')' : '') + ' · réglage : ' + (this.on() ? 'activée' : 'désactivée'), 'modèle : ' + this.have + ' · worker : ' + (this.w ? 'oui' : 'non') + ' · session audio : ' + at, 'clips prêts : ' + this.cache.size + ' · en attente : ' + this.q.length].concat(l).join('\n');
+    },
+    async test(out) {
+        const t0 = Date.now(), say = (m) => out(((Date.now() - t0) / 1000).toFixed(1) + ' s · ' + m), T = 'Test de la voix naturelle', k = this.key(T);
+        if (!this.on()) return out('Active d\'abord la voix naturelle.');
+        this.state = 'idle'; this.err = ''; this.have = null; this.cache.delete(k); this.audio();
+        say('modèle…'); if (!(await this.ensure())) return out(this.diag() + '\nMODÈLE ABSENT OU MOTEUR EN PANNE');
+        say('synthèse…'); this.want(T, 3);
+        for (let i = 0; i < 120 && !this.cache.has(k) && this.state !== 'dead'; i++) await new Promise(r => setTimeout(r, 500));
+        if (!this.cache.has(k)) return out(this.diag() + '\nSYNTHÈSE IMPOSSIBLE');
+        say('lecture…'); const ok = await this.speak({ text: T });
+        out(this.diag() + '\nlecture : ' + (ok ? 'ok' : 'REFUSÉE (geste requis)'));
+    }
 };
+// le lecteur audio est créé dès le chargement : son « déverrouillage » attend le premier appui de l'utilisateur (sinon iPhone refuse de jouer une annonce sans geste)
+document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); } catch (e) { } });
