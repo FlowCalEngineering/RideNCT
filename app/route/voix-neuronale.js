@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); }
 
 // préparation dès le lancement : moteur démarré, distances et phrases fixes prêtes avant le départ ; manœuvres de l'itinéraire préparées dès qu'il est calculé
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => { try { if (ModuleTTS.usable()) ModuleTTS.ensure().then(ok => { if (ok) ModuleTTS.warm(); else ModuleTTS.offer(); }); } catch (e) { } }, 2500);
+    setTimeout(() => { try { if (ModuleTTS.usable()) ModuleTTS.ensure().then(ok => { if (ok) ModuleTTS.warm(); }); } catch (e) { } }, 2500);
     let last = null;
     setInterval(() => { try { const S = ModuleGPS.state; if (!ModuleTTS.usable() || !S.routeSteps || !S.routeSteps.length) return; const k = S.routeSteps.length + ':' + (S.currentStepIndex || 0); if (k !== last) { last = k; ModuleTTS.plan(ModuleGPS); } } catch (e) { } }, 2000);
 });
