@@ -11,6 +11,7 @@ const ModuleTTS = {
     w: null, seq: 0, pend: new Map(), cache: new Map(), q: [], run: false, state: 'idle', err: '', have: null, au: null, _stop: null,
     on() { try { return AppPrefs.get('voiceNeural') === 'on'; } catch (e) { return false; } },
     usable() { return this.on() && this.state !== 'dead' && typeof Worker !== 'undefined'; },
+    riding() { try { return !!ModuleGPS.state.isTracking; } catch (e) { return false; } },
     key(t) { return String(t).toLowerCase().replace(/[\s,;.!?]+/g, ' ').trim(); },
     log(m) { try { ModuleGPS.vlog('voix-n', m); } catch (e) { } },
 
@@ -68,6 +69,7 @@ const ModuleTTS = {
         n = n || 0;
         if (this._auto || !this.usable() || this.have !== false || n > 3) return;
         const later = (ms) => setTimeout(() => this.auto(n + 1), ms);
+        if (this.riding()) return later(60000);
         this._auto = true; this.dl = 0; this.ui(); this.log('téléchargement automatique');
         this.install((p) => { this.dl = p; this.ui(); }).then(() => { this.dl = null; this._auto = false; this.ui(); }).catch((e) => { this.dl = null; this._auto = false; this.log('téléchargement échoué : ' + (e && e.message)); this.ui(); later(120000 * (n + 1)); });
     },
@@ -81,7 +83,7 @@ const ModuleTTS = {
     },
     // clips fréquents préparés une fois pour toutes (distances, phrases fixes)
     warm() {
-        if (this._warm) return; this._warm = true;
+        if (this._warm || this.riding()) return; this._warm = true;
         const sd = (d) => ModuleGPS.spokenDist(d);
         [300, 500, 200, 400, 800, 100, 1000].forEach(d => this.want('Dans ' + sd(d), 1));
         ['Guidage démarré', 'Guidage vocal activé', 'Itinéraire modifié', 'Vous êtes arrivé à destination'].forEach(t => this.want(t, 1));
@@ -92,7 +94,7 @@ const ModuleTTS = {
         const s = G.state, st = s.routeSteps || [], i = s.currentStepIndex || 0;
         this.ensure().then(ok => {
             if (!ok) return; this.warm();
-            for (let k = i; k < Math.min(st.length, i + 80); k++) { const a = st[k]; if (!a || !a.maneuver) continue; try { this.want(G.voiceBody(a, st[k + 1]), k < i + 3 ? 2 : 1); } catch (e) { } }
+            for (let k = i; k < Math.min(st.length, i + 30); k++) { const a = st[k]; if (!a || !a.maneuver) continue; try { this.want(G.voiceBody(a, st[k + 1]), k < i + 3 ? 2 : 1); } catch (e) { } }
         });
     },
 
@@ -106,7 +108,9 @@ const ModuleTTS = {
         try {
             while (this.q.length && this.usable()) {
                 if (!(await this.ensure())) break;
-                this.q.sort((a, b) => b.prio - a.prio); const it = this.q.shift(); if (this.cache.has(it.k)) continue;
+                this.q.sort((a, b) => b.prio - a.prio);
+                if (this.riding() && this.q[0].prio < 2) break;   // en balade le téléphone peine : seules les annonces proches sont préparées
+                const it = this.q.shift(); if (this.cache.has(it.k)) continue;
                 const t0 = Date.now();
                 try { const r = await this.call('predict', { text: it.text }); this.put(it.k, new Blob([r.buf], { type: 'audio/wav' })); this.log('prêt ' + (Date.now() - t0) + ' ms : ' + it.text.slice(0, 40)); }
                 catch (e) { this.log('échec : ' + e.message); if (this.state === 'dead') break; }
