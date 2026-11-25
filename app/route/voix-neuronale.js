@@ -65,6 +65,19 @@ const ModuleTTS = {
             if (r) { r.classList.toggle('is-on', o && !miss); const v = r.querySelector('.v'); if (v && dl) v.textContent = 'Téléchargement… ' + this.dl + ' %'; }
         } catch (e) { }
     },
+    // fenêtre proposée au lancement tant que la voix n'est pas installée (« Plus tard » : on redemande au bout de 24 h)
+    offer() {
+        if (this._offered || !this.usable() || this.have !== false || this.riding()) return;
+        let last = 0; try { last = Number(localStorage.getItem('moto_voice_later')) || 0; } catch (e) { }
+        if (Date.now() - last < 864e5) return;
+        this._offered = true;
+        const ask = () => {
+            if (this.riding() || document.querySelector('.ad-overlay,.auth-gate,.perm-overlay')) return setTimeout(ask, 8000);
+            AppDialog.confirm('Installe la voix française naturelle : elle garde ta musique (Apple Musique, Spotify…) pendant le guidage, au lieu de la couper comme la voix de base de l\'iPhone.\n\nTéléchargement unique d\'environ 80 Mo, ensuite elle fonctionne sans connexion.', { title: 'Voix naturelle', okText: 'Installer', cancelText: 'Plus tard' })
+                .then((ok) => { if (ok) this.auto(); else { try { localStorage.setItem('moto_voice_later', String(Date.now())); } catch (e) { } } });
+        };
+        setTimeout(ask, 5000);
+    },
     auto(n) {
         n = n || 0;
         if (this._auto || !this.usable() || this.have !== false || n > 3) return;
@@ -194,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); }
 
 // préparation dès le lancement : moteur démarré, distances et phrases fixes prêtes avant le départ ; manœuvres de l'itinéraire préparées dès qu'il est calculé
 document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => { try { if (ModuleTTS.usable()) ModuleTTS.ensure().then(ok => { if (ok) ModuleTTS.warm(); else ModuleTTS.auto(); }); } catch (e) { } }, 2500);
+    setTimeout(() => { try { if (ModuleTTS.usable()) ModuleTTS.ensure().then(ok => { if (ok) ModuleTTS.warm(); else ModuleTTS.offer(); }); } catch (e) { } }, 2500);
     let last = null;
     setInterval(() => { try { const S = ModuleGPS.state; if (!ModuleTTS.usable() || !S.routeSteps || !S.routeSteps.length) return; const k = S.routeSteps.length + ':' + (S.currentStepIndex || 0); if (k !== last) { last = k; ModuleTTS.plan(ModuleGPS); } } catch (e) { } }, 2000);
 });
