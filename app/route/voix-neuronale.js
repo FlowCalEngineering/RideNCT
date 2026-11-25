@@ -31,7 +31,8 @@ const ModuleTTS = {
         return [t];
     },
     said(p) { return /^dans \d/i.test(p) ? p.replace(/\d+/g, (x) => this.fr(Number(x))).replace(',', ' virgule ') : p; },
-    has(text) { if (!this.usable() || this.have === false) return false; const ps = this.parts(text); let all = true; ps.forEach(p => { if (!this.cache.has(this.key(p))) { all = false; this.want(p, 2); } }); return all; },
+    // vrai si la voix naturelle prend l'annonce en charge : les clips manquants sont demandés en priorité et speak() les attend (7 s au plus), jamais la voix du navigateur d'emblée
+    has(text) { if (!this.usable() || this.have !== true) return false; this.parts(text).forEach(p => { if (!this.cache.has(this.key(p))) this.want(p, 3); }); return true; },
 
     // ----- worker -----
     worker() {
@@ -114,9 +115,17 @@ const ModuleTTS = {
     // résout true si la voix a été jouée, false si elle n'a pas pu (l'appelant prend alors la voix du navigateur)
     speak(o) {
         const ps = this.parts(o.text), urls = ps.map(p => this.cache.get(this.key(p)));
-        if (urls.some(u => !u)) return Promise.resolve(false);
         const a = this.audio();
         return new Promise((res) => {
+            if (urls.some(u => !u)) {
+                const t0 = Date.now(); this._stop = () => { clearInterval(iv); this._stop = null; res(true); };
+                const iv = setInterval(() => {
+                    const u = ps.map(p => this.cache.get(this.key(p)));
+                    if (u.every(Boolean)) { clearInterval(iv); this._stop = null; this.speak(o).then(res); }
+                    else if (Date.now() - t0 > 7000 || !this.usable()) { clearInterval(iv); this._stop = null; res(false); }
+                }, 150);
+                return;
+            }
             let i = 0, played = false, done = false;
             const set = (t) => { try { if (navigator.audioSession) navigator.audioSession.type = t; } catch (e) { } };
             const end = (ok) => { if (done) return; done = true; this._stop = null; set('ambient'); a.onended = a.onerror = null; res(ok); };
@@ -136,7 +145,7 @@ const ModuleTTS = {
     diag() {
         let at = 'absente'; try { if (navigator.audioSession) at = navigator.audioSession.type; } catch (e) { }
         const l = ((typeof ModuleGPS !== 'undefined' && ModuleGPS._vlog) || []).filter(x => / (voix-n|dit|fin|erreur|attente) /.test(x)).slice(-10);
-        return ['état : ' + this.state + (this.err ? ' (' + this.err + ')' : '') + ' · réglage : ' + (this.on() ? 'activée' : 'désactivée'), 'modèle : ' + this.have + ' · worker : ' + (this.w ? 'oui' : 'non') + ' · session audio : ' + at, 'clips prêts : ' + this.cache.size + ' · en attente : ' + this.q.length].concat(l).join('\n');
+        return ['état : ' + this.state + (this.err ? ' (' + this.err + ')' : '') + ' · réglage : ' + (this.on() ? 'activée' : 'désactivée'), 'modèle : ' + this.have + ' · worker : ' + (this.w ? 'oui' : 'non') + ' · session audio : ' + at, (this.boot ? this.boot + '\n' : '') + 'clips prêts : ' + this.cache.size + ' · en attente : ' + this.q.length].concat(l).join('\n');
     },
     async test(out) {
         const t0 = Date.now(), say = (m) => out(((Date.now() - t0) / 1000).toFixed(1) + ' s · ' + m), T = 'Test de la voix naturelle', k = this.key(T);
@@ -152,3 +161,18 @@ const ModuleTTS = {
 };
 // le lecteur audio est créé dès le chargement : son « déverrouillage » attend le premier appui de l'utilisateur (sinon iPhone refuse de jouer une annonce sans geste)
 document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); } catch (e) { } });
+
+// préparation dès le lancement : moteur démarré, distances et phrases fixes prêtes avant le départ ; manœuvres de l'itinéraire préparées dès qu'il est calculé
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => { try { if (ModuleTTS.usable()) ModuleTTS.ensure().then(ok => { if (ok) ModuleTTS.warm(); }); } catch (e) { } }, 2500);
+    let last = null;
+    setInterval(() => { try { const S = ModuleGPS.state; if (!ModuleTTS.usable() || !S.routeSteps || !S.routeSteps.length) return; const k = S.routeSteps.length + ':' + (S.currentStepIndex || 0); if (k !== last) { last = k; ModuleTTS.plan(ModuleGPS); } } catch (e) { } }, 2000);
+});
+// relances inattendues : trace de la dernière activité avant le démarrage (affichée dans « Tester la voix »)
+(() => {
+    try {
+        const nav = (performance.getEntriesByType('navigation')[0] || {}).type || '?', prev = JSON.parse(localStorage.getItem('moto_hb') || 'null');
+        ModuleTTS.boot = 'démarrage : ' + nav + (document.wasDiscarded ? ' · page éliminée par iOS' : '') + (prev ? ' · avant : ' + (prev.riding ? 'balade en cours' : 'au repos') + ', il y a ' + Math.round((Date.now() - prev.t) / 1000) + ' s' + (prev.v ? ' (' + prev.v + ')' : '') : '');
+    } catch (e) { }
+    setInterval(() => { try { const S = (typeof ModuleGPS !== 'undefined' && ModuleGPS.state) || {}; localStorage.setItem('moto_hb', JSON.stringify({ t: Date.now(), riding: !!S.isTracking, v: document.visibilityState })); } catch (e) { } }, 4000);
+})();
