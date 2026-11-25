@@ -11,7 +11,7 @@
                 <div class="at-home-grid">
                     <button type="button" class="at-home-tile" data-sgo="set-sub-appearance"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2a10 10 0 0 0 0 20 2 2 0 0 0 2-2c0-.6-.2-1-.5-1.4a2 2 0 0 1 1.5-3.3H17a5 5 0 0 0 5-5C22 6 17.5 2 12 2z"/></svg></span><span class="t">Apparence</span><span class="s" id="set-s-appearance"></span></button>
                     <button type="button" class="at-home-tile" data-sgo="set-sub-display"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 14l4-4"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/></svg></span><span class="t">Compteur et écran</span><span class="s" id="set-s-display"></span></button>
-                    <button type="button" class="at-home-tile" data-sgo="set-sub-guide"><span class="ic"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></span><span class="t">Guidage et alertes</span><span class="s" id="set-s-guide"></span></button>
+                    <button type="button" class="at-home-tile" data-sgo="set-sub-guide"><span class="ic"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></span><span class="t">Alertes</span><span class="s" id="set-s-guide"></span></button>
                     <button type="button" class="at-home-tile" data-sgo="set-sub-offline"><span class="ic"><svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span><span class="t">Cartes hors ligne</span><span class="s">Précision, zones, itinéraires, téléchargement en roulant</span></button>
                     <button type="button" class="at-home-tile" data-sgo="set-sub-mic"><span class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></span><span class="t">Micro intercom</span><span class="s">Anti-bruit, filtre vent et moteur, volume, choix du micro</span></button>
                     <button type="button" class="at-home-tile wide" data-sgo="set-sub-route"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z"/></svg></span><span class="t">Mode route</span><span class="s" id="set-s-route"></span></button>
@@ -90,15 +90,7 @@
             </div>
 
             <!-- GUIDAGE ET ALERTES -->
-            <div id="set-sub-guide" class="set-sub-view" data-title="Guidage et alertes">
-                <div class="set-sec">Guidage vocal</div>
-                <div class="card">
-                    <div class="set-row" data-k="sw"><span class="ic c1"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></span><span class="x"><b>Voix naturelle</b><small class="v"></small></span><i class="sw"></i><button class="btn setting-btn set-ov" id="btn-toggle-neural" aria-label="Voix naturelle"></button></div>
-                    <div class="set-st" id="neural-st"></div>
-                    <button class="btn setting-btn set-go" id="btn-neural-test">▶ Tester la voix</button>
-                    <div class="setting-hint" id="neural-diag" style="white-space:pre-wrap;display:none"></div>
-                    <div class="setting-hint">Voix française jouée comme un fichier audio : la musique d'Apple Musique / Spotify baisse pendant l'annonce puis reprend toute seule (la voix de base de l'iPhone la coupe). Téléchargement unique d'environ 80 Mo : fais-le en wifi. Les annonces sont préparées à l'avance pendant la balade ; si l'une n'est pas prête, la voix de base prend le relais.</div>
-                </div>
+            <div id="set-sub-guide" class="set-sub-view" data-title="Alertes">
                 <div class="set-sec">Alertes</div>
                 <div class="card">
                     <div class="set-row" data-k="go"><span class="ic c2"><svg viewBox="0 0 24 24"><path d="M2 12h2M6 8v8M10 5v14M14 8v8M18 10v4M22 12h0"/></svg></span><span class="x"><b>Signaux du canal vocal</b><small class="v"></small></span><i class="chev">›</i><button class="btn setting-btn set-ov" id="btn-toggle-cue" aria-label="Signaux du canal vocal"></button></div>

@@ -1,6 +1,6 @@
 // Service worker RideNCT : l'appli web s'ouvre sans réseau. Réseau d'abord (toujours à jour), cache en secours.
 // À chaque mise en ligne d'une nouvelle version de l'appli : changer VERSION (les anciens fichiers en cache sont supprimés).
-const VERSION = 'ridenct-2026-11-25.69';
+const VERSION = 'ridenct-2026-11-25.70';
 const CDN = 'ridenct-cdn';   // moteur de la voix naturelle (code et WASM) : gardé pour fonctionner sans réseau
 self.addEventListener('install', (e) => { self.skipWaiting(); });
 self.addEventListener('activate', (e) => {
