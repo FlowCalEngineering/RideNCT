@@ -66,7 +66,7 @@ const ModuleTTS = {
         const a = this.au = new Audio(); a.setAttribute('playsinline', ''); a.preload = 'auto';
         // iPhone : un lecteur audio doit avoir été lancé une fois par un geste de l'utilisateur
         const sil = (() => { const n = 800, u = new Uint8Array(44 + n), dv = new DataView(u.buffer), w = (o, t) => { for (let i = 0; i < t.length; i++) u[o + i] = t.charCodeAt(i); }; w(0, 'RIFF'); dv.setUint32(4, 36 + n, true); w(8, 'WAVEfmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true); dv.setUint32(24, 8000, true); dv.setUint32(28, 8000, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); w(36, 'data'); dv.setUint32(40, n, true); u.fill(128, 44); return URL.createObjectURL(new Blob([u], { type: 'audio/wav' })); })();
-        const unlock = () => { document.removeEventListener('touchend', unlock, true); document.removeEventListener('click', unlock, true); if (this._playing) return; try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; a.src = sil; const p = a.play(); if (p && p.then) p.then(() => { if (!this._playing) a.pause(); }).catch(() => { }); } catch (e) { } };
+        const unlock = () => { document.removeEventListener('touchend', unlock, true); document.removeEventListener('click', unlock, true); if (this._playing) return; try { if (navigator.audioSession) navigator.audioSession.type = 'auto'; a.src = sil; const p = a.play(); if (p && p.then) p.then(() => { if (!this._playing) a.pause(); }).catch(() => { }); } catch (e) { } };
         document.addEventListener('touchend', unlock, true); document.addEventListener('click', unlock, true);
         return a;
     },
@@ -79,7 +79,7 @@ const ModuleTTS = {
         return new Promise((res) => {
             let i = 0, played = false, done = false, wd = null;
             const set = (t) => { try { if (navigator.audioSession) navigator.audioSession.type = t; } catch (e) { } };
-            const end = (ok) => { if (done) return; done = true; clearTimeout(wd); this._playing = false; this._stop = null; set('ambient'); a.onended = a.onerror = a.onplaying = null; res(ok); };
+            const end = (ok) => { if (done) return; done = true; clearTimeout(wd); this._playing = false; this._stop = null; set('auto'); a.onended = a.onerror = a.onplaying = null; res(ok); };
             // chien de garde : une lecture qui ne démarre pas ou ne se termine pas ne bloque jamais le guidage
             const arm = (ms) => { clearTimeout(wd); wd = setTimeout(() => { this.log('lecture bloquée'); try { a.pause(); } catch (e) { } end(played); }, ms); };
             this._playing = true; this._stop = () => { try { a.pause(); } catch (e) { } end(true); };
@@ -95,4 +95,6 @@ const ModuleTTS = {
     },
     stop() { try { if (this._stop) this._stop(); } catch (e) { } }
 };
+// Le micro (intercom, réglages) a besoin d'une session audio libre : jamais « ambient » forcé quand on demande le micro
+try { const md = navigator.mediaDevices; if (md && md.getUserMedia && navigator.audioSession) { const g = md.getUserMedia.bind(md); md.getUserMedia = function (c) { try { if (c && c.audio) navigator.audioSession.type = 'play-and-record'; } catch (e) { } return g(c); }; } } catch (e) { }
 document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); ModuleTTS.load(); } catch (e) { } });
