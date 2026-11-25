@@ -166,8 +166,9 @@ const ModuleTTS = {
     diag() {
         let at = 'absente'; try { if (navigator.audioSession) at = navigator.audioSession.type; } catch (e) { }
         const l = ((typeof ModuleGPS !== 'undefined' && ModuleGPS._vlog) || []).filter(x => / (voix-n|dit|fin|erreur|attente) /.test(x)).slice(-10);
-        return ['état : ' + this.state + (this.err ? ' (' + this.err + ')' : '') + ' · réglage : ' + (this.on() ? 'activée' : 'désactivée'), 'modèle : ' + this.have + ' · worker : ' + (this.w ? 'oui' : 'non') + ' · session audio : ' + at, (this.boot ? this.boot + '\n' : '') + 'clips prêts : ' + this.cache.size + ' · en attente : ' + this.q.length].concat(l).join('\n');
+        return ['état : ' + this.state + (this.err ? ' (' + this.err + ')' : '') + ' · réglage : ' + (this.on() ? 'activée' : 'désactivée'), 'modèle : ' + this.have + ' · worker : ' + (this.w ? 'oui' : 'non') + ' · session audio : ' + at, (this.boot ? this.boot + '\n' : '') + 'clips prêts : ' + this.cache.size + ' · en attente : ' + this.q.length].concat(l).join('\n') + this.traceTxt();
     },
+    traceTxt() { const p = (this.prevTrace || []).slice(-16); return p.length ? '\n— juste avant le dernier démarrage —\n' + p.join('\n') : ''; },
     async test(out) {
         const t0 = Date.now(), say = (m) => out(((Date.now() - t0) / 1000).toFixed(1) + ' s · ' + m), T = 'Test de la voix naturelle', k = this.key(T);
         if (!this.on()) return out('Active d\'abord la voix naturelle.');
@@ -189,11 +190,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let last = null;
     setInterval(() => { try { const S = ModuleGPS.state; if (!ModuleTTS.usable() || !S.routeSteps || !S.routeSteps.length) return; const k = S.routeSteps.length + ':' + (S.currentStepIndex || 0); if (k !== last) { last = k; ModuleTTS.plan(ModuleGPS); } } catch (e) { } }, 2000);
 });
-// relances inattendues : trace de la dernière activité avant le démarrage (affichée dans « Tester la voix »)
+// ENREGISTREUR DE VOL : les derniers événements avant une fermeture inattendue sont gardés et affichés dans « Tester la voix »
 (() => {
+    const K = 'moto_trace', P = 'moto_trace_prev', T0 = Date.now(); let buf = [];
+    const hh = () => { const d = new Date(); return d.toTimeString().slice(0, 8); };
+    const save = () => { try { localStorage.setItem(K, JSON.stringify(buf)); } catch (e) { } };
+    const tr = (m) => { buf.push(hh() + ' ' + m); if (buf.length > 70) buf.shift(); save(); };
+    ModuleTTS.trace = tr;
     try {
-        const nav = (performance.getEntriesByType('navigation')[0] || {}).type || '?', prev = JSON.parse(localStorage.getItem('moto_hb') || 'null');
-        ModuleTTS.boot = 'démarrage : ' + nav + (document.wasDiscarded ? ' · page éliminée par iOS' : '') + (prev ? ' · avant : ' + (prev.riding ? 'balade en cours' : 'au repos') + ', il y a ' + Math.round((Date.now() - prev.t) / 1000) + ' s' + (prev.v ? ' (' + prev.v + ')' : '') : '');
+        const nav = (performance.getEntriesByType('navigation')[0] || {}).type || '?', prev = JSON.parse(localStorage.getItem(K) || '[]');
+        localStorage.setItem(P, JSON.stringify(prev)); ModuleTTS.prevTrace = prev;
+        ModuleTTS.boot = 'démarrage : ' + nav + (document.wasDiscarded ? ' · page éliminée par iOS' : '');
+        tr('DÉMARRAGE ' + nav + (document.wasDiscarded ? ' (éliminée par iOS)' : '') + ' · ' + document.visibilityState);
     } catch (e) { }
-    setInterval(() => { try { const S = (typeof ModuleGPS !== 'undefined' && ModuleGPS.state) || {}; localStorage.setItem('moto_hb', JSON.stringify({ t: Date.now(), riding: !!S.isTracking, v: document.visibilityState })); } catch (e) { } }, 4000);
+    ['pagehide', 'pageshow', 'freeze', 'resume', 'online', 'offline', 'beforeunload'].forEach(n => window.addEventListener(n, (e) => tr(n + (e && e.persisted ? ' (persisted)' : '')), true));
+    document.addEventListener('visibilitychange', () => tr('visibilité : ' + document.visibilityState));
+    window.addEventListener('error', (e) => tr('ERREUR ' + String(e.message).slice(0, 90) + ' @' + String(e.filename || '').split('/').pop() + ':' + e.lineno));
+    window.addEventListener('unhandledrejection', (e) => tr('PROMESSE REJETÉE ' + String((e.reason && e.reason.message) || e.reason).slice(0, 90)));
+    try { navigator.serviceWorker && navigator.serviceWorker.addEventListener('controllerchange', () => tr('SW : nouveau contrôleur')); } catch (e) { }
+    // moteur de voix
+    const lg = ModuleTTS.log.bind(ModuleTTS); ModuleTTS.log = (m) => { tr('voix-n ' + String(m).slice(0, 60)); lg(m); };
+    const wk = ModuleTTS.worker.bind(ModuleTTS); ModuleTTS.worker = function () { const had = !!this.w, w = wk(); if (!had && w) tr('worker créé'); return w; };
+    // état toutes les 4 s + changements d'état de la balade
+    let rid = null, step = null;
+    setInterval(() => {
+        try {
+            const S = (typeof ModuleGPS !== 'undefined' && ModuleGPS.state) || {}, r = !!S.isTracking;
+            if (r !== rid) { rid = r; tr(r ? 'BALADE démarrée' : 'balade arrêtée'); }
+            if (r && S.currentStepIndex !== step) { step = S.currentStepIndex; tr('étape ' + step + '/' + ((S.routeSteps || []).length)); }
+            tr('· ' + (r ? 'balade' : 'repos') + ' ' + document.visibilityState + ' clips ' + ModuleTTS.cache.size + ' attente ' + ModuleTTS.q.length + ' worker ' + (ModuleTTS.w ? 'oui' : 'non') + ' noeuds ' + document.getElementsByTagName('*').length + (performance.memory ? ' tas ' + Math.round(performance.memory.usedJSHeapSize / 1048576) + 'Mo' : ''));
+        } catch (e) { }
+    }, 4000);
 })();
