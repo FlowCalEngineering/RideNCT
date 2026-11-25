@@ -764,6 +764,11 @@
                     <div class="setting-hint">Accélération et rotation du téléphone, 10 fois par seconde en plus du GPS, pour les analyses (inclinaison, freinages). Elles restent sur ton téléphone.</div>
                 </div>
                 <div class="card">
+                    <div class="setting-title">Voix du guidage</div>
+                    <button class="btn setting-btn" id="btn-toggle-neural">Voix naturelle : désactivée</button>
+                    <div class="setting-hint">Voix française jouée comme un fichier audio : la musique d'Apple Musique / Spotify baisse pendant l'annonce puis reprend toute seule (la voix de base de l'iPhone la coupe). Téléchargement unique d'environ 80 Mo : fais-le en wifi. Les annonces sont préparées à l'avance pendant la balade ; si l'une n'est pas prête, la voix de base prend le relais.</div>
+                </div>
+                <div class="card">
                     <div class="setting-title">Mode poche</div>
                     <button class="btn setting-btn" id="btn-toggle-pocketAsk">Proposé au départ</button>
                     <button class="btn setting-btn" id="btn-toggle-pocketAuto" style="margin-top:8px;">Désactivé</button>
@@ -1379,6 +1384,7 @@
     <script src="meteo/meteo-carte.js"></script>
     <script src="core/app-manager.js"></script>
     <script src="route/voix.js"></script>
+    <script src="route/voix-neuronale.js"></script>
     <script src="route/poche.js"></script>
     <script src="route/route.js"></script>
     <script src="route/route-voix.js"></script>
