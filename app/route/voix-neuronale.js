@@ -7,7 +7,7 @@
 //  - le modèle (~60 Mo) est téléchargé une fois depuis Réglages ; jamais en arrière-plan sur le réseau mobile
 // ====================================================================
 const ModuleTTS = {
-    VOICE: 'fr_FR-siwis-medium', MAX: 80,
+    VOICE: 'fr_FR-siwis-medium', MAX: 160,
     w: null, seq: 0, pend: new Map(), cache: new Map(), q: [], run: false, state: 'idle', err: '', have: null, au: null, _stop: null,
     on() { try { return AppPrefs.get('voiceNeural') === 'on'; } catch (e) { return false; } },
     usable() { return this.on() && this.state !== 'dead' && typeof Worker !== 'undefined'; },
@@ -31,7 +31,7 @@ const ModuleTTS = {
         return [t];
     },
     said(p) { return /^dans \d/i.test(p) ? p.replace(/\d+/g, (x) => this.fr(Number(x))).replace(',', ' virgule ') : p; },
-    // vrai si la voix naturelle prend l'annonce en charge : les clips manquants sont demandés en priorité et speak() les attend (7 s au plus), jamais la voix du navigateur d'emblée
+    // vrai si la voix naturelle prend l'annonce en charge : les clips manquants sont demandés en priorité et speak() les attend (3 s au plus), jamais la voix du navigateur d'emblée
     has(text) { if (!this.usable() || this.have !== true) return false; this.parts(text).forEach(p => { if (!this.cache.has(this.key(p))) this.want(p, 3); }); return true; },
 
     // ----- worker -----
@@ -92,7 +92,7 @@ const ModuleTTS = {
         const s = G.state, st = s.routeSteps || [], i = s.currentStepIndex || 0;
         this.ensure().then(ok => {
             if (!ok) return; this.warm();
-            for (let k = i; k < Math.min(st.length, i + 3); k++) { const a = st[k]; if (!a || !a.maneuver) continue; try { this.want(G.voiceBody(a, st[k + 1]), 2); } catch (e) { } }
+            for (let k = i; k < Math.min(st.length, i + 80); k++) { const a = st[k]; if (!a || !a.maneuver) continue; try { this.want(G.voiceBody(a, st[k + 1]), k < i + 3 ? 2 : 1); } catch (e) { } }
         });
     },
 
@@ -143,7 +143,7 @@ const ModuleTTS = {
                 const iv = setInterval(() => {
                     const u = ps.map(p => this.cache.get(this.key(p)));
                     if (u.every(Boolean)) { clearInterval(iv); this._stop = null; this.speak(o).then(res); }
-                    else if (Date.now() - t0 > 7000 || !this.usable()) { clearInterval(iv); this._stop = null; res(false); }
+                    else if (Date.now() - t0 > 3000 || !this.usable()) { clearInterval(iv); this._stop = null; res(false); }
                 }, 150);
                 return;
             }
