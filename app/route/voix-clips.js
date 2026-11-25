@@ -90,7 +90,7 @@ const ModuleTTS = {
                 a.src = urls[i++]; a.volume = 1; arm(3500);
                 const p = a.play(); if (p && p.then) p.then(() => { }).catch((e) => { this.log('lecture refusée : ' + (e && e.name)); end(played); });
             };
-            set('transient'); next();
+            try{const P=ModulePoche;if(P&&P.au&&!P.au.paused){P._selfPause=true;P.au.pause();P._selfPause=false}}catch(e){} set('transient'); next();
         });
     },
     stop() { try { if (this._stop) this._stop(); } catch (e) { } }
