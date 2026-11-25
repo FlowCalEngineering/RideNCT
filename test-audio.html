@@ -9,13 +9,24 @@
 <button data-t="4">D. Bip audio « transient-solo »</button><small>Pas de voix : juste un bip, pour voir si la musique reprend</small>
 <button data-t="5">E. Bip audio « transient »</button>
 <button data-t="6">F. Voix + session « ambient » tenue</button><small>Mélange</small>
+<hr><p><b>Variantes du E</b> (la musique s'arrête après le bip) :</p>
+<button data-t="7">G. Bip « transient », puis on ne touche plus à la session</button><small>Le type reste « transient », pas de retour à « auto »</small>
+<button data-t="8">H. Bip « transient », puis session « ambient »</button>
+<button data-t="9">I. Bip « transient », puis on détruit le lecteur audio</button>
+<button data-t="10">J. Voix + « transient » tenue, puis on ne touche plus à la session</button>
 <script>
 const inf=document.getElementById('inf'),log=m=>inf.textContent+=m+'\n';
 log('audioSession : '+('audioSession' in navigator?'oui':'NON')+' · speechSynthesis : '+('speechSynthesis' in window?'oui':'non')+' · mode standalone : '+(navigator.standalone||matchMedia('(display-mode:standalone)').matches?'oui':'non'));
 function wav(sec,beep){const sr=8000,n=sr*sec,u=new Uint8Array(44+n),dv=new DataView(u.buffer),w=(o,t)=>{for(let i=0;i<t.length;i++)u[o+i]=t.charCodeAt(i)};w(0,'RIFF');dv.setUint32(4,36+n,true);w(8,'WAVEfmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);dv.setUint32(24,sr,true);dv.setUint32(28,sr,true);dv.setUint16(32,1,true);dv.setUint16(34,8,true);w(36,'data');dv.setUint32(40,n,true);for(let i=0;i<n;i++)u[44+i]=beep?128+Math.round(60*Math.sin(i/sr*2*Math.PI*880)*(i<sr*.5?1:0)):128;return URL.createObjectURL(new Blob([u],{type:'audio/wav'}))}
 const setT=t=>{try{navigator.audioSession.type=t}catch(e){log('type '+t+' : '+e.message)}};
 function speak(txt){return new Promise(r=>{const u=new SpeechSynthesisUtterance(txt);u.lang='fr-FR';u.onend=u.onerror=()=>r();speechSynthesis.speak(u)})}
+async function beep(ty,after){setT(ty);const a=new Audio(wav(1,true));a.setAttribute('playsinline','');log('bip '+ty+' / fin : '+after);await a.play();await new Promise(r=>a.onended=r);
+  if(after==='ambient')setT('ambient');else if(after==='destroy'){a.removeAttribute('src');a.load();}log('bip terminé')}
 async function run(t){
+  if(t==='7'){return beep('transient','rien')}
+  if(t==='8'){return beep('transient','ambient')}
+  if(t==='9'){return beep('transient','destroy')}
+  if(t==='10'){setT('transient');const a=new Audio(wav(8,false));a.loop=true;a.volume=.01;a.setAttribute('playsinline','');await a.play().catch(e=>log('silencieux refusé : '+e.message));log('J : voix');await speak('Dans trois cents mètres, tournez à gauche.');a.pause();a.removeAttribute('src');a.load();log('J terminé');return}
   const say='Dans trois cents mètres, tournez à gauche.';
   try{
     if(t==='1'){log('A : voix seule');await speak(say);log('A terminé');return}
