@@ -13,21 +13,23 @@
 <script>
 const L=document.getElementById('log'),log=m=>{L.textContent=new Date().toTimeString().slice(0,8)+' '+m+'\n'+L.textContent};
 let wav=null,ctx=null;
-const BASES=['https://cdn.jsdelivr.net/npm/mespeak@2.0.2/docs/','https://cdn.jsdelivr.net/npm/mespeak@2.0.2/','https://cdn.jsdelivr.net/npm/mespeak@2.0.2/src/'];
-const VOICES=['voices/fr.json','voices/fr/fr.json','fr.json'];
-const ok=async u=>{try{const r=await fetch(u);return r.ok}catch(e){return false}};
-const addScript=u=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=u;s.onload=res;s.onerror=()=>rej(new Error('script '+u));document.head.appendChild(s)});
+const R='https://cdn.jsdelivr.net/npm/mespeak@2.0.2/',U='https://unpkg.com/mespeak@2.0.2/';
+const SCRIPTS=[R+'docs/mespeak.js',R+'src/mespeak.js',R+'mespeak.js',U+'docs/mespeak.js',U+'src/mespeak.js',U+'mespeak.js'];
+const CONFIGS=[R+'docs/mespeak_config.json',R+'src/mespeak_config.json',R+'mespeak_config.json',U+'docs/mespeak_config.json',U+'src/mespeak_config.json',U+'mespeak_config.json'];
+const VOICES=[R+'docs/voices/fr.json',R+'voices/fr.json',R+'docs/fr.json',R+'voices/fr/fr.json',U+'docs/voices/fr.json',U+'voices/fr.json',U+'docs/fr.json'];
+const addScript=u=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=u;s.onload=res;s.onerror=()=>rej(new Error('échec'));document.head.appendChild(s)});
+const tryCfg=u=>new Promise(res=>{try{meSpeak.loadConfig(u,(ok)=>res(!!ok))}catch(e){res(false)}});
+const tryVoice=u=>new Promise(res=>{try{meSpeak.loadVoice(u,(ok,e)=>res(!!ok))}catch(e){res(false)}});
 document.getElementById('load').onclick=async()=>{
  try{
-  let base=null;for(const b of BASES){for(const f of ['mespeak.js']){if(await ok(b+f)){base=b;break}}if(base)break}
-  if(!base)return log('mespeak.js introuvable sur les 3 emplacements');
-  log('moteur : '+base);await addScript(base+'mespeak.js');
-  await new Promise((res,rej)=>meSpeak.loadConfig(base+'mespeak_config.json',(s)=>s?res():rej(new Error('config'))));
-  log('config ok');
-  let v=null;for(const f of VOICES){if(await ok(base+f)){v=f;break}}
-  if(!v)return log('voix fr introuvable ('+VOICES.join(', ')+')');
-  await new Promise((res,rej)=>meSpeak.loadVoice(base+v,(s,e)=>s?res():rej(new Error('voix '+e))));
-  log('voix fr ok : '+v);
+  let okS=null;
+  for(const u of SCRIPTS){try{await addScript(u);if(window.meSpeak){okS=u;break}log('script chargé mais meSpeak absent : '+u)}catch(e){log('✗ '+u)}}
+  if(!okS)return log('moteur introuvable (voir ✗ ci-dessus)');
+  log('✓ moteur : '+okS);
+  let okC=null;for(const u of CONFIGS){if(await tryCfg(u)){okC=u;break}log('✗ '+u)}
+  if(!okC)return log('config introuvable');log('✓ config : '+okC);
+  let okV=null;for(const u of VOICES){if(await tryVoice(u)){okV=u;break}log('✗ '+u)}
+  if(!okV)return log('voix fr introuvable');log('✓ voix : '+okV);
   await synth();
  }catch(e){log('ERREUR '+e.message)}
 };
