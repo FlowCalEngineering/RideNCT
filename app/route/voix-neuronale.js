@@ -45,7 +45,7 @@ const ModuleTTS = {
         return this.w;
     },
     dead(msg) { this.state = 'dead'; this.err = msg; this.log('HS ' + msg); this.pend.forEach(p => p.rej(new Error(msg))); this.pend.clear(); this.q = []; try { if (this.w) this.w.terminate(); } catch (e) { } this.w = null; },
-    call(op, extra, prog) { return new Promise((res, rej) => { const w = this.worker(); if (!w) return rej(new Error(this.err || 'worker')); const id = ++this.seq; this.pend.set(id, { res, rej, prog }); w.postMessage(Object.assign({ id, op, voice: this.VOICE }, extra || {})); }); },
+    call(op, extra, prog) { return new Promise((res, rej) => { const w = this.worker(); if (!w) return rej(new Error(this.err || 'worker')); const id = ++this.seq; this.pend.set(id, { res, rej, prog }); this.idle(); w.postMessage(Object.assign({ id, op, voice: this.VOICE }, extra || {})); }); },
 
     // ----- installation (Réglages) -----
     async install(prog) {
@@ -67,7 +67,7 @@ const ModuleTTS = {
     warm() {
         if (this._warm) return; this._warm = true;
         const sd = (d) => ModuleGPS.spokenDist(d);
-        [300, 500, 200, 400, 800, 250, 350, 450, 600, 700, 900, 1000, 150, 100, 1100, 1200, 1500].forEach(d => this.want('Dans ' + sd(d), 1));
+        [300, 500, 200, 400, 800, 100, 1000].forEach(d => this.want('Dans ' + sd(d), 1));
         ['Guidage démarré', 'Guidage vocal activé', 'Itinéraire modifié', 'Vous êtes arrivé à destination'].forEach(t => this.want(t, 1));
     },
     // prochaines manœuvres : on prépare les 6 suivantes
@@ -76,7 +76,7 @@ const ModuleTTS = {
         const s = G.state, st = s.routeSteps || [], i = s.currentStepIndex || 0;
         this.ensure().then(ok => {
             if (!ok) return; this.warm();
-            for (let k = i; k < Math.min(st.length, i + 6); k++) { const a = st[k]; if (!a || !a.maneuver) continue; try { this.want(G.voiceBody(a, st[k + 1]), 2); } catch (e) { } }
+            for (let k = i; k < Math.min(st.length, i + 3); k++) { const a = st[k]; if (!a || !a.maneuver) continue; try { this.want(G.voiceBody(a, st[k + 1]), 2); } catch (e) { } }
         });
     },
 
@@ -95,7 +95,12 @@ const ModuleTTS = {
                 try { const r = await this.call('predict', { text: it.text }); this.put(it.k, new Blob([r.buf], { type: 'audio/wav' })); this.log('prêt ' + (Date.now() - t0) + ' ms : ' + it.text.slice(0, 40)); }
                 catch (e) { this.log('échec : ' + e.message); if (this.state === 'dead') break; }
             }
-        } finally { this.run = false; }
+        } finally { this.run = false; this.idle(); }
+    },
+    // le moteur de synthèse pèse lourd en mémoire : on le libère dès qu'il n'a plus rien à faire (iPhone ferme sinon la page pendant la balade)
+    idle() {
+        clearTimeout(this._it);
+        this._it = setTimeout(() => { if (!this.run && !this.q.length && !this.pend.size && this.w) { try { this.w.terminate(); } catch (e) { } this.w = null; this.log('moteur libéré'); } else if (this.w) this.idle(); }, 6000);
     },
     put(k, blob) {
         this.cache.set(k, URL.createObjectURL(blob));
