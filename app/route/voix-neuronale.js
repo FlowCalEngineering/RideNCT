@@ -56,7 +56,7 @@ const ModuleTTS = {
         this.have = true; try { AppPrefs.set('voiceNeural', 'on'); } catch (e) { }
         this.log('modèle installé'); this.warm();
     },
-    // téléchargement automatique du modèle (une fois), hors balade, jamais sur réseau mobile déclaré ; réessaie si ça échoue
+    // téléchargement automatique du modèle (une fois), y compris en balade et sur réseau mobile ; réessaie si ça échoue
     ui() {
         try {
             const st = document.getElementById('neural-st'), b = document.getElementById('btn-toggle-neural'), r = b && b.closest('.set-row'), o = this.on(), dl = this.dl != null, miss = o && this.have === false;
@@ -68,8 +68,6 @@ const ModuleTTS = {
         n = n || 0;
         if (this._auto || !this.usable() || this.have !== false || n > 3) return;
         const later = (ms) => setTimeout(() => this.auto(n + 1), ms);
-        try { const S = ModuleGPS.state; if (S.isTracking) return later(60000); } catch (e) { }
-        try { const c = navigator.connection; if (c && (c.saveData || c.type === 'cellular')) return; } catch (e) { }
         this._auto = true; this.dl = 0; this.ui(); this.log('téléchargement automatique');
         this.install((p) => { this.dl = p; this.ui(); }).then(() => { this.dl = null; this._auto = false; this.ui(); }).catch((e) => { this.dl = null; this._auto = false; this.log('téléchargement échoué : ' + (e && e.message)); this.ui(); later(120000 * (n + 1)); });
     },
