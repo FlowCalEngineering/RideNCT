@@ -2,28 +2,31 @@
 <style>body{font:16px -apple-system,Helvetica,sans-serif;background:#111;color:#eee;margin:0;padding:16px}h1{font-size:18px}button,select{display:block;width:100%;margin:10px 0;padding:16px;border:0;border-radius:12px;background:#ff6a00;color:#fff;font-size:16px;font-weight:700}select{background:#2a2a2e}small{color:#aaa;display:block;margin:-4px 0 8px}pre{background:#000;padding:10px;border-radius:8px;font-size:12px;white-space:pre-wrap}progress{width:100%}</style></head><body>
 <h1>Test voix naturelle (hors ligne)</h1>
 <p>1. Choisis une voix, appuie sur <b>Télécharger</b> (une seule fois, patiente).<br>2. Lance ta musique externe.<br>3. Appuie sur <b>Dire</b> : note la qualité, le délai, et si la musique reprend.</p>
-<select id="v"><option>Chargement des voix…</option></select>
+<select id="eng"><option value="a">Moteur A (vits-web)</option><option value="b">Moteur B (realtimex)</option><option value="c">Moteur C (mintplex)</option></select>
+<select id="v"></select>
+<button id="probe" style="background:#2a2a2e">0. Diagnostic réseau</button>
 <button id="dl" disabled>1. Télécharger la voix</button><progress id="pg" value="0" max="100"></progress>
 <button id="s1" disabled>2. Dire : « Dans 300 mètres, tournez à droite »</button>
 <button id="s2" disabled>3. Dire une phrase longue avec nom de rue</button>
 <pre id="inf"></pre>
 <script type="module">
 const inf=document.getElementById('inf'),log=m=>inf.textContent+=m+'\n',$=id=>document.getElementById(id);
-let tts;
-try{tts=await import('https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web/+esm');log('moteur chargé')}catch(e){log('ERREUR chargement moteur : '+e.message)}
-try{
-  const vs=await tts.voices();const ids=Object.keys(vs).filter(k=>/^fr_/.test(k));
-  $('v').innerHTML=ids.map(k=>{const q=vs[k];const sz=q&&q.files?Object.entries(q.files).filter(([f])=>/\.onnx$/.test(f)).map(([,x])=>x.size_bytes).join(''):'';return`<option value="${k}">${k}${sz?' ('+Math.round(sz/1e6)+' Mo)':''}</option>`}).join('');
-  const pref=ids.find(k=>/siwis-low/.test(k))||ids.find(k=>/low/.test(k))||ids[0];if(pref)$('v').value=pref;
-  $('dl').disabled=false;log('voix françaises : '+ids.join(', '));
-  const st=await tts.stored();log('déjà téléchargées : '+(st.join(', ')||'aucune'));if(st.length){$('s1').disabled=$('s2').disabled=false}
-}catch(e){log('ERREUR liste des voix : '+e.message)}
-$('dl').onclick=async()=>{const id=$('v').value;log('téléchargement '+id+'…');const t=Date.now();
-  try{await tts.download(id,p=>{if(p.total)$('pg').value=Math.round(p.loaded*100/p.total)});log('téléchargé en '+Math.round((Date.now()-t)/1000)+' s');$('s1').disabled=$('s2').disabled=false}catch(e){log('ERREUR téléchargement : '+e.message)}};
+// journal des requêtes réseau en échec (pour trouver l'adresse qui répond « Entry not found »)
+const _f=window.fetch.bind(window);window.fetch=async(...a)=>{const u=String(a[0]&&a[0].url||a[0]);try{const r=await _f(...a);if(!r.ok)log('HTTP '+r.status+' '+u.slice(0,140));return r}catch(e){log('RÉSEAU KO '+u.slice(0,140)+' : '+e.message);throw e}};
+const ENG={a:'https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web/+esm',b:'https://cdn.jsdelivr.net/npm/@realtimex/piper-tts-web@1.1.1/+esm',c:'https://cdn.jsdelivr.net/npm/@mintplex-labs/piper-tts-web@1.0.4/+esm'};
+const FR=['fr_FR-siwis-low','fr_FR-siwis-medium','fr_FR-upmc-medium','fr_FR-gilles-low','fr_FR-tom-medium'];
+let tts=null;
+$('v').innerHTML=FR.map(k=>`<option>${k}</option>`).join('');
+$('dl').disabled=false;
+$('eng').onchange=()=>{tts=null;$('s1').disabled=$('s2').disabled=true};
+async function load(){if(tts)return tts;const e=$('eng').value;log('moteur '+e+'…');try{tts=await import(ENG[e]);log('moteur chargé : '+Object.keys(tts).join(','))}catch(x){log('ERREUR moteur : '+x.message)}return tts}
+$('probe').onclick=async()=>{for(const u of['https://huggingface.co/rhasspy/piper-voices/resolve/main/voices.json','https://huggingface.co/diffusionstudio/piper-voices/resolve/main/voices.json','https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/low/fr_FR-siwis-low.onnx.json']){try{const r=await _f(u);const t=(await r.text()).slice(0,60).replace(/\s+/g,' ');log(r.status+' '+u.split('/').slice(3).join('/')+' → '+t)}catch(e){log('KO '+u+' : '+e.message)}}};
+$('dl').onclick=async()=>{const t0=Date.now(),m=await load();if(!m)return;const id=$('v').value;log('téléchargement '+id+'…');
+  try{await m.download(id,p=>{if(p.total)$('pg').value=Math.round(p.loaded*100/p.total)});log('téléchargé en '+Math.round((Date.now()-t0)/1000)+' s');$('s1').disabled=$('s2').disabled=false}catch(e){log('ERREUR téléchargement : '+e.message)}};
 const au=new Audio();au.setAttribute('playsinline','');
-async function say(txt){const id=$('v').value;try{navigator.audioSession.type='transient'}catch(e){}
+async function say(txt){const m=await load();if(!m)return;const id=$('v').value;try{navigator.audioSession.type='transient'}catch(e){}
   const t=Date.now();log('synthèse…');
-  try{const wav=await tts.predict({text:txt,voiceId:id});log('synthèse : '+(Date.now()-t)+' ms');au.src=URL.createObjectURL(wav);await au.play();log('lecture')}catch(e){log('ERREUR : '+e.message)}}
+  try{const wav=await m.predict({text:txt,voiceId:id});log('synthèse : '+(Date.now()-t)+' ms');au.src=URL.createObjectURL(wav);await au.play();log('lecture')}catch(e){log('ERREUR : '+e.message)}}
 $('s1').onclick=()=>say('Dans trois cents mètres, tournez à droite.');
 $('s2').onclick=()=>say('Dans cinq cents mètres, prenez la deuxième sortie du rond-point, direction Rochefort-en-Terre.');
 </script></body></html>
