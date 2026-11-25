@@ -5,6 +5,7 @@
 <select id="eng"><option value="a">Moteur A (vits-web)</option><option value="b">Moteur B (realtimex)</option><option value="c">Moteur C (mintplex)</option></select>
 <select id="v"></select>
 <button id="probe" style="background:#2a2a2e">0. Diagnostic réseau</button>
+<button id="auto" style="background:#0a84ff">★ Test automatique (tous moteurs × voix)</button>
 <button id="dl" disabled>1. Télécharger la voix</button><progress id="pg" value="0" max="100"></progress>
 <button id="s1" disabled>2. Dire : « Dans 300 mètres, tournez à droite »</button>
 <button id="s2" disabled>3. Dire une phrase longue avec nom de rue</button>
@@ -23,6 +24,13 @@ async function load(){if(tts)return tts;const e=$('eng').value;log('moteur '+e+'
 $('probe').onclick=async()=>{for(const u of['https://huggingface.co/rhasspy/piper-voices/resolve/main/voices.json','https://huggingface.co/diffusionstudio/piper-voices/resolve/main/voices.json','https://huggingface.co/rhasspy/piper-voices/resolve/main/fr/fr_FR/siwis/low/fr_FR-siwis-low.onnx.json']){try{const r=await _f(u);const t=(await r.text()).slice(0,60).replace(/\s+/g,' ');log(r.status+' '+u.split('/').slice(3).join('/')+' → '+t)}catch(e){log('KO '+u+' : '+e.message)}}};
 $('dl').onclick=async()=>{const t0=Date.now(),m=await load();if(!m)return;const id=$('v').value;log('téléchargement '+id+'…');
   try{await m.download(id,p=>{if(p.total)$('pg').value=Math.round(p.loaded*100/p.total)});log('téléchargé en '+Math.round((Date.now()-t0)/1000)+' s');$('s1').disabled=$('s2').disabled=false}catch(e){log('ERREUR téléchargement : '+e.message)}};
+$('auto').onclick=async()=>{log('=== TEST AUTO ===');const res=[];
+  for(const e of['a','b','c']){let m;try{m=await import(ENG[e])}catch(x){res.push(e+' : moteur KO '+x.message.slice(0,60));continue}
+    for(const v of['fr_FR-siwis-low','fr_FR-siwis-medium','fr_FR-upmc-medium']){
+      for(const t of['Bonjour','Dans trois cents mètres, tournez à droite.']){const t0=Date.now();
+        try{await m.download(v);const w=await m.predict({text:t,voiceId:v});res.push(`OK  ${e} ${v} « ${t.slice(0,12)} » ${Date.now()-t0} ms ${Math.round(w.size/1000)} ko`)}
+        catch(x){res.push(`KO  ${e} ${v} « ${t.slice(0,12)} » ${String(x.message||x).replace(/\s+/g,' ').slice(0,110)}`)}}}}
+  log(res.join('\n'));log('=== FIN ===')};
 const au=new Audio();au.setAttribute('playsinline','');
 async function say(txt){const m=await load();if(!m)return;const id=$('v').value;try{navigator.audioSession.type='transient'}catch(e){}
   const t=Date.now();log('synthèse…');
