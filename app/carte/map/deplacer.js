@@ -63,7 +63,7 @@
         ['route-bottom-sheet', 'btn-toggle-sheet'].forEach((id) => { const e = document.getElementById(id); if (!e || e.offsetParent === null) return; const r = e.getBoundingClientRect(), b = box(); if (r.width > b.width * 0.6 && r.top > b.top + b.height * 0.4) bt = Math.min(bt, r.top); });
         bar.style.bottom = Math.max(12, Math.round(box().bottom - bt + 10)) + 'px';
     }
-    function exit() { editing = false; drag = null; if (sub) sub.classList.remove('mv-edit'); if (bar) { bar.remove(); bar = null; } }
+    function exit() { editing = false; drag = null; if (sub && sub.classList.contains('mv-edit')) sub.classList.remove('mv-edit'); if (bar) { bar.remove(); bar = null; } }
     function reset() { const o = load(); delete o[orient()]; save(o); apply(); }
 
     function startDrag(el, e) {
@@ -76,7 +76,8 @@
     function init() {
         sub = document.getElementById('sub-gps-carte'); if (!sub) return;
         apply();
-        new MutationObserver(() => { if (!navigating()) exit(); else apply(); }).observe(sub, { attributes: true, attributeFilter: ['class'] });
+        let was = navigating();
+        new MutationObserver(() => { const n = navigating(); if (n === was) return; was = n; if (!n) exit(); else apply(); }).observe(sub, { attributes: true, attributeFilter: ['class'] });
         addEventListener('resize', () => { apply(); });
 
         document.addEventListener('pointerdown', (e) => {
