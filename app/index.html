@@ -75,6 +75,44 @@
     <script src="core/wake-lock.js"></script>
 </head>
 <body>
+    <style>
+    #splash{position:fixed;inset:0;z-index:2147483000;background:#1c1c1e;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,system-ui,sans-serif;transition:opacity .35s ease;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+    #splash.out{opacity:0;pointer-events:none}
+    #splash .sp-st{position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 22px,rgba(255,255,255,.025) 22px 44px)}
+    #splash .sp-app{position:relative;width:96px;height:96px;border-radius:22px;margin-bottom:18px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+    #splash .sp-logo{position:relative;font:italic 900 46px/1 -apple-system,system-ui,sans-serif;letter-spacing:-1px;transform:skewX(-6deg)}
+    #splash .sp-logo b{color:#ff6a13}
+    #splash .sp-by{position:relative;font:800 9px system-ui;letter-spacing:2px;color:#98989d;margin-top:9px;text-transform:uppercase}
+    #splash .sp-panel{position:absolute;left:18px;right:18px;bottom:calc(72px + env(safe-area-inset-bottom));max-width:420px;margin:0 auto;background:#2c2c2e;border-left:3px solid #ff6a13;padding:12px 12px 14px;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px))}
+    #splash .sp-l{display:flex;justify-content:space-between;font:italic 900 12px system-ui;text-transform:uppercase;letter-spacing:.5px}
+    #splash .sp-l span{color:#ff6a13}
+    #splash .sp-bw{height:6px;background:#111;margin-top:10px;position:relative;overflow:hidden}
+    #splash #sp-bar{display:block;height:100%;width:0;background:#ff6a13;transition:width .25s ease}
+    #splash.ind #sp-bar{width:30%!important;animation:spind 1.1s ease-in-out infinite alternate}
+    @keyframes spind{from{margin-left:0}to{margin-left:70%}}
+    #splash .sp-d{display:flex;justify-content:space-between;margin-top:8px;font:600 10px system-ui;color:#98989d}
+    #splash .sp-n{margin-top:10px;font:600 10px system-ui;color:#ccc}
+    #splash .sp-n:empty{display:none}
+    #splash .sp-v{position:absolute;bottom:calc(26px + env(safe-area-inset-bottom));font:800 9px system-ui;letter-spacing:2px;color:#666;text-transform:uppercase}
+    #splash[data-m="offline"] #sp-bar{background:#555}
+    #splash[data-m="offline"] .sp-l span{color:#98989d}
+    @media (prefers-reduced-motion:reduce){#splash.ind #sp-bar{animation:none}}
+    </style>
+    <div id="splash" role="status" aria-live="polite" data-m="check" class="ind">
+        <div class="sp-st"></div>
+        <img class="sp-app" src="core/pwa/icon-192.png" alt="">
+        <div class="sp-logo">RIDE<b>NCT</b></div>
+        <div class="sp-by">by FlowCal Engineering</div>
+        <div class="sp-panel">
+            <div class="sp-l"><div id="sp-lbl">Chargement</div><span id="sp-pct">…</span></div>
+            <div class="sp-bw"><i id="sp-bar"></i></div>
+            <div class="sp-d"><span id="sp-det">Recherche de mise à jour</span><span id="sp-cnt"></span></div>
+            <div class="sp-n" id="sp-notes"></div>
+        </div>
+        <div class="sp-v" id="sp-ver"></div>
+    </div>
+    <script src="core/splash.js"></script>
+
 
     <main id="app-content">
                 <section id="view-home" class="module-view active">
