@@ -13,7 +13,7 @@ const ModuleTTS = {
     // le micro (intercom, commandes vocales) exige une session « play-and-record » ; sinon « ambient » : la musique d'une autre appli n'est jamais coupée
     micOn() {
         if (this._pend > 0) return true;
-        try { if (typeof ModuleIntercom !== 'undefined' && ModuleIntercom.state && ModuleIntercom.state.isConnected) return true; } catch (e) { }
+        try { if (typeof ModuleIntercom !== 'undefined' && ModuleIntercom.state && (ModuleIntercom.state.isConnected || ModuleIntercom.state.autoModeActive)) return true; } catch (e) { }
         try { if (typeof ModuleRoute !== 'undefined' && ModuleRoute.recWant) return true; } catch (e) { }
         this._streams = this._streams.filter((x) => { try { return x.getAudioTracks().some((t) => t.readyState === 'live'); } catch (e) { return false; } });
         return this._streams.length > 0;
@@ -143,12 +143,6 @@ try {
             } finally { ModuleTTS._pend--; }
         };
     }
-} catch (e) { }
-// détection du micro (état de l'autorisation, liste des micros) : iPhone la refuse en session « ambient » → session micro le temps de la vérification
-try {
-    const probe = () => { try { if (navigator.audioSession) { navigator.audioSession.type = 'play-and-record'; clearTimeout(ModuleTTS._pt); ModuleTTS._pt = setTimeout(() => ModuleTTS.rest(), 2500); } } catch (e) { } };
-    const pm = navigator.permissions; if (pm && pm.query) { const q = pm.query.bind(pm); pm.query = function (d) { try { if (d && d.name === 'microphone') probe(); } catch (e) { } return q(d); }; }
-    const md2 = navigator.mediaDevices; if (md2 && md2.enumerateDevices) { const en = md2.enumerateDevices.bind(md2); md2.enumerateDevices = function () { probe(); return en(); }; }
 } catch (e) { }
 try { const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (SR && navigator.audioSession) { const st = SR.prototype.start; SR.prototype.start = function () { try { navigator.audioSession.type = 'play-and-record'; } catch (e) { } if (!this._vx) { this._vx = 1; try { this.addEventListener('end', () => setTimeout(() => ModuleTTS.rest(), 700)); } catch (e) { } } return st.apply(this, arguments); }; } } catch (e) { }
 // dès que le micro n'est plus utilisé (canal quitté, flux arrêté, commandes vocales coupées), la session repasse en « ambient » : la musique d'une autre appli peut reprendre

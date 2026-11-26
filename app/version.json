@@ -1,7 +1,7 @@
 {
-"v": "23.98",
-"n": 98,
-"notes": "Micro : retour automatique en mode musique dès que le micro n'est plus utilisé",
+"v": "23.99",
+"n": 99,
+"notes": "Micro : session micro uniquement en canal vocal (rejoindre, créer) ou mode rencontre",
 "files": [
 "./",
 "accueil/accueil.css",
@@ -116,7 +116,6 @@
 "intercom/intercom.html",
 "intercom/intercom.js",
 "intercom/invitation/invitation.js",
-"intercom/micro-acces.js",
 "intercom/rencontre/rencontre.js",
 "libs/maplibre-gl/maplibre-gl.css",
 "libs/maplibre-gl/maplibre-gl.js",
