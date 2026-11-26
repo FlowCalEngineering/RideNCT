@@ -14,7 +14,6 @@ const ModuleTTS = {
     micOn() {
         if (this._pend > 0) return true;
         try { if (typeof ModuleIntercom !== 'undefined' && ModuleIntercom.state && (ModuleIntercom.state.isConnected || ModuleIntercom.state.autoModeActive)) return true; } catch (e) { }
-        try { if (typeof ModuleRoute !== 'undefined' && ModuleRoute.recWant) return true; } catch (e) { }
         this._streams = this._streams.filter((x) => { try { return x.getAudioTracks().some((t) => t.readyState === 'live'); } catch (e) { return false; } });
         return this._streams.length > 0;
     },
@@ -144,7 +143,6 @@ try {
         };
     }
 } catch (e) { }
-try { const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (SR && navigator.audioSession) { const st = SR.prototype.start; SR.prototype.start = function () { try { navigator.audioSession.type = 'play-and-record'; } catch (e) { } if (!this._vx) { this._vx = 1; try { this.addEventListener('end', () => setTimeout(() => ModuleTTS.rest(), 700)); } catch (e) { } } return st.apply(this, arguments); }; } } catch (e) { }
 // dès que le micro n'est plus utilisé (canal quitté, flux arrêté, commandes vocales coupées), la session repasse en « ambient » : la musique d'une autre appli peut reprendre
 setInterval(() => { try { const as = navigator.audioSession; if (as && as.type === 'play-and-record' && !ModuleTTS._playing && !ModuleTTS.micOn()) { ModuleTTS.rest(); ModuleTTS.log('micro libéré : session ' + as.type); } } catch (e) { } }, 1200);
 document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); ModuleTTS.load(); } catch (e) { } });
