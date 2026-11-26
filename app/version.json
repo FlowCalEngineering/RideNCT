@@ -1,7 +1,7 @@
 {
-"v": "23.90",
-"n": 90,
-"notes": "Réglages refaits : catégories claires, recherche, aperçus du style de guidage, voix toujours active",
+"v": "23.91",
+"n": 91,
+"notes": "Micro : la session audio redevient « micro » dès que l'intercom ou les commandes vocales l'utilisent",
 "files": [
 "./",
 "accueil/accueil.css",
