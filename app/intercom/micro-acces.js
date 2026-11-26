@@ -14,6 +14,7 @@
             const st = await state();
             if (st === 'denied') { asked = true; try { AppDialog.toast('Micro refusé : autorise-le dans les réglages du téléphone pour parler en intercom.', 6000); } catch (e) { } return; }
             try { ModuleTTS.log('intercom : demande du micro à l’OS (' + st + ')'); } catch (e) { }
+            try { await ModuleTTS.micPrep(); } catch (e) { }
             const s = await navigator.mediaDevices.getUserMedia({ audio: true });
             s.getTracks().forEach((t) => t.stop()); asked = true;
             try { ModuleTTS.log('intercom : micro accordé'); } catch (e) { }

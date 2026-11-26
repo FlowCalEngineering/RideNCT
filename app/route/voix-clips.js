@@ -18,6 +18,16 @@ const ModuleTTS = {
         this._streams = this._streams.filter((x) => { try { return x.getAudioTracks().some((t) => t.readyState === 'live'); } catch (e) { return false; } });
         return this._streams.length > 0;
     },
+    // à appeler juste avant getUserMedia : session micro garantie, lecteurs audio libérés
+    async micPrep() {
+        this._pend = (this._pend || 0) + 1; setTimeout(() => { this._pend--; }, 5000);
+        clearTimeout(this._pt);
+        try { if (navigator.audioSession) navigator.audioSession.type = 'play-and-record'; } catch (e) { }
+        try { if (this.au && !this._playing) { this.au.pause(); this.au.removeAttribute('src'); this.au.load(); } } catch (e) { }
+        try { if (typeof ModulePoche !== 'undefined' && ModulePoche.au && !ModulePoche.au.paused) { ModulePoche._selfPause = true; ModulePoche.au.pause(); ModulePoche._selfPause = false; } } catch (e) { }
+        await new Promise((r) => setTimeout(r, 200));
+        try { this.log('micro : session ' + (navigator.audioSession ? navigator.audioSession.type : '?') + ' avant la demande'); } catch (e) { }
+    },
     rest() { try { if (navigator.audioSession) navigator.audioSession.type = this.micOn() ? 'play-and-record' : 'ambient'; } catch (e) { } },
     log(m) { try { const h = this.hist; h.push(new Date().toISOString().slice(11, 19) + ' ' + m); if (h.length > 40) h.shift(); } catch (e) { } try { ModuleGPS.vlog('voix-c', m); } catch (e) { } },
     norm(t) { return String(t).toLowerCase().replace(/\s+/g, ' ').trim(); },

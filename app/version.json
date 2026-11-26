@@ -1,7 +1,7 @@
 {
-"v": "23.96",
-"n": 96,
-"notes": "Journal : détail des erreurs micro de l'intercom (nom, message, origine)",
+"v": "23.97",
+"n": 97,
+"notes": "Intercom : session audio micro garantie juste avant la demande du micro",
 "files": [
 "./",
 "accueil/accueil.css",
