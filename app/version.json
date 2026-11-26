@@ -1,7 +1,7 @@
 {
-"v": "23.93",
-"n": 93,
-"notes": "Micro : corrige l'erreur InvalidStateError (nouvel essai automatique, session audio protégée)",
+"v": "23.94",
+"n": 94,
+"notes": "Micro : libération complète de l'audio avant chaque essai + journal détaillé des erreurs micro",
 "files": [
 "./",
 "accueil/accueil.css",

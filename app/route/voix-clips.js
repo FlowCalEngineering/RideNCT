@@ -120,14 +120,15 @@ try {
                     try { as.type = k === 2 ? 'auto' : 'play-and-record'; } catch (e) { }
                     try { const st = await g(c); try { ModuleTTS._streams.push(st); } catch (e) { } return st; }
                     catch (e) {
-                        err = e; if (!e || e.name !== 'InvalidStateError') throw e;
-                        ModuleTTS.log('micro : InvalidStateError, nouvel essai ' + (k + 1));
+                        err = e; if (!e || e.name !== 'InvalidStateError') { ModuleTTS.log('micro : ' + (e && e.name) + ' (' + ((e && e.message) || '') + ')'); throw e; }
+                        ModuleTTS.log('micro : InvalidStateError (' + (e.message || '') + ') session=' + (as.type || '?') + ', essai ' + (k + 1));
                         // libère les lecteurs audio qui tiennent la session, puis réessaie
-                        try { if (ModuleTTS.au && !ModuleTTS._playing) ModuleTTS.au.pause(); } catch (x) { }
+                        try { if (ModuleTTS.au && !ModuleTTS._playing) { ModuleTTS.au.pause(); ModuleTTS.au.removeAttribute('src'); ModuleTTS.au.load(); } } catch (x) { } try { [typeof ModuleRoute !== 'undefined' && ModuleRoute._ac, typeof ModuleSecurity !== 'undefined' && ModuleSecurity._ac, typeof ModuleSecurite !== 'undefined' && ModuleSecurite._ac].forEach((c) => { if (c && c.suspend && c.state === 'running') c.suspend().catch(() => { }); }); } catch (x) { }
                         try { if (typeof ModulePoche !== 'undefined' && ModulePoche.au && !ModulePoche.au.paused) { ModulePoche._selfPause = true; ModulePoche.au.pause(); ModulePoche._selfPause = false; } } catch (x) { }
                         await sleep(350);
                     }
                 }
+                ModuleTTS.log('micro : échec définitif ' + (err && err.name) + ' session=' + (as.type || '?'));
                 throw err;
             } finally { ModuleTTS._pend--; }
         };
