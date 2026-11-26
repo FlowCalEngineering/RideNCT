@@ -1,7 +1,7 @@
 {
-"v": "23.97",
-"n": 97,
-"notes": "Intercom : session audio micro garantie juste avant la demande du micro",
+"v": "23.98",
+"n": 98,
+"notes": "Micro : retour automatique en mode musique dès que le micro n'est plus utilisé",
 "files": [
 "./",
 "accueil/accueil.css",
