@@ -1,7 +1,7 @@
 {
-"v": "23.89",
-"n": 89,
-"notes": "Voix : la musique n'est plus coupée à l'ouverture / après une annonce",
+"v": "23.90",
+"n": 90,
+"notes": "Réglages refaits : catégories claires, recherche, aperçus du style de guidage, voix toujours active",
 "files": [
 "./",
 "accueil/accueil.css",
@@ -143,6 +143,7 @@
 "profil/profil.js",
 "profil/records.js",
 "profil/sauvegarde.js",
+"reglage/hub.js",
 "reglage/langue/langue.js",
 "reglage/reglage.css",
 "reglage/reglage.html",
