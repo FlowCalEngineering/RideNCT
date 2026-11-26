@@ -1,7 +1,7 @@
 {
-"v": "23.88",
-"n": 88,
-"notes": "Réglages : diagnostic de la voix du guidage (test sonore + journal)",
+"v": "23.89",
+"n": 89,
+"notes": "Voix : la musique n'est plus coupée à l'ouverture / après une annonce",
 "files": [
 "./",
 "accueil/accueil.css",
