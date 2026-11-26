@@ -12,6 +12,7 @@ const ModuleTTS = {
     _streams: [],
     // le micro (intercom, commandes vocales) exige une session « play-and-record » ; sinon « ambient » : la musique d'une autre appli n'est jamais coupée
     micOn() {
+        if (this._pend > 0) return true;
         try { if (typeof ModuleIntercom !== 'undefined' && ModuleIntercom.state && ModuleIntercom.state.isConnected) return true; } catch (e) { }
         try { if (typeof ModuleRoute !== 'undefined' && ModuleRoute.recWant) return true; } catch (e) { }
         this._streams = this._streams.filter((x) => { try { return x.getAudioTracks().some((t) => t.readyState === 'live'); } catch (e) { return false; } });
@@ -106,7 +107,32 @@ const ModuleTTS = {
     stop() { try { if (this._stop) this._stop(); } catch (e) { } }
 };
 // Le micro (intercom, réglages) a besoin d'une session audio libre : jamais « ambient » forcé quand on demande le micro
-try { const md = navigator.mediaDevices; if (md && md.getUserMedia && navigator.audioSession) { const g = md.getUserMedia.bind(md); md.getUserMedia = function (c) { try { if (c && c.audio) navigator.audioSession.type = 'play-and-record'; } catch (e) { } const r = g(c); try { if (c && c.audio) r.then((st) => { try { ModuleTTS._streams.push(st); } catch (e) { } }).catch(() => { }); } catch (e) { } return r; }; } } catch (e) { }
+try {
+    const md = navigator.mediaDevices;
+    if (md && md.getUserMedia && navigator.audioSession) {
+        const g = md.getUserMedia.bind(md), as = navigator.audioSession, sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+        md.getUserMedia = async function (c) {
+            if (!(c && c.audio)) return g(c);
+            ModuleTTS._pend = (ModuleTTS._pend || 0) + 1; clearTimeout(ModuleTTS._pt);
+            try {
+                let err = null;
+                for (let k = 0; k < 3; k++) {
+                    try { as.type = k === 2 ? 'auto' : 'play-and-record'; } catch (e) { }
+                    try { const st = await g(c); try { ModuleTTS._streams.push(st); } catch (e) { } return st; }
+                    catch (e) {
+                        err = e; if (!e || e.name !== 'InvalidStateError') throw e;
+                        ModuleTTS.log('micro : InvalidStateError, nouvel essai ' + (k + 1));
+                        // libère les lecteurs audio qui tiennent la session, puis réessaie
+                        try { if (ModuleTTS.au && !ModuleTTS._playing) ModuleTTS.au.pause(); } catch (x) { }
+                        try { if (typeof ModulePoche !== 'undefined' && ModulePoche.au && !ModulePoche.au.paused) { ModulePoche._selfPause = true; ModulePoche.au.pause(); ModulePoche._selfPause = false; } } catch (x) { }
+                        await sleep(350);
+                    }
+                }
+                throw err;
+            } finally { ModuleTTS._pend--; }
+        };
+    }
+} catch (e) { }
 // détection du micro (état de l'autorisation, liste des micros) : iPhone la refuse en session « ambient » → session micro le temps de la vérification
 try {
     const probe = () => { try { if (navigator.audioSession) { navigator.audioSession.type = 'play-and-record'; clearTimeout(ModuleTTS._pt); ModuleTTS._pt = setTimeout(() => ModuleTTS.rest(), 2500); } } catch (e) { } };

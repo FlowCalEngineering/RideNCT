@@ -1,7 +1,7 @@
 {
-"v": "23.92",
-"n": 92,
-"notes": "Micro : détection de l'autorisation et des micros fiable (session audio micro pendant la vérification)",
+"v": "23.93",
+"n": 93,
+"notes": "Micro : corrige l'erreur InvalidStateError (nouvel essai automatique, session audio protégée)",
 "files": [
 "./",
 "accueil/accueil.css",
