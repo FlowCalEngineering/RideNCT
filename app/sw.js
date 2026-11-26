@@ -1,6 +1,6 @@
 // Service worker RideNCT : l'appli web s'ouvre sans réseau. Réseau d'abord (toujours à jour), cache en secours.
 // À chaque mise en ligne d'une nouvelle version de l'appli : changer VERSION (les anciens fichiers en cache sont supprimés).
-const VERSION = 'ridenct-2026-11-26.95';
+const VERSION = 'ridenct-2026-11-26.96';
 const VOIX = 'ridenct-voix-1';   // clips de voix du guidage : gardés d'une version à l'autre (changer le numéro si les clips changent)
 const CDN = 'ridenct-cdn';   // moteur de la voix naturelle (code et WASM) : gardé pour fonctionner sans réseau
 // Installation : pré-télécharge tous les fichiers de la version (liste dans version.json) en annonçant la progression à l'écran de démarrage, puis s'active

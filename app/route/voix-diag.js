@@ -12,6 +12,13 @@
         return l.join('\n') + '\n— Journal —\n' + (h.length ? h.slice(-30).join('\n') : '(vide)');
     }
     function paint() { const el = $('vx-log'); if (el && el.offsetParent !== null) el.textContent = state(); }
+    // erreurs micro de l'intercom : nom, message et pile dans le journal
+    try {
+        const ce = console.error.bind(console), cw = console.warn.bind(console);
+        const grab = (args) => { try { const t = args.map((x) => (x && x.name ? x.name + ': ' + (x.message || '') + ' @ ' + String(x.stack || '').split('\n').slice(0, 3).map((l) => l.trim().slice(0, 90)).join(' < ') : String(x))).join(' ').slice(0, 420); if (/micro|mic\b|Micro/i.test(t)) ModuleTTS.log('console : ' + t); } catch (e) { } };
+        console.error = function () { grab([].slice.call(arguments)); return ce.apply(null, arguments); };
+        console.warn = function () { grab([].slice.call(arguments)); return cw.apply(null, arguments); };
+    } catch (e) { }
     function init() {
         const el = $('vx-log'); if (!el) return;
         const t = $('vx-test'), c = $('vx-copy');

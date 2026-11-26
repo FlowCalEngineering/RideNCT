@@ -1,7 +1,7 @@
 {
-"v": "23.95",
-"n": 95,
-"notes": "Intercom : demande l'accès au micro à l'iPhone dès l'ouverture de l'onglet",
+"v": "23.96",
+"n": 96,
+"notes": "Journal : détail des erreurs micro de l'intercom (nom, message, origine)",
 "files": [
 "./",
 "accueil/accueil.css",
