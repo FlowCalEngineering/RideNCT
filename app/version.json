@@ -1,7 +1,7 @@
 {
-"v": "23.94",
-"n": 94,
-"notes": "Micro : libération complète de l'audio avant chaque essai + journal détaillé des erreurs micro",
+"v": "23.95",
+"n": 95,
+"notes": "Intercom : demande l'accès au micro à l'iPhone dès l'ouverture de l'onglet",
 "files": [
 "./",
 "accueil/accueil.css",
@@ -116,6 +116,7 @@
 "intercom/intercom.html",
 "intercom/intercom.js",
 "intercom/invitation/invitation.js",
+"intercom/micro-acces.js",
 "intercom/rencontre/rencontre.js",
 "libs/maplibre-gl/maplibre-gl.css",
 "libs/maplibre-gl/maplibre-gl.js",
