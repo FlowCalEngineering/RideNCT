@@ -107,5 +107,11 @@ const ModuleTTS = {
 };
 // Le micro (intercom, réglages) a besoin d'une session audio libre : jamais « ambient » forcé quand on demande le micro
 try { const md = navigator.mediaDevices; if (md && md.getUserMedia && navigator.audioSession) { const g = md.getUserMedia.bind(md); md.getUserMedia = function (c) { try { if (c && c.audio) navigator.audioSession.type = 'play-and-record'; } catch (e) { } const r = g(c); try { if (c && c.audio) r.then((st) => { try { ModuleTTS._streams.push(st); } catch (e) { } }).catch(() => { }); } catch (e) { } return r; }; } } catch (e) { }
+// détection du micro (état de l'autorisation, liste des micros) : iPhone la refuse en session « ambient » → session micro le temps de la vérification
+try {
+    const probe = () => { try { if (navigator.audioSession) { navigator.audioSession.type = 'play-and-record'; clearTimeout(ModuleTTS._pt); ModuleTTS._pt = setTimeout(() => ModuleTTS.rest(), 2500); } } catch (e) { } };
+    const pm = navigator.permissions; if (pm && pm.query) { const q = pm.query.bind(pm); pm.query = function (d) { try { if (d && d.name === 'microphone') probe(); } catch (e) { } return q(d); }; }
+    const md2 = navigator.mediaDevices; if (md2 && md2.enumerateDevices) { const en = md2.enumerateDevices.bind(md2); md2.enumerateDevices = function () { probe(); return en(); }; }
+} catch (e) { }
 try { const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (SR && navigator.audioSession) { const st = SR.prototype.start; SR.prototype.start = function () { try { navigator.audioSession.type = 'play-and-record'; } catch (e) { } if (!this._vx) { this._vx = 1; try { this.addEventListener('end', () => setTimeout(() => ModuleTTS.rest(), 700)); } catch (e) { } } return st.apply(this, arguments); }; } } catch (e) { }
 document.addEventListener('DOMContentLoaded', () => { try { ModuleTTS.audio(); ModuleTTS.load(); } catch (e) { } });
