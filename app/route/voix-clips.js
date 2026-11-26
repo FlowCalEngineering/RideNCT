@@ -8,7 +8,8 @@
 // ====================================================================
 const ModuleTTS = {
     man: null, bad: new Set(), urls: new Map(), loading: null, au: null, _stop: null, _playing: false, KM: [1, 1.5, 2, 2.5, 3, 4, 5, 7, 10],
-    log(m) { try { ModuleGPS.vlog('voix-c', m); } catch (e) { } },
+    hist: [],
+    log(m) { try { const h = this.hist; h.push(new Date().toISOString().slice(11, 19) + ' ' + m); if (h.length > 40) h.shift(); } catch (e) { } try { ModuleGPS.vlog('voix-c', m); } catch (e) { } },
     norm(t) { return String(t).toLowerCase().replace(/\s+/g, ' ').trim(); },
 
     // manifeste : { clips: { clé: fichier } }
@@ -66,20 +67,20 @@ const ModuleTTS = {
         const a = this.au = new Audio(); a.setAttribute('playsinline', ''); a.preload = 'auto';
         // iPhone : un lecteur audio doit avoir été lancé une fois par un geste de l'utilisateur
         const sil = (() => { const n = 800, u = new Uint8Array(44 + n), dv = new DataView(u.buffer), w = (o, t) => { for (let i = 0; i < t.length; i++) u[o + i] = t.charCodeAt(i); }; w(0, 'RIFF'); dv.setUint32(4, 36 + n, true); w(8, 'WAVEfmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true); dv.setUint32(24, 8000, true); dv.setUint32(28, 8000, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true); w(36, 'data'); dv.setUint32(40, n, true); u.fill(128, 44); return URL.createObjectURL(new Blob([u], { type: 'audio/wav' })); })();
-        const unlock = () => { document.removeEventListener('touchend', unlock, true); document.removeEventListener('click', unlock, true); if (this._playing) return; try { if (navigator.audioSession) navigator.audioSession.type = 'auto'; a.src = sil; const p = a.play(); if (p && p.then) p.then(() => { if (!this._playing) a.pause(); }).catch(() => { }); } catch (e) { } };
+        const unlock = () => { document.removeEventListener('touchend', unlock, true); document.removeEventListener('click', unlock, true); if (this._playing) return; try { if (navigator.audioSession) navigator.audioSession.type = 'transient'; a.src = sil; const p = a.play(); if (p && p.then) p.then(() => { this._unlocked = true; this.log('lecteur débloqué'); if (!this._playing) { a.pause(); try { if (navigator.audioSession) navigator.audioSession.type = 'auto'; } catch (e) { } } }).catch((e) => { this.log('déblocage refusé : ' + (e && e.name)); }); } catch (e) { } };
         document.addEventListener('touchend', unlock, true); document.addEventListener('click', unlock, true);
         return a;
     },
     // résout true si la voix a été jouée, false sinon (l'appelant prend alors la voix de base)
     async speak(o) {
-        const keys = this.parse(o.text); if (!keys) return false;
+        const keys = this.parse(o.text); if (!keys) { this.log('non composable : ' + o.text); return false; }
         const urls = await Promise.race([Promise.all(keys.map(k => this.fetchClip(k))), new Promise(r => setTimeout(() => r(null), 3000))]);
-        if (!urls || urls.some(u => !u)) return false;
+        if (!urls || urls.some(u => !u)) { this.log('clips indisponibles : ' + o.text); return false; }
         const a = this.audio();
         return new Promise((res) => {
             let i = 0, played = false, done = false, wd = null;
             const set = (t) => { try { if (navigator.audioSession) navigator.audioSession.type = t; } catch (e) { } };
-            const end = (ok) => { if (done) return; done = true; clearTimeout(wd); this._playing = false; this._stop = null; set('auto'); a.onended = a.onerror = a.onplaying = null; res(ok); };
+            const end = (ok) => { if (done) return; done = true; this.log(ok ? 'fin : joué' : 'fin : rien joué → voix de base'); clearTimeout(wd); this._playing = false; this._stop = null; set('auto'); a.onended = a.onerror = a.onplaying = null; res(ok); };
             // chien de garde : une lecture qui ne démarre pas ou ne se termine pas ne bloque jamais le guidage
             const arm = (ms) => { clearTimeout(wd); wd = setTimeout(() => { this.log('lecture bloquée'); try { a.pause(); } catch (e) { } end(played); }, ms); };
             this._playing = true; this._stop = () => { try { a.pause(); } catch (e) { } end(true); };

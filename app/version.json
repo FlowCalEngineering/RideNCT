@@ -1,7 +1,7 @@
 {
-"v": "23.87",
-"n": 87,
-"notes": "Écran de démarrage avec mise à jour automatique, disposition de la carte, guidage du mode Route",
+"v": "23.88",
+"n": 88,
+"notes": "Réglages : diagnostic de la voix du guidage (test sonore + journal)",
 "files": [
 "./",
 "accueil/accueil.css",
@@ -169,6 +169,7 @@
 "route/route.html",
 "route/route.js",
 "route/voix-clips.js",
+"route/voix-diag.js",
 "route/voix.js",
 "securite/aide.js",
 "securite/badges.js",
