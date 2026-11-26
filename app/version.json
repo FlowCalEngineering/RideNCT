@@ -1,7 +1,7 @@
 {
-"v": "23.99",
-"n": 99,
-"notes": "Micro : session micro uniquement en canal vocal (rejoindre, créer) ou mode rencontre",
+"v": "23.100",
+"n": 100,
+"notes": "Les voix de Thomas se téléchargent pendant la mise à jour au démarrage",
 "files": [
 "./",
 "accueil/accueil.css",

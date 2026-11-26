@@ -1,6 +1,6 @@
 // Service worker RideNCT : l'appli web s'ouvre sans réseau. Réseau d'abord (toujours à jour), cache en secours.
 // À chaque mise en ligne d'une nouvelle version de l'appli : changer VERSION (les anciens fichiers en cache sont supprimés).
-const VERSION = 'ridenct-2026-11-26.99';
+const VERSION = 'ridenct-2026-11-26.100';
 const VOIX = 'ridenct-voix-1';   // clips de voix du guidage : gardés d'une version à l'autre (changer le numéro si les clips changent)
 const CDN = 'ridenct-cdn';   // moteur de la voix naturelle (code et WASM) : gardé pour fonctionner sans réseau
 // Installation : pré-télécharge tous les fichiers de la version (liste dans version.json) en annonçant la progression à l'écran de démarrage, puis s'active
@@ -9,9 +9,12 @@ const say = (m) => { try { bc && bc.postMessage(m); } catch (_) {} };
 self.addEventListener('install', (e) => {
     e.waitUntil((async () => {
         try {
-            const m = await (await fetch('version.json', { cache: 'no-store' })).json(), list = m.files || [], c = await caches.open(VERSION);
+            const m = await (await fetch('version.json', { cache: 'no-store' })).json(), c = await caches.open(VERSION), cv = await caches.open(VOIX);
+            // clips de voix manquants (une seule fois : ils restent d'une version à l'autre)
+            let vl = []; try { const ix = await (await fetch('voix/index.json', { cache: 'no-store' })).json(); for (const f of new Set(Object.values(ix.clips || {}))) { if (!(await cv.match('voix/' + f))) vl.push('voix/' + f); } } catch (_) {}
+            const list = (m.files || []).map((f) => [f, c]).concat(vl.map((f) => [f, cv]));
             let done = 0; say({ t: 'start', v: m.v, notes: m.notes || '', total: list.length });
-            const q = list.slice(), work = async () => { while (q.length) { const f = q.shift(); try { const r = await fetch(f, { cache: 'reload' }); if (r && r.ok) await c.put(f, r); } catch (_) {} say({ t: 'prog', done: ++done, total: list.length }); } };
+            const q = list.slice(), work = async () => { while (q.length) { const [f, st] = q.shift(); try { const r = await fetch(f, { cache: 'reload' }); if (r && r.ok) await st.put(f, r); } catch (_) {} say({ t: 'prog', done: ++done, total: list.length }); } };
             await Promise.race([Promise.all([work(), work(), work(), work(), work(), work()]), new Promise((res) => setTimeout(res, 40000))]);
             say({ t: 'ready', v: m.v });
         } catch (_) { say({ t: 'ready', v: '' }); }
